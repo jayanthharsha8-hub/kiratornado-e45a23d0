@@ -58,8 +58,10 @@ const Register = () => {
       toast.error(error.message.includes("already") ? "Email already registered" : error.message);
       return;
     }
-    toast.success("Hunter registered. Welcome to the system.");
-    navigate("/home", { replace: true });
+    localStorage.setItem("userExists", "true");
+    await supabase.auth.signOut();
+    toast.success("Hunter registered. Please login to continue.");
+    navigate("/login", { replace: true });
   };
 
   return (
