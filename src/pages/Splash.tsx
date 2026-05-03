@@ -39,7 +39,12 @@ const Splash = () => {
   useEffect(() => {
     const t = setTimeout(() => {
       if (loading) return;
-      navigate(user ? "/home" : "/login", { replace: true });
+      if (user) {
+        navigate("/home", { replace: true });
+      } else {
+        const userExists = localStorage.getItem("userExists") === "true";
+        navigate(userExists ? "/login" : "/register", { replace: true });
+      }
     }, 2800);
     return () => clearTimeout(t);
   }, [navigate, user, loading]);

@@ -22,6 +22,7 @@ const Login = () => {
     if (error) { setLoading(false); toast.error("Invalid credentials"); return; }
     setLoading(false);
     toast.success("Welcome back, Hunter.");
+    localStorage.setItem("userExists", "true");
     navigate("/home", { replace: true });
   };
 
