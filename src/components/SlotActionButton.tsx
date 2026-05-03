@@ -51,22 +51,26 @@ const SlotActionButton = ({
             success
               ? {
                   background: `linear-gradient(135deg, ${accent}, ${accent}cc)`,
-                  color: "#0A0A0A",
+                  color: "#FFFFFF",
+                  opacity: 1,
+                  textShadow: "0 1px 2px rgba(0,0,0,0.6)",
                   border: `1px solid ${accent}`,
                   boxShadow: `0 0 24px ${accent}, 0 0 48px ${accentSoft}`,
                 }
               : isActive
               ? {
                   background: `linear-gradient(135deg, ${accent}, ${accent}dd)`,
-                  color: "#0A0A0A",
+                  color: "#FFFFFF",
+                  opacity: 1,
+                  textShadow: "0 1px 2px rgba(0,0,0,0.6)",
                   border: `1px solid ${accent}`,
                   boxShadow: `0 8px 32px ${accent}88, 0 0 22px ${accent}, inset 0 0 14px ${accentSoft}`,
                 }
               : {
                   background: "hsl(0 0% 100% / 0.04)",
-                  color: "hsl(0 0% 100% / 0.45)",
+                  color: "#FFFFFF",
                   border: `1px solid ${accent}33`,
-                  opacity: 0.5,
+                  opacity: 1,
                 }
           }
         >
