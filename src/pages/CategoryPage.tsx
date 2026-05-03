@@ -150,12 +150,6 @@ const CategoryPage = () => {
             ) : (
               <div className="h-full w-full bg-gradient-to-br from-background via-card to-background" />
             )}
-            <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
-
-            <div className="absolute left-3 top-3 font-display text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/70">
-              TOURNAMENTS
-            </div>
 
             <button
               aria-label="Close"
@@ -165,18 +159,6 @@ const CategoryPage = () => {
             >
               <X className="h-5 w-5" />
             </button>
-
-            <div className="absolute inset-x-0 bottom-3 px-4 text-right sm:text-right">
-              <h1
-                className="font-display text-3xl font-black uppercase italic leading-none tracking-tight text-foreground"
-                style={{ textShadow: `0 0 14px ${color}` }}
-              >
-                {TITLES[cat]}
-              </h1>
-              <p className="mt-1 font-display text-[10px] font-bold uppercase tracking-[0.32em]" style={{ color }}>
-                {TAGLINES[cat]}
-              </p>
-            </div>
           </div>
         </section>
 
