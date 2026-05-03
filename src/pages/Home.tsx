@@ -13,8 +13,14 @@ import { Particles } from "@/components/Particles";
 import { playSound } from "@/hooks/useSound";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
 
-type HomeBanner = { id: string; image_url: string | null; title: string; subtitle: string; button_text: string | null };
-type CategoryCardImage = { category: Category; card_image_url: string | null };
+type HomeBanner = { id: string; image_url: string | null; title: string; subtitle: string; button_text: string | null; updated_at?: string };
+type CategoryCardImage = { category: Category; card_image_url: string | null; updated_at?: string };
+
+const withVersion = (url: string | null | undefined, version?: string | null) => {
+  if (!url) return null;
+  const v = version ? new Date(version).getTime() : Date.now();
+  return url.includes("?") ? `${url}&v=${v}` : `${url}?v=${v}`;
+};
 
 const db = supabase as any;
 
@@ -37,12 +43,13 @@ const Home = () => {
 
   useEffect(() => {
     Promise.all([
-      db.from("home_banners").select("id,image_url,title,subtitle,button_text").eq("active", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
-      db.from("category_card_images").select("category,card_image_url"),
+      db.from("home_banners").select("id,image_url,title,subtitle,button_text,updated_at").eq("active", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
+      db.from("category_card_images").select("category,card_image_url,updated_at"),
     ]).then(([home, cards]) => {
-      setHomeBanners((home.data ?? []) as HomeBanner[]);
+      const banners = ((home.data ?? []) as HomeBanner[]).map((b) => ({ ...b, image_url: withVersion(b.image_url, b.updated_at) }));
+      setHomeBanners(banners);
       const next = { free_match: null, battle_royale: null, classic_squad: null, lone_wolf: null, custom_rooms: null, weekly_rankings: null } as Record<Category, string | null>;
-      ((cards.data ?? []) as CategoryCardImage[]).forEach((row) => { next[row.category] = row.card_image_url; });
+      ((cards.data ?? []) as CategoryCardImage[]).forEach((row) => { next[row.category] = withVersion(row.card_image_url, row.updated_at); });
       setCategoryImages(next);
     });
   }, []);
@@ -138,7 +145,7 @@ const Home = () => {
            <div className="grid grid-cols-2 gap-2">
             {(Object.keys(CATEGORY_META) as Category[]).map((c, idx) => {
               const meta = CATEGORY_META[c];
-              const fallbackImage = meta.image;
+              const imgUrl = categoryImages[c];
               return (
                 <button
                   key={c}
@@ -150,14 +157,24 @@ const Home = () => {
                     animationDelay: `${idx * 0.05}s`,
                   }}
                 >
-                  <img
-                    src={categoryImages[c] ?? fallbackImage}
-                    alt={meta.title}
-                    loading="lazy"
-                    width={512}
-                    height={512}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                  />
+                  {imgUrl ? (
+                    <img
+                      src={imgUrl}
+                      alt={meta.title}
+                      loading="lazy"
+                      decoding="async"
+                      width={512}
+                      height={512}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                    />
+                  ) : (
+                    <div
+                      className="flex h-full w-full items-center justify-center px-2 text-center font-display text-xs uppercase tracking-[0.2em]"
+                      style={{ color: meta.color }}
+                    >
+                      {meta.title}
+                    </div>
+                  )}
                 </button>
               );
             })}
