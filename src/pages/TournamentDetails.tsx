@@ -255,22 +255,28 @@ const TournamentDetails = () => {
 
             <div className="flex-1 text-center">
               <p className="font-display text-[10px] font-bold uppercase tracking-[0.32em] text-foreground/70">
-                {diffMs <= 0 ? "Match Started" : "Match Starts In"}
+                {diffMs <= 0 ? (isLive ? "Match Live" : "Match Started") : "Match Starts In"}
               </p>
-              <div className="mt-1 flex items-baseline justify-center gap-2 font-display font-black">
-                <span className="text-3xl text-foreground" style={{ textShadow: `0 0 12px ${accent}88` }}>{bigPrimary}</span>
-                {!showSplit && <span className="text-2xl" style={{ color: accent }}>:</span>}
-                <span
-                  className={showSplit ? "text-2xl" : "text-3xl text-foreground"}
-                  style={showSplit ? { color: accent } : { textShadow: `0 0 12px ${accent}88` }}
-                >
-                  {bigSecondary}
-                </span>
-              </div>
-              <div className="mt-0.5 flex justify-center gap-6 font-display text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: accent }}>
-                <span>{labels[0]}</span>
-                {labels[1] && <span>{labels[1]}</span>}
-              </div>
+              {diffMs <= 0 ? (
+                <div className="mt-1 font-display text-2xl font-black" style={{ color: accent, textShadow: `0 0 12px ${accent}88` }}>
+                  {isLive ? "LIVE NOW" : "00 : 00 : 00"}
+                </div>
+              ) : (
+                <>
+                  <div className="mt-1 flex items-baseline justify-center gap-2 font-display font-black tabular-nums">
+                    <span className="text-3xl text-foreground" style={{ textShadow: `0 0 12px ${accent}88` }}>{hh}</span>
+                    <span className="text-2xl" style={{ color: accent }}>:</span>
+                    <span className="text-3xl text-foreground" style={{ textShadow: `0 0 12px ${accent}88` }}>{mm}</span>
+                    <span className="text-2xl" style={{ color: accent }}>:</span>
+                    <span className="text-3xl text-foreground" style={{ textShadow: `0 0 12px ${accent}88` }}>{ss}</span>
+                  </div>
+                  <div className="mt-0.5 flex justify-center gap-7 font-display text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: accent }}>
+                    <span>Hrs</span>
+                    <span>Min</span>
+                    <span>Sec</span>
+                  </div>
+                </>
+              )}
             </div>
 
             <ProgressRing progress={progress} accent={accent} />
