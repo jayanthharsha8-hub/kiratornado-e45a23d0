@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { toast } from "sonner";
 import { playSound } from "@/hooks/useSound";
+import SlotActionButton from "@/components/SlotActionButton";
 
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number;
@@ -188,26 +189,15 @@ const TournamentSlots = () => {
 
       </main>
 
-      {/* STICKY CONFIRM CTA */}
-      <div
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-white/5 bg-background/85 px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-3 backdrop-blur-md"
-        style={{ boxShadow: `0 -8px 24px ${accentSoft}` }}
-      >
-        <div className="mx-auto max-w-md">
-          <button
-            onClick={confirmJoin}
-            disabled={!selectedSlot || joining || joined}
-            className="h-14 w-full rounded-xl font-display text-sm font-black uppercase tracking-[0.28em] transition active:scale-[0.98] disabled:opacity-40"
-            style={
-              selectedSlot && !joined
-                ? { background: `linear-gradient(135deg, ${accent}, ${accent}cc)`, color: "#0A0A0A", boxShadow: `0 8px 28px ${accent}77, 0 0 18px ${accent}` }
-                : { background: "hsl(0 0% 100% / 0.04)", color: "hsl(0 0% 100% / 0.4)", border: `1px solid ${accent}33` }
-            }
-          >
-            {joined ? "✓ Joined" : joining ? "Joining..." : selectedSlot ? `Confirm Join · Slot ${selectedSlot}` : "Select a Slot"}
-          </button>
-        </div>
-      </div>
+      <SlotActionButton
+        accent={accent}
+        accentSoft={accentSoft}
+        selected={!!selectedSlot}
+        loading={joining}
+        success={joined}
+        slotNumber={selectedSlot}
+        onClick={confirmJoin}
+      />
     </div>
   );
 };
