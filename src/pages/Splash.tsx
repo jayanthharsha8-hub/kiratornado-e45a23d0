@@ -15,12 +15,11 @@ const Splash = () => {
   // Ensure the logo is fully decoded before we animate it in (prevents fragmented/streamed render)
   useEffect(() => {
     const img = new Image();
+    img.onload = () => setLogoReady(true);
+    img.onerror = () => setLogoReady(true);
     img.src = logoImg;
-    if ("decode" in img) {
-      img.decode().then(() => setLogoReady(true)).catch(() => setLogoReady(true));
-    } else {
-      img.onload = () => setLogoReady(true);
-      img.onerror = () => setLogoReady(true);
+    if (typeof img.decode === "function") {
+      img.decode().then(() => setLogoReady(true)).catch(() => {});
     }
   }, []);
 
