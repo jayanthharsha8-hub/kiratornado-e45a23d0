@@ -1,43 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Particles } from "@/components/Particles";
-import { playSound } from "@/hooks/useSound";
-import hunterIcon from "@/assets/hunter-icon.png";
-
-const TEXTS = [
-  "SYSTEM INITIALIZING...",
-  "HUNTER DETECTED",
-  "SHADOW ARMY ACTIVATED",
-  "ENTER THE SYSTEM",
-];
+import logoImg from "@/assets/kira-tornado-intro.jpg";
 
 const Splash = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const [textIdx, setTextIdx] = useState(0);
-  const [bootPlayed, setBootPlayed] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+  const [flash, setFlash] = useState(false);
 
   useEffect(() => {
-    const handler = () => {
-      if (!bootPlayed) {
-        playSound("boot");
-        setBootPlayed(true);
-      }
-    };
-    window.addEventListener("pointerdown", handler, { once: true });
-    return () => window.removeEventListener("pointerdown", handler);
-  }, [bootPlayed]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIdx(prev => (prev < TEXTS.length - 1 ? prev + 1 : prev));
-    }, 600);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
+    const flashT = setTimeout(() => {
+      setFlash(true);
+      setTimeout(() => setFlash(false), 140);
+    }, 1700);
+    const fadeT = setTimeout(() => setFadeOut(true), 2400);
+    const navT = setTimeout(() => {
       if (loading) return;
       if (user) {
         navigate("/home", { replace: true });
@@ -45,51 +23,161 @@ const Splash = () => {
         const userExists = localStorage.getItem("userExists") === "true";
         navigate(userExists ? "/login" : "/register", { replace: true });
       }
-    }, 2800);
-    return () => clearTimeout(t);
+    }, 2900);
+    return () => {
+      clearTimeout(flashT);
+      clearTimeout(fadeT);
+      clearTimeout(navT);
+    };
   }, [navigate, user, loading]);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden" style={{ background: "#05070d" }}>
-      <Particles />
+    <>
+      <style>{`
+        @keyframes kt-smoke-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes kt-smoke-drift {
+          0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) scale(1.15) rotate(8deg); }
+        }
+        @keyframes kt-logo-in {
+          0% { opacity: 0; transform: scale(0.82); filter: blur(8px); }
+          100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        @keyframes kt-logo-pulse {
+          0%, 100% { filter: drop-shadow(0 0 18px rgba(168,85,247,0.55)) drop-shadow(0 0 40px rgba(168,85,247,0.35)); }
+          50%      { filter: drop-shadow(0 0 28px rgba(192,132,252,0.85)) drop-shadow(0 0 70px rgba(168,85,247,0.6)); }
+        }
+        @keyframes kt-aura-pulse {
+          0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+          50%      { opacity: 0.9;  transform: translate(-50%, -50%) scale(1.08); }
+        }
+        @keyframes kt-shake {
+          0%, 100% { transform: translate(0, 0); }
+          20% { transform: translate(-1px, 1px); }
+          40% { transform: translate(2px, -1px); }
+          60% { transform: translate(-2px, 0); }
+          80% { transform: translate(1px, 2px); }
+        }
+        @keyframes kt-tagline-in {
+          0% { opacity: 0; transform: translateY(8px); letter-spacing: 0.2em; }
+          100% { opacity: 1; transform: translateY(0); letter-spacing: 0.45em; }
+        }
+        @keyframes kt-flash {
+          0% { opacity: 0; }
+          30% { opacity: 0.75; }
+          100% { opacity: 0; }
+        }
+      `}</style>
 
-      {/* Purple aura behind icon */}
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[420px] w-[420px] rounded-full blur-3xl animate-pulse-glow"
-        style={{ background: "radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(168,85,247,0.15) 40%, transparent 70%)" }}
-      />
+        className="fixed inset-0 z-50 overflow-hidden"
+        style={{
+          background: "#000",
+          opacity: fadeOut ? 0 : 1,
+          transition: "opacity 500ms ease-out",
+        }}
+      >
+        {/* Subtle purple radial gradient backdrop */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, rgba(88,28,135,0.35) 0%, rgba(30,10,60,0.15) 35%, #000 75%)",
+          }}
+        />
 
-      <div className="relative z-10 flex flex-col items-center gap-8 animate-float-up">
-        <div className="relative">
-          <img
-            src={hunterIcon}
-            alt="Shadow Hunter"
-            width={220}
-            height={220}
-            className="rounded-3xl drop-shadow-[0_0_40px_rgba(168,85,247,0.7)] animate-flicker"
-            style={{ animationDuration: "3s" }}
-          />
-        </div>
+        {/* Purple smoke layer 1 */}
+        <div
+          className="absolute left-1/2 top-1/2 pointer-events-none"
+          style={{
+            width: "140vmax",
+            height: "140vmax",
+            background:
+              "radial-gradient(circle at 30% 60%, rgba(168,85,247,0.18), transparent 45%), radial-gradient(circle at 70% 40%, rgba(139,92,246,0.14), transparent 50%)",
+            opacity: 0,
+            animation:
+              "kt-smoke-in 600ms ease-out forwards, kt-smoke-drift 6s ease-in-out infinite alternate",
+            filter: "blur(40px)",
+          }}
+        />
+        {/* Smoke layer 2 (deeper) */}
+        <div
+          className="absolute left-1/2 top-1/2 pointer-events-none"
+          style={{
+            width: "120vmax",
+            height: "120vmax",
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(126,34,206,0.12), transparent 55%)",
+            opacity: 0,
+            animation:
+              "kt-smoke-in 800ms 200ms ease-out forwards, kt-smoke-drift 9s ease-in-out infinite alternate-reverse",
+            filter: "blur(60px)",
+          }}
+        />
 
-        <p
-          className="h-5 text-[11px] uppercase tracking-[0.4em] animate-flicker"
-          style={{ color: "#c4b5fd", animationDelay: "0.3s" }}
+        {/* Soft circular energy aura behind logo */}
+        <div
+          className="absolute left-1/2 top-1/2 pointer-events-none rounded-full"
+          style={{
+            width: 460,
+            height: 460,
+            background:
+              "radial-gradient(circle, rgba(192,132,252,0.45) 0%, rgba(168,85,247,0.22) 35%, transparent 70%)",
+            filter: "blur(20px)",
+            transform: "translate(-50%, -50%)",
+            animation: "kt-aura-pulse 2.4s ease-in-out infinite",
+          }}
+        />
+
+        {/* Centered logo + tagline with micro shake */}
+        <div
+          className="relative z-10 flex h-full w-full flex-col items-center justify-center"
+          style={{ animation: "kt-shake 2.6s ease-in-out infinite" }}
         >
-          {TEXTS[textIdx]}
-        </p>
-
-        <div className="h-1 w-56 overflow-hidden rounded-full bg-muted/60">
-          <div
-            className="h-full"
+          <img
+            src={logoImg}
+            alt="KIRA TORNADO"
+            width={300}
+            height={300}
+            className="select-none"
             style={{
-              animation: "splash-bar 2.8s ease-out forwards",
-              background: "linear-gradient(90deg, #a855f7, #00cfff)",
-              boxShadow: "0 0 12px rgba(168,85,247,0.8)",
+              width: "min(74vw, 320px)",
+              height: "auto",
+              opacity: 0,
+              animation:
+                "kt-logo-in 1000ms 300ms cubic-bezier(0.16,1,0.3,1) forwards, kt-logo-pulse 2.2s 1.3s ease-in-out infinite",
+              mixBlendMode: "screen",
             }}
           />
+
+          <p
+            className="mt-2 font-display text-[12px] font-semibold uppercase"
+            style={{
+              color: "#e9d5ff",
+              letterSpacing: "0.45em",
+              textShadow:
+                "0 0 8px rgba(192,132,252,0.85), 0 0 20px rgba(168,85,247,0.55)",
+              opacity: 0,
+              animation: "kt-tagline-in 700ms 1500ms ease-out forwards",
+            }}
+          >
+            Unleash the Storm
+          </p>
         </div>
+
+        {/* Lightning flash overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 45%, rgba(216,180,254,0.9), rgba(168,85,247,0.4) 30%, transparent 70%)",
+            opacity: 0,
+            animation: flash ? "kt-flash 160ms ease-out" : "none",
+            mixBlendMode: "screen",
+          }}
+        />
       </div>
-    </div>
+    </>
   );
 };
 
