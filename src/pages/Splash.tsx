@@ -12,9 +12,9 @@ const Splash = () => {
   useEffect(() => {
     const flashT = setTimeout(() => {
       setFlash(true);
-      setTimeout(() => setFlash(false), 140);
-    }, 1700);
-    const fadeT = setTimeout(() => setFadeOut(true), 2400);
+      setTimeout(() => setFlash(false), 300);
+    }, 3200);
+    const fadeT = setTimeout(() => setFadeOut(true), 5000);
     const navT = setTimeout(() => {
       if (loading) return;
       if (user) {
@@ -23,7 +23,7 @@ const Splash = () => {
         const userExists = localStorage.getItem("userExists") === "true";
         navigate(userExists ? "/login" : "/register", { replace: true });
       }
-    }, 2900);
+    }, 5500);
     return () => {
       clearTimeout(flashT);
       clearTimeout(fadeT);
@@ -74,7 +74,7 @@ const Splash = () => {
         style={{
           background: "#000",
           opacity: fadeOut ? 0 : 1,
-          transition: "opacity 500ms ease-out",
+          transition: "opacity 500ms ease-in-out",
         }}
       >
         {/* Subtle purple radial gradient backdrop */}
@@ -96,7 +96,7 @@ const Splash = () => {
               "radial-gradient(circle at 30% 60%, rgba(168,85,247,0.18), transparent 45%), radial-gradient(circle at 70% 40%, rgba(139,92,246,0.14), transparent 50%)",
             opacity: 0,
             animation:
-              "kt-smoke-in 600ms ease-out forwards, kt-smoke-drift 6s ease-in-out infinite alternate",
+              "kt-smoke-in 1000ms 500ms ease-out forwards, kt-smoke-drift 8s 1500ms ease-in-out infinite alternate",
             filter: "blur(40px)",
           }}
         />
@@ -110,7 +110,7 @@ const Splash = () => {
               "radial-gradient(circle at 50% 50%, rgba(126,34,206,0.12), transparent 55%)",
             opacity: 0,
             animation:
-              "kt-smoke-in 800ms 200ms ease-out forwards, kt-smoke-drift 9s ease-in-out infinite alternate-reverse",
+              "kt-smoke-in 1000ms 700ms ease-out forwards, kt-smoke-drift 10s 1700ms ease-in-out infinite alternate-reverse",
             filter: "blur(60px)",
           }}
         />
@@ -125,7 +125,9 @@ const Splash = () => {
               "radial-gradient(circle, rgba(192,132,252,0.45) 0%, rgba(168,85,247,0.22) 35%, transparent 70%)",
             filter: "blur(20px)",
             transform: "translate(-50%, -50%)",
-            animation: "kt-aura-pulse 2.4s ease-in-out infinite",
+            animation: "kt-aura-pulse 2.4s 1500ms ease-in-out infinite",
+            opacity: 0,
+            animationFillMode: "forwards",
           }}
         />
 
@@ -145,7 +147,7 @@ const Splash = () => {
               height: "auto",
               opacity: 0,
               animation:
-                "kt-logo-in 1000ms 300ms cubic-bezier(0.16,1,0.3,1) forwards, kt-logo-pulse 2.2s 1.3s ease-in-out infinite",
+                "kt-logo-in 1500ms 1500ms cubic-bezier(0.16,1,0.3,1) forwards, kt-logo-pulse 2.4s 3000ms ease-in-out infinite",
               mixBlendMode: "screen",
             }}
           />
@@ -158,7 +160,7 @@ const Splash = () => {
               textShadow:
                 "0 0 8px rgba(192,132,252,0.85), 0 0 20px rgba(168,85,247,0.55)",
               opacity: 0,
-              animation: "kt-tagline-in 700ms 1500ms ease-out forwards",
+              animation: "kt-tagline-in 900ms 3500ms ease-out forwards",
             }}
           >
             Unleash the Storm
@@ -172,7 +174,7 @@ const Splash = () => {
             background:
               "radial-gradient(circle at 50% 45%, rgba(216,180,254,0.9), rgba(168,85,247,0.4) 30%, transparent 70%)",
             opacity: 0,
-            animation: flash ? "kt-flash 160ms ease-out" : "none",
+            animation: flash ? "kt-flash 300ms ease-out" : "none",
             mixBlendMode: "screen",
           }}
         />
