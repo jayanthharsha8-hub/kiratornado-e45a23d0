@@ -27,6 +27,29 @@ const TournamentSlots = () => {
 
   useEffect(() => { if (id && user) loadData(); /* eslint-disable-next-line */ }, [id, user]);
 
+  // Real-time slot count sync
+  useEffect(() => {
+    if (!id) return;
+    const channel = supabase
+      .channel(`slots-${id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations", filter: `tournament_id=eq.${id}` },
+        async () => {
+          const { count } = await supabase
+            .from("registrations")
+            .select("id", { count: "exact", head: true })
+            .eq("tournament_id", id);
+          const filled = new Set<number>();
+          for (let i = 1; i <= (count ?? 0); i++) filled.add(i);
+          setFilledSet(filled);
+          setSelectedSlot((s) => (s && filled.has(s) ? null : s));
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [id]);
+
   const loadData = async () => {
     if (!id || !user) return;
     const { data: t } = await supabase.from("tournaments").select("*").eq("id", id).maybeSingle();
@@ -61,6 +84,18 @@ const TournamentSlots = () => {
     if (!user || !tournament || !selectedSlot || joined || joining) return;
     if (profile && profile.player_level < tournament.level_requirement) {
       toast.error(`Level ${tournament.level_requirement}+ required`);
+      return;
+    }
+    // Re-check slot availability before join
+    const { count } = await supabase
+      .from("registrations")
+      .select("id", { count: "exact", head: true })
+      .eq("tournament_id", tournament.id);
+    if ((count ?? 0) >= tournament.total_slots) {
+      toast.error("Match is full");
+      const filled = new Set<number>();
+      for (let i = 1; i <= (count ?? 0); i++) filled.add(i);
+      setFilledSet(filled);
       return;
     }
     playSound("pulse");
