@@ -233,11 +233,8 @@ const TournamentCard = ({
   joined: boolean;
 }) => {
   const navigate = useNavigate();
-  const date = new Date(t.scheduled_at);
-  const dateText = date
-    .toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" })
-    .toUpperCase();
-  const timeText = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateText = formatIstDate(t.scheduled_at, { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+  const timeText = `${formatIstTime(t.scheduled_at)} IST`;
 
   return (
     <article
