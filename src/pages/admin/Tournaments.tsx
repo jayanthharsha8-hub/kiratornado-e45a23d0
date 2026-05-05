@@ -53,7 +53,8 @@ export default function AdminTournaments() {
     if (!form.title || !form.scheduled_at) { toast.error("Title and date are required"); return; }
     const payload = {
       title: form.title, subtitle: form.subtitle, category: form.category, entry_fee: form.entry_fee,
-      total_slots: form.total_slots, prize_pool: form.prize_pool, scheduled_at: form.scheduled_at,
+      total_slots: form.total_slots, prize_pool: form.prize_pool,
+      scheduled_at: istLocalInputToUtcIso(form.scheduled_at),
       level_requirement: form.level_requirement, published: form.published, status: form.status,
     };
     if (editing) {
@@ -78,7 +79,7 @@ export default function AdminTournaments() {
     setForm({
       title: t.title, subtitle: (t as any).subtitle ?? "", category: t.category as Category, entry_fee: t.entry_fee,
       total_slots: t.total_slots, prize_pool: t.prize_pool,
-      scheduled_at: t.scheduled_at.slice(0, 16),
+      scheduled_at: utcIsoToIstLocalInput(t.scheduled_at),
       level_requirement: (t as any).level_requirement ?? 1,
       published: (t as any).published ?? false, status: t.status as any,
     });
@@ -190,7 +191,7 @@ export default function AdminTournaments() {
                   <TableCell><Badge variant="outline" className={statusColor(t.status)}>{t.status}</Badge></TableCell>
                   <TableCell>{t.total_slots}</TableCell>
                   <TableCell>{t.entry_fee === 0 ? "Free" : `${t.entry_fee} ⟁`}</TableCell>
-                  <TableCell className="text-xs">{new Date(t.scheduled_at).toLocaleString()}</TableCell>
+                  <TableCell className="text-xs">{formatIstDateTime(t.scheduled_at)} IST</TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-1">
                       <button onClick={() => openSlots(t)} className="rounded p-1.5 text-primary hover:bg-primary/10" title="Players"><Users className="h-4 w-4" /></button>
