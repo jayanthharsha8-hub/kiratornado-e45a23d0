@@ -120,6 +120,8 @@ const TournamentSlots = () => {
   const accent = meta.color;
   const accentSoft = meta.colorSoft;
   const totalSlots = tournament.total_slots;
+  const filledCount = filledSet.size;
+  const isFull = filledCount >= totalSlots;
   const modeLabel =
     tournament.category === "lone_wolf" ? "1V1 DUEL"
     : tournament.category === "classic_squad" ? "SQUAD 4V4"
@@ -155,9 +157,28 @@ const TournamentSlots = () => {
           <h1 className="mt-2 font-display text-2xl font-black uppercase italic tracking-tight">
             {modeLabel}
           </h1>
-          <p className="mt-1 font-display text-[11px] font-bold uppercase tracking-[0.3em] text-foreground/55">
-            {filledSet.size}/{totalSlots} Slots Filled
-          </p>
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <p className="font-display text-[12px] font-black uppercase tracking-[0.3em] text-foreground/70 tabular-nums">
+              {filledCount} / {totalSlots} <span className="text-foreground/45">Slots</span>
+            </p>
+            {isFull && (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-display text-[11px] font-black uppercase tracking-[0.22em]"
+                style={{
+                  color: "hsl(142 71% 55%)",
+                  borderColor: "hsl(142 71% 45%)",
+                  background: "hsl(142 71% 45% / 0.15)",
+                  boxShadow: "0 0 14px hsl(142 71% 45% / 0.55)",
+                }}
+              >
+                <span
+                  className="h-2 w-2 rounded-full animate-pulse"
+                  style={{ background: "hsl(142 71% 50%)", boxShadow: "0 0 8px hsl(142 71% 50%)" }}
+                />
+                FULL
+              </span>
+            )}
+          </div>
         </div>
 
         {/* AVAILABLE SLOTS */}
@@ -181,7 +202,7 @@ const TournamentSlots = () => {
               return (
                 <button
                   key={slot}
-                  disabled={filled || joined}
+                  disabled={filled || joined || isFull}
                   onClick={() => { playSound("tick"); setSelectedSlot(slot); }}
                   className="relative flex h-16 flex-col items-center justify-center rounded-xl border font-display transition active:scale-[0.97] disabled:cursor-not-allowed"
                   style={
