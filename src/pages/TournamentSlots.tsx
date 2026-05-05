@@ -251,6 +251,7 @@ const TournamentSlots = () => {
         selected={!!selectedSlot}
         loading={joining}
         success={joined}
+        isFull={isFull}
         slotNumber={selectedSlot}
         onClick={confirmJoin}
       />
