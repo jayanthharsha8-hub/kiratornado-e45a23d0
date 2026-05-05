@@ -28,6 +28,16 @@ const TournamentDetails = () => {
   const [joined, setJoined] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [filledCount, setFilledCount] = useState(0);
+
+  const refreshCount = async () => {
+    if (!id) return;
+    const { count } = await supabase
+      .from("registrations")
+      .select("id", { count: "exact", head: true })
+      .eq("tournament_id", id);
+    setFilledCount(count ?? 0);
+  };
 
   const load = async () => {
     if (!id) return;
@@ -41,6 +51,7 @@ const TournamentDetails = () => {
         .eq("tournament_id", id).eq("user_id", user.id).maybeSingle();
       setJoined(!!reg);
     }
+    await refreshCount();
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user]);
@@ -48,6 +59,20 @@ const TournamentDetails = () => {
     const i = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(i);
   }, []);
+
+  // Real-time slot sync
+  useEffect(() => {
+    if (!id) return;
+    const channel = supabase
+      .channel(`td-slots-${id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations", filter: `tournament_id=eq.${id}` },
+        () => { refreshCount(); },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [id]);
 
   const meta = t ? CATEGORY_META[t.category] : null;
   const accent = meta?.color ?? "hsl(0 100% 62%)";
@@ -373,15 +398,15 @@ const TournamentDetails = () => {
           </button>
         </section>
 
-        {!joined && (
-          <button
-            onClick={() => navigate(`/tournament-slots/${t.id}`)}
-            className="h-12 w-full rounded-xl border font-display text-[11px] font-black uppercase tracking-[0.28em] transition active:scale-[0.98]"
-            style={{ borderColor: accent, color: accent, background: `${accent}14`, boxShadow: `0 0 16px ${accentSoft}` }}
-          >
-            Join This Match
-          </button>
-        )}
+        {/* SLOT STATUS + JOIN BUTTON */}
+        <SlotStatusBlock
+          filled={filledCount}
+          total={t.total_slots}
+          joined={joined}
+          accent={accent}
+          accentSoft={accentSoft}
+          onJoin={() => navigate(`/tournament-slots/${t.id}`)}
+        />
 
         {/* SECURITY WARNING */}
         <div
@@ -468,5 +493,93 @@ const InstructionCard = ({ icon, title, subtitle, accent }: { icon: React.ReactN
     </div>
   </div>
 );
+
+const SlotStatusBlock = ({
+  filled, total, joined, accent, accentSoft, onJoin,
+}: {
+  filled: number; total: number; joined: boolean;
+  accent: string; accentSoft: string; onJoin: () => void;
+}) => {
+  const isFull = filled >= total;
+  const GREEN = "hsl(142 71% 45%)";
+  const GREEN_BRIGHT = "hsl(142 71% 55%)";
+  const CYAN = "hsl(190 95% 55%)";
+
+  return (
+    <div
+      className="space-y-3 rounded-2xl border bg-card/40 p-3 backdrop-blur"
+      style={{
+        borderColor: isFull ? GREEN : joined ? CYAN : accent,
+        boxShadow: `0 0 18px ${isFull ? "hsl(142 71% 45% / 0.35)" : joined ? "hsl(190 95% 55% / 0.35)" : accentSoft}`,
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-display text-[10px] font-bold uppercase tracking-[0.28em] text-foreground/55">Slots</p>
+          <p className="mt-0.5 font-display text-2xl font-black tabular-nums text-foreground"
+            style={{ textShadow: `0 0 10px ${isFull ? GREEN : accent}88` }}>
+            {filled} <span className="text-foreground/40">/</span> {total}
+          </p>
+        </div>
+        {isFull && (
+          <span
+            className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-display text-[12px] font-black uppercase tracking-[0.24em]"
+            style={{
+              color: GREEN_BRIGHT,
+              borderColor: GREEN,
+              background: "hsl(142 71% 45% / 0.15)",
+              boxShadow: "0 0 16px hsl(142 71% 45% / 0.6)",
+            }}
+          >
+            <span
+              className="h-2.5 w-2.5 rounded-full animate-pulse"
+              style={{ background: GREEN_BRIGHT, boxShadow: `0 0 10px ${GREEN_BRIGHT}` }}
+            />
+            FULL
+          </span>
+        )}
+      </div>
+
+      <button
+        onClick={!joined && !isFull ? onJoin : undefined}
+        disabled={joined || isFull}
+        className="relative flex h-12 w-full items-center justify-center gap-2 rounded-xl border font-display text-[12px] font-black uppercase tracking-[0.28em] transition active:scale-[0.98] disabled:cursor-not-allowed"
+        style={
+          isFull
+            ? {
+                borderColor: GREEN,
+                color: "#FFFFFF",
+                background: `linear-gradient(135deg, ${GREEN}, ${GREEN}cc)`,
+                boxShadow: "0 0 18px hsl(142 71% 45% / 0.6)",
+              }
+            : joined
+            ? {
+                borderColor: CYAN,
+                color: CYAN,
+                background: "hsl(190 95% 55% / 0.12)",
+                boxShadow: "0 0 16px hsl(190 95% 55% / 0.45)",
+              }
+            : {
+                borderColor: accent,
+                color: accent,
+                background: `${accent}14`,
+                boxShadow: `0 0 16px ${accentSoft}`,
+              }
+        }
+      >
+        {isFull ? (
+          <>
+            <span className="h-2 w-2 rounded-full" style={{ background: "#FFFFFF", boxShadow: "0 0 8px #FFFFFF" }} />
+            Match Full
+          </>
+        ) : joined ? (
+          "Joined"
+        ) : (
+          "Join Now"
+        )}
+      </button>
+    </div>
+  );
+};
 
 export default TournamentDetails;

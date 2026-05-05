@@ -7,11 +7,13 @@ interface SlotActionButtonProps {
   selected: boolean;
   loading?: boolean;
   success?: boolean;
+  isFull?: boolean;
   slotNumber?: number | null;
   onClick: () => void;
   idleLabel?: string;
   activeLabel?: string;
   successLabel?: string;
+  fullLabel?: string;
 }
 
 /**
@@ -25,14 +27,18 @@ const SlotActionButton = ({
   selected,
   loading = false,
   success = false,
+  isFull = false,
   slotNumber,
   onClick,
   idleLabel = "Select a Slot",
   activeLabel = "Lock In",
   successLabel = "Slot Locked",
+  fullLabel = "Match Full",
 }: SlotActionButtonProps) => {
-  const isActive = selected && !success && !loading;
-  const disabled = !selected || loading || success;
+  const isActive = selected && !success && !loading && !isFull;
+  const disabled = isFull || !selected || loading || success;
+  const FULL_GREEN = "hsl(142 71% 45%)";
+  const FULL_GREEN_SOFT = "hsl(142 71% 45% / 0.35)";
 
   return (
     <div
@@ -48,7 +54,16 @@ const SlotActionButton = ({
             isActive && "animate-pulse-glow",
           )}
           style={
-            success
+            isFull && !success
+              ? {
+                  background: `linear-gradient(135deg, ${FULL_GREEN}, ${FULL_GREEN}cc)`,
+                  color: "#FFFFFF",
+                  opacity: 1,
+                  textShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                  border: `1px solid ${FULL_GREEN}`,
+                  boxShadow: `0 0 24px ${FULL_GREEN}, 0 0 48px ${FULL_GREEN_SOFT}`,
+                }
+              : success
               ? {
                   background: `linear-gradient(135deg, ${accent}, ${accent}cc)`,
                   color: "#FFFFFF",
@@ -86,6 +101,11 @@ const SlotActionButton = ({
               strokeWidth={2.5}
               style={{ filter: `drop-shadow(0 0 6px ${accent})` }}
             />
+          ) : isFull ? (
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ background: "#FFFFFF", boxShadow: `0 0 10px #FFFFFF` }}
+            />
           ) : (
             <Lock
               className="h-5 w-5"
@@ -97,7 +117,9 @@ const SlotActionButton = ({
           )}
 
           <span className="relative">
-            {success
+            {isFull && !success
+              ? fullLabel
+              : success
               ? successLabel
               : loading
               ? "Locking..."
