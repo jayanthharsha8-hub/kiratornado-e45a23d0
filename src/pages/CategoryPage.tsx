@@ -4,6 +4,7 @@ import { CalendarDays, Clock3, Coins, Trophy, UsersRound, X, Swords, Radio, Hexa
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
+import { formatIstDate, formatIstTime } from "@/lib/time";
 import { Button } from "@/components/ui/button";
 
 type Tab = "upcoming" | "live" | "completed";
