@@ -494,4 +494,92 @@ const InstructionCard = ({ icon, title, subtitle, accent }: { icon: React.ReactN
   </div>
 );
 
+const SlotStatusBlock = ({
+  filled, total, joined, accent, accentSoft, onJoin,
+}: {
+  filled: number; total: number; joined: boolean;
+  accent: string; accentSoft: string; onJoin: () => void;
+}) => {
+  const isFull = filled >= total;
+  const GREEN = "hsl(142 71% 45%)";
+  const GREEN_BRIGHT = "hsl(142 71% 55%)";
+  const CYAN = "hsl(190 95% 55%)";
+
+  return (
+    <div
+      className="space-y-3 rounded-2xl border bg-card/40 p-3 backdrop-blur"
+      style={{
+        borderColor: isFull ? GREEN : joined ? CYAN : accent,
+        boxShadow: `0 0 18px ${isFull ? "hsl(142 71% 45% / 0.35)" : joined ? "hsl(190 95% 55% / 0.35)" : accentSoft}`,
+      }}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="font-display text-[10px] font-bold uppercase tracking-[0.28em] text-foreground/55">Slots</p>
+          <p className="mt-0.5 font-display text-2xl font-black tabular-nums text-foreground"
+            style={{ textShadow: `0 0 10px ${isFull ? GREEN : accent}88` }}>
+            {filled} <span className="text-foreground/40">/</span> {total}
+          </p>
+        </div>
+        {isFull && (
+          <span
+            className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-display text-[12px] font-black uppercase tracking-[0.24em]"
+            style={{
+              color: GREEN_BRIGHT,
+              borderColor: GREEN,
+              background: "hsl(142 71% 45% / 0.15)",
+              boxShadow: "0 0 16px hsl(142 71% 45% / 0.6)",
+            }}
+          >
+            <span
+              className="h-2.5 w-2.5 rounded-full animate-pulse"
+              style={{ background: GREEN_BRIGHT, boxShadow: `0 0 10px ${GREEN_BRIGHT}` }}
+            />
+            FULL
+          </span>
+        )}
+      </div>
+
+      <button
+        onClick={!joined && !isFull ? onJoin : undefined}
+        disabled={joined || isFull}
+        className="relative flex h-12 w-full items-center justify-center gap-2 rounded-xl border font-display text-[12px] font-black uppercase tracking-[0.28em] transition active:scale-[0.98] disabled:cursor-not-allowed"
+        style={
+          isFull
+            ? {
+                borderColor: GREEN,
+                color: "#FFFFFF",
+                background: `linear-gradient(135deg, ${GREEN}, ${GREEN}cc)`,
+                boxShadow: "0 0 18px hsl(142 71% 45% / 0.6)",
+              }
+            : joined
+            ? {
+                borderColor: CYAN,
+                color: CYAN,
+                background: "hsl(190 95% 55% / 0.12)",
+                boxShadow: "0 0 16px hsl(190 95% 55% / 0.45)",
+              }
+            : {
+                borderColor: accent,
+                color: accent,
+                background: `${accent}14`,
+                boxShadow: `0 0 16px ${accentSoft}`,
+              }
+        }
+      >
+        {isFull ? (
+          <>
+            <span className="h-2 w-2 rounded-full" style={{ background: "#FFFFFF", boxShadow: "0 0 8px #FFFFFF" }} />
+            Match Full
+          </>
+        ) : joined ? (
+          "Joined"
+        ) : (
+          "Join Now"
+        )}
+      </button>
+    </div>
+  );
+};
+
 export default TournamentDetails;
