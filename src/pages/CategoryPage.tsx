@@ -4,6 +4,7 @@ import { CalendarDays, Clock3, Coins, Trophy, UsersRound, X, Swords, Radio, Hexa
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
+import { formatIstDate, formatIstTime } from "@/lib/time";
 import { Button } from "@/components/ui/button";
 
 type Tab = "upcoming" | "live" | "completed";
@@ -233,11 +234,8 @@ const TournamentCard = ({
   joined: boolean;
 }) => {
   const navigate = useNavigate();
-  const date = new Date(t.scheduled_at);
-  const dateText = date
-    .toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" })
-    .toUpperCase();
-  const timeText = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateText = formatIstDate(t.scheduled_at, { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+  const timeText = `${formatIstTime(t.scheduled_at)} IST`;
 
   return (
     <article

@@ -7,6 +7,7 @@ import {
   LogIn, Gamepad2, CheckCircle2, Bell, Hourglass, Lock, Headphones, ExternalLink, AlertTriangle,
 } from "lucide-react";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
+import { formatIstDate, formatIstTime } from "@/lib/time";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
 
@@ -78,9 +79,8 @@ const TournamentDetails = () => {
     );
   }
 
-  const date = new Date(t.scheduled_at);
-  const dateStr = date.toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" });
-  const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateStr = formatIstDate(t.scheduled_at, { day: "2-digit", month: "short", year: "numeric" });
+  const timeStr = `${formatIstTime(t.scheduled_at)} IST`;
 
   const TITLE_MAP: Record<Category, [string, string]> = {
     battle_royale: ["BATTLE", "ROYALE"],
