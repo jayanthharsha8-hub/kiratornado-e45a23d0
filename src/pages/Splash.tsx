@@ -155,29 +155,29 @@ const Splash = () => {
 
         {/* Centered logo + tagline */}
         <div className="relative z-10 flex h-full w-full flex-col items-center justify-center">
-          <img
-            ref={imgRef}
-            src={logoImg}
-            alt="KIRA TORNADO"
-            width={320}
-            height={320}
-            decoding="sync"
-            loading="eager"
-            draggable={false}
-            className="select-none"
-            style={{
-              width: "min(74vw, 320px)",
-              height: "auto",
-              opacity: 0,
-              transform: "translateZ(0)",
-              backfaceVisibility: "hidden",
-              willChange: "opacity, transform, filter",
-              mixBlendMode: "screen",
-              animation: logoReady
-                ? "kt-logo-in 1500ms 1500ms cubic-bezier(0.22,1,0.36,1) forwards, kt-logo-pulse 2.8s 3000ms ease-in-out infinite"
-                : "none",
-            }}
-          />
+          {logoReady && (
+            <img
+              ref={imgRef}
+              src={logoImg}
+              alt="KIRA TORNADO"
+              width={320}
+              height={320}
+              decoding="sync"
+              loading="eager"
+              draggable={false}
+              className="select-none block"
+              style={{
+                width: "min(74vw, 320px)",
+                height: "auto",
+                opacity: 0,
+                transform: "translateZ(0)",
+                backfaceVisibility: "hidden",
+                willChange: "opacity, transform, filter",
+                animation:
+                  "kt-logo-in 1500ms 1500ms cubic-bezier(0.22,1,0.36,1) forwards, kt-logo-pulse 2.8s 3000ms ease-in-out infinite",
+              }}
+            />
+          )}
 
           <p
             className="mt-2 font-display text-[12px] font-semibold uppercase"
