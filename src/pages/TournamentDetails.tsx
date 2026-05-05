@@ -7,6 +7,7 @@ import {
   LogIn, Gamepad2, CheckCircle2, Bell, Hourglass, Lock, Headphones, ExternalLink, AlertTriangle,
 } from "lucide-react";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
+import { formatIstDate, formatIstTime } from "@/lib/time";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
 
