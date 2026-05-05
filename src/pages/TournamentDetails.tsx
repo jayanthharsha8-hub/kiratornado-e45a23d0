@@ -78,9 +78,8 @@ const TournamentDetails = () => {
     );
   }
 
-  const date = new Date(t.scheduled_at);
-  const dateStr = date.toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" });
-  const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const dateStr = formatIstDate(t.scheduled_at, { day: "2-digit", month: "short", year: "numeric" });
+  const timeStr = `${formatIstTime(t.scheduled_at)} IST`;
 
   const TITLE_MAP: Record<Category, [string, string]> = {
     battle_royale: ["BATTLE", "ROYALE"],
