@@ -231,13 +231,11 @@ const CategoryPage = () => {
 
 const TournamentCard = ({
   tournament: t,
-  count,
   color,
   colorSoft,
   joined,
 }: {
   tournament: Tournament;
-  count: number;
   color: string;
   colorSoft: string;
   joined: boolean;
@@ -245,6 +243,7 @@ const TournamentCard = ({
   const navigate = useNavigate();
   const dateText = formatIstDate(t.scheduled_at, { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
   const timeText = `${formatIstTime(t.scheduled_at)} IST`;
+  const count = t.joined_players_count;
   const isFull = count >= t.total_slots;
   const GREEN = "hsl(142 71% 50%)";
 
