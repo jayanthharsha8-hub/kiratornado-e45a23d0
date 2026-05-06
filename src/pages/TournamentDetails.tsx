@@ -516,10 +516,23 @@ const SlotStatusBlock = ({
       <div className="flex items-center justify-between">
         <div>
           <p className="font-display text-[10px] font-bold uppercase tracking-[0.28em] text-foreground/55">Slots</p>
-          <p className="mt-0.5 font-display text-2xl font-black tabular-nums text-foreground"
-            style={{ textShadow: `0 0 10px ${isFull ? GREEN : accent}88` }}>
-            {filled} <span className="text-foreground/40">/</span> {total}
-          </p>
+          {isFull ? (
+            <p
+              className="mt-0.5 inline-flex items-center gap-2 font-display text-2xl font-black uppercase"
+              style={{ color: GREEN_BRIGHT, textShadow: `0 0 12px ${GREEN_BRIGHT}` }}
+            >
+              <span
+                className="h-3 w-3 rounded-full animate-pulse"
+                style={{ background: GREEN_BRIGHT, boxShadow: `0 0 10px ${GREEN_BRIGHT}` }}
+              />
+              FULL
+            </p>
+          ) : (
+            <p className="mt-0.5 font-display text-2xl font-black tabular-nums text-foreground"
+              style={{ textShadow: `0 0 10px ${accent}88` }}>
+              {filled} <span className="text-foreground/40">/</span> {total}
+            </p>
+          )}
         </div>
         {isFull && (
           <span
