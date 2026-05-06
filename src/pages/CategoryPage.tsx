@@ -19,6 +19,7 @@ interface Tournament {
   prize_pool: number;
   scheduled_at: string;
   total_slots: number;
+  joined_players_count: number;
   status: string;
 }
 
@@ -76,7 +77,6 @@ const CategoryPage = () => {
 
   const [tab, setTab] = useState<Tab>("upcoming");
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [counts, setCounts] = useState<Record<string, number>>({});
   const [joinedIds, setJoinedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [pageBannerUrl, setPageBannerUrl] = useState<string | null>(null);
@@ -88,7 +88,7 @@ const CategoryPage = () => {
       const [{ data }, { data: pageBanner }] = await Promise.all([
         supabase
           .from("tournaments")
-          .select("id,title,subtitle,category,entry_fee,prize_pool,scheduled_at,total_slots,status")
+          .select("id,title,subtitle,category,entry_fee,prize_pool,scheduled_at,total_slots,joined_players_count,status")
           .eq("category", cat)
           .eq("status", tab)
           .eq("published", true)
@@ -102,17 +102,6 @@ const CategoryPage = () => {
       const rows = (data ?? []) as Tournament[];
       setTournaments(rows);
       setPageBannerUrl(pageBanner?.banner_image_url ?? null);
-      const nextCounts: Record<string, number> = {};
-      await Promise.all(
-        rows.map(async (t) => {
-          const { count } = await supabase
-            .from("registrations")
-            .select("id", { count: "exact", head: true })
-            .eq("tournament_id", t.id);
-          nextCounts[t.id] = count ?? 0;
-        }),
-      );
-      setCounts(nextCounts);
       if (user && rows.length) {
         const { data: regs } = await supabase
           .from("registrations")
@@ -127,23 +116,19 @@ const CategoryPage = () => {
     })();
   }, [cat, tab, meta, user]);
 
-  // Real-time slot-count sync for all visible tournaments
+  // Real-time shared slot-count sync for all visible tournaments
   useEffect(() => {
     if (!tournaments.length) return;
     const ids = tournaments.map((t) => t.id);
     const channel = supabase
-      .channel(`cat-slots-${cat}-${tab}`)
+      .channel(`cat-tournaments-${cat}-${tab}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "registrations" },
-        async (payload: any) => {
-          const tid = (payload.new?.tournament_id ?? payload.old?.tournament_id) as string | undefined;
-          if (!tid || !ids.includes(tid)) return;
-          const { count } = await supabase
-            .from("registrations")
-            .select("id", { count: "exact", head: true })
-            .eq("tournament_id", tid);
-          setCounts((c) => ({ ...c, [tid]: count ?? 0 }));
+        { event: "UPDATE", schema: "public", table: "tournaments" },
+        (payload: any) => {
+          const updated = payload.new as Tournament | undefined;
+          if (!updated || !ids.includes(updated.id)) return;
+          setTournaments((items) => items.map((item) => item.id === updated.id ? { ...item, ...updated } : item));
         },
       )
       .subscribe();
@@ -229,7 +214,7 @@ const CategoryPage = () => {
             </div>
           ) : (
             tournaments.map((t) => (
-              <TournamentCard key={t.id} tournament={t} count={counts[t.id] ?? 0} color={color} colorSoft={colorSoft} joined={joinedIds.has(t.id)} />
+              <TournamentCard key={t.id} tournament={t} color={color} colorSoft={colorSoft} joined={joinedIds.has(t.id)} />
             ))
           )}
         </section>
