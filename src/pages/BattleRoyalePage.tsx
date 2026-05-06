@@ -4,6 +4,7 @@ import { CalendarDays, Clock3, Coins, Trophy, UsersRound, X, Sword } from "lucid
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORY_META } from "@/lib/tournaments";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type Tab = "upcoming" | "live" | "completed";
 
@@ -53,6 +54,29 @@ const BattleRoyalePage = () => {
         setLoading(false);
       });
   }, [tab]);
+
+  // Real-time slot count sync
+  useEffect(() => {
+    if (!tournaments.length) return;
+    const ids = tournaments.map((t) => t.id);
+    const channel = supabase
+      .channel(`br-slots-${tab}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "registrations" },
+        async (payload: any) => {
+          const tid = (payload.new?.tournament_id ?? payload.old?.tournament_id) as string | undefined;
+          if (!tid || !ids.includes(tid)) return;
+          const { count } = await supabase
+            .from("registrations")
+            .select("id", { count: "exact", head: true })
+            .eq("tournament_id", tid);
+          setCounts((c) => ({ ...c, [tid]: count ?? 0 }));
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [tournaments, tab]);
 
   return (
     <div className="min-h-screen bg-background px-3 pb-8 pt-4 text-foreground">
@@ -125,6 +149,8 @@ const BattleRoyaleCard = ({ tournament, count }: { tournament: Tournament; count
   const date = new Date(tournament.scheduled_at);
   const dateText = date.toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
   const timeText = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const isFull = count >= tournament.total_slots;
+  const GREEN = "hsl(142 71% 50%)";
 
   return (
     <article className="relative flex min-h-[108px] overflow-hidden border bg-card/70 p-2" style={{ borderColor: red, boxShadow: `0 0 10px ${redSoft}` }}>
@@ -137,9 +163,19 @@ const BattleRoyaleCard = ({ tournament, count }: { tournament: Tournament; count
             <h2 className="font-display text-lg font-black uppercase leading-none text-foreground">BATTLE ROYALE</h2>
             <p className="mt-2 font-display text-sm font-bold uppercase" style={{ color: red }}>SOLO - 50 PLAYERS</p>
           </div>
-          <div className="flex items-center gap-1 text-sm font-bold text-foreground">
-            <UsersRound className="h-4 w-4" /> {count}/{tournament.total_slots}
-          </div>
+          {isFull ? (
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-display text-[10px] font-black uppercase tracking-[0.2em]"
+              style={{ color: GREEN, borderColor: GREEN, background: "hsl(142 71% 45% / 0.15)", boxShadow: "0 0 10px hsl(142 71% 45% / 0.5)" }}
+            >
+              <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: GREEN, boxShadow: `0 0 6px ${GREEN}` }} />
+              FULL
+            </span>
+          ) : (
+            <div className="flex items-center gap-1 text-sm font-bold text-foreground tabular-nums">
+              <UsersRound className="h-4 w-4" /> {count}/{tournament.total_slots}
+            </div>
+          )}
         </div>
         <div className="mt-4 flex items-end justify-between gap-2">
           <div className="space-y-2 text-xs font-semibold text-foreground/65">
@@ -156,8 +192,20 @@ const BattleRoyaleCard = ({ tournament, count }: { tournament: Tournament; count
             <p className="text-[10px] uppercase text-foreground/55">Prize Pool</p>
             <p className="font-display text-sm font-black" style={{ color: red }}><Trophy className="mr-1 inline h-4 w-4 text-yellow-400" />₹{tournament.prize_pool}</p>
           </div>
-          <Button onClick={() => navigate(`/tournament-slots/${tournament.id}`)} className="h-11 border bg-transparent px-3 font-display text-xs font-black uppercase" style={{ borderColor: red, color: "hsl(0 0% 98%)", boxShadow: `0 0 14px ${redSoft}` }}>
-            Join Now
+          <Button
+            disabled={isFull}
+            onClick={() => {
+              if (isFull) { toast.error("Match already full"); return; }
+              navigate(`/tournament-slots/${tournament.id}`);
+            }}
+            className="h-11 border px-3 font-display text-xs font-black uppercase disabled:opacity-100 disabled:cursor-not-allowed"
+            style={
+              isFull
+                ? { borderColor: GREEN, color: "#FFFFFF", background: `linear-gradient(135deg, ${GREEN}, ${GREEN}cc)`, boxShadow: `0 0 14px ${GREEN}` }
+                : { borderColor: red, color: "hsl(0 0% 98%)", background: "transparent", boxShadow: `0 0 14px ${redSoft}` }
+            }
+          >
+            {isFull ? "Match Full" : "Join Now"}
           </Button>
         </div>
       </div>
