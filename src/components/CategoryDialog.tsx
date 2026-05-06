@@ -21,6 +21,22 @@ export const CategoryDialog = ({ category, onOpenChange }: { category: Category 
       .then(({ data }) => setItems((data ?? []) as T[]));
   }, [category]);
 
+  useEffect(() => {
+    if (!category) return;
+    const channel = supabase
+      .channel(`category-dialog-tournaments-${category}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "tournaments" },
+        (payload: any) => {
+          if (payload.new?.category !== category) return;
+          setItems((current) => current?.map((item) => item.id === payload.new.id ? { ...item, ...payload.new } : item) ?? current);
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [category]);
+
   const meta = category ? CATEGORY_META[category] : null;
   const t = items?.[idx];
 
