@@ -325,17 +325,17 @@ const TournamentCard = ({
           </div>
           <Button
             onClick={(e) => {
-              if (isFull && !joined) {
+              if (isFull) {
                 e.stopPropagation();
                 toast.error("Match already full");
                 return;
               }
               navigate(joined ? `/tournament/${t.id}` : `/tournament-slots/${t.id}`);
             }}
-            disabled={isFull && !joined}
+            disabled={isFull}
             className="h-9 rounded-full border px-4 font-display text-[11px] font-black uppercase tracking-wider disabled:cursor-not-allowed disabled:opacity-100"
             style={
-              isFull && !joined
+              isFull
                 ? {
                     background: `linear-gradient(135deg, ${GREEN}, ${GREEN}cc)`,
                     borderColor: GREEN,
@@ -352,7 +352,7 @@ const TournamentCard = ({
                 : { borderColor: color, color, background: "transparent", boxShadow: `0 0 14px ${colorSoft}` }
             }
           >
-            {isFull && !joined ? "Match Full" : joined ? "✓ Joined" : "Join Now ›"}
+            {isFull ? "Match Full" : joined ? "✓ Joined" : "Join Now ›"}
           </Button>
         </div>
       </div>
