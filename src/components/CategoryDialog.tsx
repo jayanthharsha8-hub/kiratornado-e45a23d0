@@ -7,7 +7,7 @@ import { Calendar, Coins, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface T {
-  id: string; title: string; entry_fee: number; total_slots: number; scheduled_at: string;
+  id: string; title: string; entry_fee: number; total_slots: number; joined_players_count: number; scheduled_at: string;
 }
 
 export const CategoryDialog = ({ category, onOpenChange }: { category: Category | null; onOpenChange: (open: boolean) => void; }) => {
@@ -17,8 +17,24 @@ export const CategoryDialog = ({ category, onOpenChange }: { category: Category 
 
   useEffect(() => {
     if (!category) { setItems(null); setIdx(0); return; }
-    supabase.from("tournaments").select("id,title,entry_fee,total_slots,scheduled_at").eq("category", category).order("scheduled_at")
+    supabase.from("tournaments").select("id,title,entry_fee,total_slots,joined_players_count,scheduled_at").eq("category", category).order("scheduled_at")
       .then(({ data }) => setItems((data ?? []) as T[]));
+  }, [category]);
+
+  useEffect(() => {
+    if (!category) return;
+    const channel = supabase
+      .channel(`category-dialog-tournaments-${category}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "tournaments" },
+        (payload: any) => {
+          if (payload.new?.category !== category) return;
+          setItems((current) => current?.map((item) => item.id === payload.new.id ? { ...item, ...payload.new } : item) ?? current);
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, [category]);
 
   const meta = category ? CATEGORY_META[category] : null;
@@ -63,7 +79,7 @@ export const CategoryDialog = ({ category, onOpenChange }: { category: Category 
               <div className="font-display text-base text-primary text-glow">{t.title}</div>
               <div className="mt-2 grid grid-cols-3 gap-2 text-[11px] text-foreground/80">
                 <Stat icon={<Coins className="h-3 w-3" />} v={t.entry_fee === 0 ? "FREE" : `${t.entry_fee} ⟁`} />
-                <Stat icon={<Users className="h-3 w-3" />} v={`${t.total_slots} slots`} />
+                <Stat icon={<Users className="h-3 w-3" />} v={t.joined_players_count >= t.total_slots ? "● FULL" : `${t.joined_players_count}/${t.total_slots}`} />
                 <Stat icon={<Calendar className="h-3 w-3" />} v={new Date(t.scheduled_at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })} />
               </div>
               <div className="mt-3 text-right text-[10px] uppercase tracking-widest text-primary">Tap to view →</div>

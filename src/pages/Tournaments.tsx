@@ -19,7 +19,7 @@ type JoinedMatch = {
   room_id: string | null;
   room_password: string | null;
   total_slots: number;
-  players_count?: number;
+  joined_players_count: number;
 };
 
 const STATUS_COLOR: Record<JoinedMatch["status"], string> = {
@@ -40,20 +40,34 @@ const Tournaments = () => {
     (async () => {
       const { data } = await supabase
         .from("registrations")
-        .select("tournament_id, tournaments(id, title, category, scheduled_at, status, room_id, room_password, total_slots)")
+        .select("tournament_id, tournaments(id, title, category, scheduled_at, status, room_id, room_password, total_slots, joined_players_count)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-      const baseList: JoinedMatch[] = (data ?? [])
+      const list: JoinedMatch[] = (data ?? [])
         .map((r: any) => r.tournaments)
         .filter(Boolean);
-      const list = await Promise.all(baseList.map(async (match) => {
-        const { count } = await supabase.from("registrations").select("id", { count: "exact", head: true }).eq("tournament_id", match.id);
-        return { ...match, players_count: count ?? 0 };
-      }));
       setMatches(list);
       setLoading(false);
     })();
   }, [user]);
+
+  useEffect(() => {
+    if (!matches.length) return;
+    const ids = matches.map((m) => m.id);
+    const channel = supabase
+      .channel("my-matches-tournaments")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "tournaments" },
+        (payload: any) => {
+          const updated = payload.new as JoinedMatch | undefined;
+          if (!updated || !ids.includes(updated.id)) return;
+          setMatches((items) => items.map((item) => item.id === updated.id ? { ...item, ...updated } : item));
+        },
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [matches]);
 
   const copy = (val: string, label: string) => {
     navigator.clipboard.writeText(val);
@@ -117,7 +131,7 @@ const Tournaments = () => {
                       <span className="text-primary">Mode</span> {meta.title}
                     </div>
                     <div className="flex items-center gap-1.5 rounded-sm border border-primary/25 bg-background/35 px-2 py-1.5">
-                      <span className="text-primary">Players</span> {m.players_count ?? 0}/{m.total_slots}
+                      <span className="text-primary">Players</span> {m.joined_players_count}/{m.total_slots}
                     </div>
                   </div>
                   <div className="mt-2 flex items-center gap-2 text-xs text-foreground/80">

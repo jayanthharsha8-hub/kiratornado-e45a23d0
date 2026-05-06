@@ -13,6 +13,7 @@ import { toast } from "sonner";
 
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number; total_slots: number;
+  joined_players_count: number;
   prize_pool: number; scheduled_at: string; room_id: string | null; room_password: string | null;
   status: string; notes: string | null; level_requirement: number;
 }
@@ -28,16 +29,6 @@ const TournamentDetails = () => {
   const [joined, setJoined] = useState(false);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
-  const [filledCount, setFilledCount] = useState(0);
-
-  const refreshCount = async () => {
-    if (!id) return;
-    const { count } = await supabase
-      .from("registrations")
-      .select("id", { count: "exact", head: true })
-      .eq("tournament_id", id);
-    setFilledCount(count ?? 0);
-  };
 
   const load = async () => {
     if (!id) return;
@@ -51,7 +42,6 @@ const TournamentDetails = () => {
         .eq("tournament_id", id).eq("user_id", user.id).maybeSingle();
       setJoined(!!reg);
     }
-    await refreshCount();
   };
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [id, user]);
@@ -60,15 +50,15 @@ const TournamentDetails = () => {
     return () => clearInterval(i);
   }, []);
 
-  // Real-time slot sync
+  // Real-time shared tournament sync
   useEffect(() => {
     if (!id) return;
     const channel = supabase
-      .channel(`td-slots-${id}`)
+      .channel(`td-tournament-${id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "registrations", filter: `tournament_id=eq.${id}` },
-        () => { refreshCount(); },
+        { event: "UPDATE", schema: "public", table: "tournaments", filter: `id=eq.${id}` },
+        (payload: any) => { setT(payload.new as Tournament); },
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -400,7 +390,7 @@ const TournamentDetails = () => {
 
         {/* SLOT STATUS + JOIN BUTTON */}
         <SlotStatusBlock
-          filled={filledCount}
+          filled={t.joined_players_count}
           total={t.total_slots}
           joined={joined}
           accent={accent}

@@ -10,6 +10,7 @@ import SlotActionButton from "@/components/SlotActionButton";
 
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number;
+  joined_players_count: number;
   total_slots: number; prize_pool: number; scheduled_at: string;
   level_requirement: number;
 }
@@ -19,7 +20,6 @@ const TournamentSlots = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tournament, setTournament] = useState<Tournament | null>(null);
-  const [filledSet, setFilledSet] = useState<Set<number>>(new Set());
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [joining, setJoining] = useState(false);
   const [profile, setProfile] = useState<{ coins: number; player_level: number } | null>(null);
@@ -27,23 +27,18 @@ const TournamentSlots = () => {
 
   useEffect(() => { if (id && user) loadData(); /* eslint-disable-next-line */ }, [id, user]);
 
-  // Real-time slot count sync
+  // Real-time shared slot count sync
   useEffect(() => {
     if (!id) return;
     const channel = supabase
       .channel(`slots-${id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "registrations", filter: `tournament_id=eq.${id}` },
-        async () => {
-          const { count } = await supabase
-            .from("registrations")
-            .select("id", { count: "exact", head: true })
-            .eq("tournament_id", id);
-          const filled = new Set<number>();
-          for (let i = 1; i <= (count ?? 0); i++) filled.add(i);
-          setFilledSet(filled);
-          setSelectedSlot((s) => (s && filled.has(s) ? null : s));
+        { event: "UPDATE", schema: "public", table: "tournaments", filter: `id=eq.${id}` },
+        (payload: any) => {
+          const updated = payload.new as Tournament;
+          setTournament(updated);
+          setSelectedSlot((s) => (s && s <= updated.joined_players_count ? null : s));
         },
       )
       .subscribe();
@@ -55,12 +50,6 @@ const TournamentSlots = () => {
     const { data: t } = await supabase.from("tournaments").select("*").eq("id", id).maybeSingle();
     if (!t) { navigate("/home"); return; }
     setTournament(t as Tournament);
-
-    const { count } = await supabase.from("registrations").select("id", { count: "exact", head: true }).eq("tournament_id", id);
-    // We don't track per-slot index; treat first N slots as filled visually.
-    const filled = new Set<number>();
-    for (let i = 1; i <= (count ?? 0); i++) filled.add(i);
-    setFilledSet(filled);
 
     const { data: reg } = await supabase.from("registrations").select("id").eq("tournament_id", id).eq("user_id", user.id).maybeSingle();
     if (reg) {
@@ -86,16 +75,15 @@ const TournamentSlots = () => {
       toast.error(`Level ${tournament.level_requirement}+ required`);
       return;
     }
-    // Re-check slot availability before join
-    const { count } = await supabase
-      .from("registrations")
-      .select("id", { count: "exact", head: true })
-      .eq("tournament_id", tournament.id);
-    if ((count ?? 0) >= tournament.total_slots) {
+    // Re-check shared slot availability before join
+    const { data: current } = await supabase
+      .from("tournaments")
+      .select("joined_players_count,total_slots")
+      .eq("id", tournament.id)
+      .maybeSingle();
+    if ((current?.joined_players_count ?? tournament.joined_players_count) >= (current?.total_slots ?? tournament.total_slots)) {
       toast.error("Match is full");
-      const filled = new Set<number>();
-      for (let i = 1; i <= (count ?? 0); i++) filled.add(i);
-      setFilledSet(filled);
+      setTournament((t) => t ? { ...t, joined_players_count: current?.joined_players_count ?? t.joined_players_count } : t);
       return;
     }
     playSound("pulse");
@@ -120,7 +108,7 @@ const TournamentSlots = () => {
   const accent = meta.color;
   const accentSoft = meta.colorSoft;
   const totalSlots = tournament.total_slots;
-  const filledCount = filledSet.size;
+  const filledCount = tournament.joined_players_count;
   const isFull = filledCount >= totalSlots;
   const modeLabel =
     tournament.category === "lone_wolf" ? "1V1 DUEL"
@@ -197,7 +185,7 @@ const TournamentSlots = () => {
 
           <div className="grid grid-cols-2 gap-2.5 max-h-[44vh] overflow-y-auto pr-1">
             {Array.from({ length: totalSlots }, (_, i) => i + 1).map((slot) => {
-              const filled = filledSet.has(slot);
+              const filled = slot <= filledCount;
               const selected = selectedSlot === slot;
               return (
                 <button

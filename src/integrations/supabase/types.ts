@@ -338,6 +338,7 @@ export type Database = {
           created_at: string
           entry_fee: number
           id: string
+          joined_players_count: number
           level_requirement: number
           notes: string | null
           prize_pool: number
@@ -356,6 +357,7 @@ export type Database = {
           created_at?: string
           entry_fee?: number
           id?: string
+          joined_players_count?: number
           level_requirement?: number
           notes?: string | null
           prize_pool?: number
@@ -374,6 +376,7 @@ export type Database = {
           created_at?: string
           entry_fee?: number
           id?: string
+          joined_players_count?: number
           level_requirement?: number
           notes?: string | null
           prize_pool?: number
