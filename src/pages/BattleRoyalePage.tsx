@@ -15,6 +15,7 @@ interface Tournament {
   prize_pool: number;
   scheduled_at: string;
   total_slots: number;
+  joined_players_count: number;
   status: string;
 }
 
@@ -25,14 +26,13 @@ const BattleRoyalePage = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("upcoming");
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-  const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     supabase
       .from("tournaments")
-      .select("id,title,entry_fee,prize_pool,scheduled_at,total_slots,status")
+      .select("id,title,entry_fee,prize_pool,scheduled_at,total_slots,joined_players_count,status")
       .eq("category", "battle_royale")
       .eq("status", tab)
       .eq("published", true)
@@ -40,22 +40,11 @@ const BattleRoyalePage = () => {
       .then(async ({ data }) => {
         const rows = (data ?? []) as Tournament[];
         setTournaments(rows);
-        const nextCounts: Record<string, number> = {};
-        await Promise.all(
-          rows.map(async (t) => {
-            const { count } = await supabase
-              .from("registrations")
-              .select("id", { count: "exact", head: true })
-              .eq("tournament_id", t.id);
-            nextCounts[t.id] = count ?? 0;
-          }),
-        );
-        setCounts(nextCounts);
         setLoading(false);
       });
   }, [tab]);
 
-  // Real-time slot count sync
+  // Real-time shared slot count sync
   useEffect(() => {
     if (!tournaments.length) return;
     const ids = tournaments.map((t) => t.id);
@@ -63,15 +52,11 @@ const BattleRoyalePage = () => {
       .channel(`br-slots-${tab}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "registrations" },
-        async (payload: any) => {
-          const tid = (payload.new?.tournament_id ?? payload.old?.tournament_id) as string | undefined;
-          if (!tid || !ids.includes(tid)) return;
-          const { count } = await supabase
-            .from("registrations")
-            .select("id", { count: "exact", head: true })
-            .eq("tournament_id", tid);
-          setCounts((c) => ({ ...c, [tid]: count ?? 0 }));
+        { event: "UPDATE", schema: "public", table: "tournaments" },
+        (payload: any) => {
+          const updated = payload.new as Tournament | undefined;
+          if (!updated || !ids.includes(updated.id)) return;
+          setTournaments((items) => items.map((item) => item.id === updated.id ? { ...item, ...updated } : item));
         },
       )
       .subscribe();
@@ -130,7 +115,7 @@ const BattleRoyalePage = () => {
           ) : tournaments.length === 0 ? (
             <div className="border py-10 text-center font-display text-xs uppercase tracking-[0.25em] text-foreground/50" style={{ borderColor: red }}>No Battle Royale Matches</div>
           ) : (
-            tournaments.map((t) => <BattleRoyaleCard key={t.id} tournament={t} count={counts[t.id] ?? 0} />)
+            tournaments.map((t) => <BattleRoyaleCard key={t.id} tournament={t} />)
           )}
         </section>
 
@@ -144,11 +129,12 @@ const BattleRoyalePage = () => {
   );
 };
 
-const BattleRoyaleCard = ({ tournament, count }: { tournament: Tournament; count: number }) => {
+const BattleRoyaleCard = ({ tournament }: { tournament: Tournament }) => {
   const navigate = useNavigate();
   const date = new Date(tournament.scheduled_at);
   const dateText = date.toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
   const timeText = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  const count = tournament.joined_players_count;
   const isFull = count >= tournament.total_slots;
   const GREEN = "hsl(142 71% 50%)";
 
