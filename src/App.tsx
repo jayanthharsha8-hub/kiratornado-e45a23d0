@@ -10,6 +10,7 @@ import { AdminLayout } from "@/components/AdminLayout";
 import { WalletNotifier } from "@/components/WalletNotifier";
 import Splash from "./pages/Splash";
 import Register from "./pages/Register";
+import RegisterEmail from "./pages/RegisterEmail";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -49,6 +50,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Splash />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/register/email" element={<RegisterEmail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
