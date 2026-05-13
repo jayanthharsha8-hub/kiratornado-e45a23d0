@@ -106,7 +106,7 @@ const RegisterEmail = () => {
           </NeonField>
 
           <div className="pt-2">
-            <NeonButton type="submit" disabled={loading} loading={loading}>
+            <NeonButton type="submit" disabled={loading}>
               {loading ? "REGISTERING..." : "REGISTER"}
             </NeonButton>
           </div>
@@ -118,8 +118,7 @@ const RegisterEmail = () => {
         </p>
 
         <Footer />
-      </div>
-    </div>
+    </AuthShell>
   );
 };
 
