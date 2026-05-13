@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { HeroLogo } from "@/components/HeroLogo";
-import { NeonField, NeonButton, CornerBrackets, Footer } from "@/pages/Login";
+import { NeonField, NeonButton, AuthShell, Footer } from "@/pages/Login";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
@@ -56,23 +56,10 @@ const RegisterEmail = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsl(199 100% 60% / 1) 1px, transparent 1px), linear-gradient(90deg, hsl(199 100% 60% / 1) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-          maskImage: "radial-gradient(ellipse at center, #000 40%, transparent 80%)",
-        }}
-      />
-      <CornerBrackets />
-
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-6 pb-10 pt-6">
-        <button onClick={() => navigate(-1)} className="mb-2 flex items-center gap-2 self-start text-sm text-muted-foreground hover:text-primary">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </button>
+    <AuthShell>
+      <button onClick={() => navigate(-1)} className="mb-2 flex items-center gap-2 self-start text-sm text-muted-foreground hover:text-primary">
+        <ArrowLeft className="h-4 w-4" /> Back
+      </button>
 
         <HeroLogo size={200} />
 
