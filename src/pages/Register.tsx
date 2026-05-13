@@ -1,95 +1,96 @@
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { lovable } from "@/integrations/lovable";
 import { HeroLogo } from "@/components/HeroLogo";
-import { GoogleIcon, CornerBrackets, Footer } from "@/pages/Login";
+import { AuthShell, GoogleIcon, Footer, Divider } from "@/pages/Login";
 import { ChevronRight, Mail, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const onGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/home` },
-    });
-    if (error) toast.error(error.message);
+    if (googleLoading) return;
+    setGoogleLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/home`,
+      });
+      if (result.error) {
+        toast.error("Could not sign in with Google. Please try again.");
+        setGoogleLoading(false);
+        return;
+      }
+      if (result.redirected) return;
+      localStorage.setItem("userExists", "true");
+      navigate("/home", { replace: true });
+    } catch {
+      toast.error("Google sign-in failed. Please try again.");
+      setGoogleLoading(false);
+    }
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsl(199 100% 60% / 1) 1px, transparent 1px), linear-gradient(90deg, hsl(199 100% 60% / 1) 1px, transparent 1px)",
-          backgroundSize: "44px 44px",
-          maskImage: "radial-gradient(ellipse at center, #000 40%, transparent 80%)",
-        }}
-      />
-      <CornerBrackets />
+    <AuthShell>
+      <HeroLogo size={240} className="mt-2" />
 
-      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col px-6 pb-10 pt-6">
-        <HeroLogo size={260} className="mt-2" />
-
-        <div className="mt-1 text-center">
-          <h1 className="font-display text-3xl font-bold tracking-tight">
-            Enter the <span className="text-primary text-glow">Arena</span>
-          </h1>
-          <p className="mt-2 text-sm tracking-wider text-muted-foreground">Compete • Win • Conquer</p>
-        </div>
-
-        <div className="mt-8 space-y-4">
-          <PrimaryCardButton
-            icon={<GoogleIcon className="h-7 w-7" />}
-            title="Continue with Google"
-            subtitle="Instant • Secure • Auto-verified"
-            onClick={onGoogle}
-          />
-          <PrimaryCardButton
-            icon={<Mail className="h-7 w-7 text-primary" />}
-            title="Sign up with Email"
-            subtitle="Email OTP verification"
-            onClick={() => navigate("/register/email")}
-          />
-        </div>
-
-        <div className="my-6 flex items-center gap-3">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/40" />
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-primary text-glow-soft hover:underline">Sign in</Link>
-          </p>
-          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/40" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <SecondaryButton icon={<Lock className="h-5 w-5 text-primary" />} label="Email Sign In" onClick={() => navigate("/login")} />
-          <SecondaryButton icon={<GoogleIcon className="h-5 w-5" />} label="Google Sign In" onClick={onGoogle} />
-        </div>
-
-        <Footer />
+      <div className="mt-1 text-center">
+        <h1 className="font-display text-[28px] font-bold tracking-tight">
+          Enter the <span className="text-primary text-glow">Arena</span>
+        </h1>
+        <p className="mt-1.5 text-[12px] tracking-[0.18em] text-muted-foreground/90">COMPETE • WIN • CONQUER</p>
       </div>
-    </div>
+
+      <div className="mt-7 space-y-3.5">
+        <PrimaryCardButton
+          icon={<GoogleIcon className="h-7 w-7" />}
+          title={googleLoading ? "Connecting..." : "Continue with Google"}
+          subtitle="Instant • Secure • Auto-verified"
+          onClick={onGoogle}
+          disabled={googleLoading}
+        />
+        <PrimaryCardButton
+          icon={<Mail className="h-6 w-6 text-primary" />}
+          title="Sign up with Email"
+          subtitle="Email OTP verification"
+          onClick={() => navigate("/register/email")}
+        />
+      </div>
+
+      <Divider label="ALREADY A HUNTER?" />
+
+      <div className="grid grid-cols-2 gap-3">
+        <SecondaryButton icon={<Lock className="h-[18px] w-[18px] text-primary" />} label="Email Sign In" onClick={() => navigate("/login")} />
+        <SecondaryButton icon={<GoogleIcon className="h-[18px] w-[18px]" />} label="Google Sign In" onClick={onGoogle} />
+      </div>
+
+      <p className="mt-5 text-center text-[13px] text-muted-foreground">
+        Already have an account?{" "}
+        <Link to="/login" className="font-semibold text-primary text-glow-soft hover:underline">Sign in</Link>
+      </p>
+
+      <Footer />
+    </AuthShell>
   );
 };
 
 const PrimaryCardButton = ({
-  icon, title, subtitle, onClick,
-}: { icon: React.ReactNode; title: string; subtitle: string; onClick: () => void }) => (
+  icon, title, subtitle, onClick, disabled,
+}: { icon: React.ReactNode; title: string; subtitle: string; onClick: () => void; disabled?: boolean }) => (
   <button
     type="button"
     onClick={onClick}
-    className="group relative flex w-full items-center gap-4 rounded-sm border border-primary/45 bg-card/60 px-4 py-4 text-left transition hover:border-primary hover:shadow-[0_0_22px_hsl(var(--primary)/0.4)]"
-    style={{ boxShadow: "inset 0 0 18px hsl(var(--primary)/0.08)" }}
+    disabled={disabled}
+    className="group relative flex w-full items-center gap-4 rounded-[3px] border border-primary/30 bg-card/50 px-4 py-3.5 text-left transition hover:border-primary/70 hover:bg-card/80 disabled:opacity-60"
+    style={{ boxShadow: "inset 0 0 14px hsl(var(--primary)/0.06)" }}
   >
-    <div className="flex h-11 w-11 shrink-0 items-center justify-center">{icon}</div>
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center">{icon}</div>
     <div className="min-w-0 flex-1">
-      <div className="font-display text-base font-semibold leading-tight">{title}</div>
-      <div className="mt-0.5 text-xs text-muted-foreground">{subtitle}</div>
+      <div className="font-display text-[15px] font-semibold leading-tight">{title}</div>
+      <div className="mt-0.5 text-[12px] text-muted-foreground/85">{subtitle}</div>
     </div>
-    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary" />
+    <ChevronRight className="h-[18px] w-[18px] text-muted-foreground group-hover:text-primary" />
   </button>
 );
 
@@ -97,7 +98,7 @@ const SecondaryButton = ({ icon, label, onClick }: { icon: React.ReactNode; labe
   <button
     type="button"
     onClick={onClick}
-    className="flex h-14 items-center justify-center gap-2 rounded-sm border border-primary/40 bg-card/50 text-sm font-semibold text-foreground transition hover:border-primary hover:shadow-[0_0_16px_hsl(var(--primary)/0.35)]"
+    className="flex h-12 items-center justify-center gap-2 rounded-[3px] border border-primary/30 bg-card/40 text-[13px] font-semibold text-foreground transition hover:border-primary/70 hover:bg-card/70"
   >
     {icon}
     <span>{label}</span>
