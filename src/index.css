@@ -67,10 +67,7 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Rajdhani', system-ui, sans-serif;
-    background-image:
-      radial-gradient(ellipse at top, hsl(199 100% 30% / 0.18), transparent 60%),
-      radial-gradient(ellipse at bottom, hsl(217 90% 25% / 0.15), transparent 60%);
-    background-attachment: fixed;
+    background-color: #000;
     overflow-x: hidden;
   }
   h1, h2, h3, h4, .font-display {
