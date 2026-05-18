@@ -299,13 +299,8 @@ const MatchCard = ({ match, onClick }: { match: JoinedMatch; onClick: () => void
 };
 
 const PrizeAmount = ({ value }: { value: JoinedMatch }) => {
-  // Show "FREE" when entry-free free_match category, else show ₹amount
-  if (value.category === "free_match") return <span>FREE</span>;
-  // joined_players_count not used; prize comes from tournament - we don't have it in JoinedMatch type. Use a workaround.
-  // To keep this self-contained, fall back to dynamic display via DOM-safe formatting.
-  const v: any = value;
-  const n: number = v.prize_pool ?? 0;
-  return <span>₹{n.toLocaleString("en-IN")}</span>;
+  if (value.entry_fee === 0 && value.prize_pool === 0) return <span>FREE</span>;
+  return <span>₹{(value.prize_pool ?? 0).toLocaleString("en-IN")}</span>;
 };
 
 export default Tournaments;
