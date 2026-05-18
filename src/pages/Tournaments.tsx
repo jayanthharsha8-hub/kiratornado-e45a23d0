@@ -55,7 +55,7 @@ const Tournaments = () => {
       setLoading(true);
       const { data } = await supabase
         .from("registrations")
-        .select("tournament_id, tournaments(id, title, category, scheduled_at, status, total_slots, joined_players_count)")
+        .select("tournament_id, tournaments(id, title, category, scheduled_at, status, total_slots, joined_players_count, prize_pool, entry_fee)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
