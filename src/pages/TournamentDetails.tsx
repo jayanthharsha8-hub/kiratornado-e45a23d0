@@ -202,14 +202,11 @@ const TournamentDetails = () => {
               className="relative h-[136px] w-[120px] shrink-0 overflow-hidden rounded-xl border"
               style={{ borderColor: accent, boxShadow: `0 0 16px ${accentSoft}` }}
             >
-              {bannerUrl ? (
-                <img src={bannerUrl} alt={t.title} className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-[9px] uppercase tracking-[0.25em] text-foreground/40"
-                  style={{ background: `linear-gradient(135deg, ${accent}33, transparent)` }}>
-                  No Image
-                </div>
-              )}
+              <img
+                src={bannerUrl ?? meta.image}
+                alt={t.title}
+                className="h-full w-full object-cover"
+              />
               <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent, ${accent}22)` }} />
             </div>
 
