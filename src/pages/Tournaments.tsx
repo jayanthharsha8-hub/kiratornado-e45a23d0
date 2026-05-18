@@ -18,6 +18,8 @@ type JoinedMatch = {
   status: Status;
   total_slots: number;
   joined_players_count: number;
+  prize_pool: number;
+  entry_fee: number;
   banner_image_url: string | null;
 };
 
