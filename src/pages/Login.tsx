@@ -154,8 +154,8 @@ export const AuthShell = ({ children }: { children: React.ReactNode }) => (
 );
 
 export const NeonField = ({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) => (
-  <div className="relative rounded-[3px] border border-primary/30 bg-card/50 transition focus-within:border-primary/80 focus-within:shadow-[0_0_12px_hsl(var(--primary)/0.25)]">
-    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary/80">{icon}</span>
+  <div className="relative rounded-[6px] border border-primary/20 bg-card/30 transition focus-within:border-primary/60 focus-within:bg-card/50">
+    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary/70">{icon}</span>
     {children}
   </div>
 );
@@ -166,20 +166,20 @@ export const NeonButton = ({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
   <button
     {...props}
-    className="group relative h-13 w-full overflow-hidden rounded-[3px] border border-primary/80 bg-primary/[0.06] font-display text-[14px] font-bold tracking-[0.32em] text-primary text-glow transition hover:bg-primary/[0.1] disabled:opacity-60"
-    style={{ boxShadow: "0 0 0 1px hsl(var(--primary) / 0.45), 0 0 16px hsl(var(--primary) / 0.28), inset 0 0 12px hsl(var(--primary) / 0.1)" }}
+    className="group relative h-12 w-full overflow-hidden rounded-[6px] border border-primary/60 bg-primary/[0.04] font-display text-[12.5px] font-semibold tracking-[0.28em] text-primary transition hover:bg-primary/[0.08] disabled:opacity-60"
+    style={{ boxShadow: "0 0 10px hsl(var(--primary) / 0.18), inset 0 0 8px hsl(var(--primary) / 0.06)" }}
   >
-    <span className="pointer-events-none absolute left-1 top-1 h-2.5 w-2.5 border-l-[1.5px] border-t-[1.5px] border-primary" />
-    <span className="pointer-events-none absolute bottom-1 right-1 h-2.5 w-2.5 border-b-[1.5px] border-r-[1.5px] border-primary" />
+    <span className="pointer-events-none absolute left-1 top-1 h-2 w-2 border-l border-t border-primary/80" />
+    <span className="pointer-events-none absolute bottom-1 right-1 h-2 w-2 border-b border-r border-primary/80" />
     <span className="relative">{children}</span>
   </button>
 );
 
 export const Divider = ({ label }: { label: string }) => (
-  <div className="my-5 flex items-center gap-3">
-    <div className="h-px flex-1 bg-gradient-to-r from-transparent to-primary/30" />
-    <span className="text-[11px] font-semibold tracking-[0.32em] text-muted-foreground/80">{label}</span>
-    <div className="h-px flex-1 bg-gradient-to-l from-transparent to-primary/30" />
+  <div className="my-6 flex items-center gap-3">
+    <div className="h-px flex-1 bg-primary/15" />
+    <span className="text-[10px] font-medium tracking-[0.32em] text-muted-foreground/60">{label}</span>
+    <div className="h-px flex-1 bg-primary/15" />
   </div>
 );
 
@@ -195,16 +195,13 @@ export const GoogleIcon = ({ className }: { className?: string }) => (
 export const CornerFrame = () => (
   <svg
     aria-hidden
-    className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 w-full"
+    className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 w-full opacity-60"
     viewBox="0 0 400 80"
     preserveAspectRatio="none"
-    style={{ filter: "drop-shadow(0 0 6px hsl(var(--primary) / 0.5))" }}
   >
-    <g fill="none" stroke="hsl(199 100% 60%)" strokeWidth="1.2" opacity="0.85">
-      {/* left corner */}
+    <g fill="none" stroke="hsl(199 100% 60%)" strokeWidth="0.8" opacity="0.55">
       <polyline points="0,40 30,40 50,60 130,60" />
       <polyline points="0,55 22,55 38,72 130,72" />
-      {/* right corner */}
       <polyline points="400,40 370,40 350,60 270,60" />
       <polyline points="400,55 378,55 362,72 270,72" />
     </g>
@@ -213,14 +210,14 @@ export const CornerFrame = () => (
 
 export const Footer = () => (
   <div className="mt-auto pt-8">
-    <div className="flex items-center justify-center gap-2 text-[13px] text-muted-foreground">
-      <ShieldCheck className="h-4 w-4 text-primary" />
+    <div className="flex items-center justify-center gap-2 text-[11px] tracking-wide text-muted-foreground/70">
+      <ShieldCheck className="h-3.5 w-3.5 text-primary/80" />
       <span>Secure • Fair • Anti-Cheat</span>
     </div>
-    <p className="mt-2 text-center text-[11px] text-muted-foreground/80">
+    <p className="mt-2 text-center text-[10px] text-muted-foreground/50">
       By continuing you agree to our{" "}
-      <a href="#" className="text-primary hover:underline">Terms</a> &{" "}
-      <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+      <a href="#" className="text-primary/70 hover:text-primary">Terms</a> &{" "}
+      <a href="#" className="text-primary/70 hover:text-primary">Privacy Policy</a>
     </p>
   </div>
 );
