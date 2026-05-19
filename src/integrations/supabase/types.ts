@@ -152,6 +152,30 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboard_rewards: {
+        Row: {
+          coins: number
+          created_at: string
+          id: string
+          rank_position: number
+          updated_at: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          id?: string
+          rank_position: number
+          updated_at?: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          id?: string
+          rank_position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
