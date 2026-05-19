@@ -20,18 +20,38 @@ const RANKS = ["S", "A", "B", "C", "D", "E"];
 
 const emptyForm = { player_name: "", kills: 0, rank_label: "E", rank_position: 10, week_start: new Date().toISOString().slice(0, 10) };
 
+interface Reward { rank_position: number; coins: number }
+
 export default function LeaderboardAdmin() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [rewards, setRewards] = useState<Record<number, number>>({ 1: 0, 2: 0, 3: 0 });
+  const [savingRewards, setSavingRewards] = useState(false);
 
   const load = async () => {
-    const { data } = await supabase.from("leaderboard_entries").select("*").order("rank_position", { ascending: true });
+    const [{ data }, { data: rw }] = await Promise.all([
+      supabase.from("leaderboard_entries").select("*").order("rank_position", { ascending: true }),
+      supabase.from("leaderboard_rewards").select("rank_position, coins"),
+    ]);
     setEntries((data as Entry[]) ?? []);
+    const map: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+    ((rw as Reward[]) ?? []).forEach((r) => { map[r.rank_position] = r.coins; });
+    setRewards(map);
   };
 
   useEffect(() => { load(); }, []);
+
+  const saveRewards = async () => {
+    setSavingRewards(true);
+    const payload = [1, 2, 3].map((r) => ({ rank_position: r, coins: Math.max(0, Number(rewards[r]) || 0) }));
+    const { error } = await supabase.from("leaderboard_rewards").upsert(payload, { onConflict: "rank_position" });
+    setSavingRewards(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Rewards updated");
+    load();
+  };
 
   const save = async () => {
     if (!form.player_name.trim()) { toast.error("Player name required"); return; }
