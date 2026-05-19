@@ -105,6 +105,30 @@ export default function LeaderboardAdmin() {
         </Button>
       </div>
 
+      <SystemPanel title="Weekly Rewards">
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground">Coin amounts shown on the leaderboard for the top 3 ranks.</p>
+          <div className="grid grid-cols-3 gap-3">
+            {[1, 2, 3].map((r) => (
+              <div key={r} className="space-y-1.5">
+                <Label className="text-xs uppercase tracking-widest text-muted-foreground">Rank {r} Coins</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  value={rewards[r] ?? 0}
+                  onChange={(e) => setRewards((p) => ({ ...p, [r]: +e.target.value }))}
+                  className="border-primary/30 bg-card"
+                />
+              </div>
+            ))}
+          </div>
+          <Button onClick={saveRewards} disabled={savingRewards} className="bg-primary font-display text-xs uppercase tracking-widest text-primary-foreground hover:bg-primary-glow">
+            {savingRewards ? "Saving..." : "Save Rewards"}
+          </Button>
+        </div>
+      </SystemPanel>
+
+
       <SystemPanel>
         <div className="overflow-x-auto">
           <Table>
