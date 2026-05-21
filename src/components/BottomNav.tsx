@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Home, Swords, BarChart3, Wallet, User } from "lucide-react";
+import { Home, Swords, Wallet, User, BarChart3 } from "lucide-react";
 import { playSound } from "@/hooks/useSound";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +11,11 @@ const TABS = [
   { to: "/profile", label: "PROFILE", icon: User },
 ];
 
-// Angular hexagon clip (flat top/bottom, pointed sides)
-const HEX_CLIP = "polygon(14% 0%, 86% 0%, 100% 50%, 86% 100%, 14% 100%, 0% 50%)";
-const NEON = "hsl(199 100% 58%)";
+// Elongated hex (flat top/bottom, sharp sides) — matches reference
+const HEX_SIDE = "polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%)";
+const HEX_CENTER = "polygon(18% 0%, 82% 0%, 100% 50%, 82% 100%, 18% 100%, 0% 50%)";
+const NEON = "hsl(199 100% 60%)";
+const NEON_SOFT = "hsl(199 100% 60% / 0.55)";
 
 export const BottomNav = () => {
   const location = useLocation();
@@ -22,52 +24,66 @@ export const BottomNav = () => {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 bg-black"
+      className="fixed inset-x-0 bottom-0 z-40"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="relative mx-auto w-full max-w-md">
-        {/* Outer neon frame, flush to bottom edge */}
+      <div className="relative mx-auto w-full max-w-md bg-black">
+        {/* Outer frame */}
         <div
-          className="relative h-[68px] border-t border-primary/60"
+          className="relative h-[64px]"
           style={{
-            background: "linear-gradient(180deg, #05080d 0%, #000 100%)",
-            boxShadow:
-              "0 -1px 0 hsl(199 100% 58% / 0.35), inset 0 1px 0 hsl(199 100% 58% / 0.25), inset 0 0 22px hsl(199 100% 58% / 0.08)",
+            background: "linear-gradient(180deg, #04070c 0%, #000 100%)",
+            borderTop: `1px solid ${NEON_SOFT}`,
+            boxShadow: `0 -1px 0 ${NEON_SOFT}, inset 0 1px 0 hsl(199 100% 60% / 0.18)`,
           }}
         >
+          {/* Thin top accent line */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute left-6 right-6 top-0 h-px"
+            style={{
+              background: `linear-gradient(90deg, transparent, ${NEON} 50%, transparent)`,
+              opacity: 0.7,
+            }}
+          />
           {/* Side neon caps */}
           <span
             aria-hidden
-            className="pointer-events-none absolute left-0 top-1/2 h-9 w-[2px] -translate-y-1/2"
-            style={{ background: NEON, boxShadow: `0 0 10px ${NEON}` }}
+            className="pointer-events-none absolute left-0 top-1/2 h-8 w-[2px] -translate-y-1/2 rounded-r"
+            style={{ background: NEON, boxShadow: `0 0 8px ${NEON}` }}
           />
           <span
             aria-hidden
-            className="pointer-events-none absolute right-0 top-1/2 h-9 w-[2px] -translate-y-1/2"
-            style={{ background: NEON, boxShadow: `0 0 10px ${NEON}` }}
-          />
-          {/* Small notch above HOME */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 -top-[5px] h-2.5 w-2.5 -translate-x-1/2 rotate-45 border-l border-t border-primary/70 bg-black"
+            className="pointer-events-none absolute right-0 top-1/2 h-8 w-[2px] -translate-y-1/2 rounded-l"
+            style={{ background: NEON, boxShadow: `0 0 8px ${NEON}` }}
           />
 
-          <ul className="relative grid h-full grid-cols-5">
+          <ul className="relative grid h-full grid-cols-5 px-1">
             {TABS.map(({ to, label, icon: Icon, center }) => {
               const active = isActive(to);
 
               if (center) {
                 return (
                   <li key={to} className="relative flex items-end justify-center">
+                    {/* Tiny notch indicator */}
+                    <span
+                      aria-hidden
+                      className="absolute -top-[7px] left-1/2 h-1.5 w-1.5 -translate-x-1/2 rotate-45"
+                      style={{
+                        background: NEON,
+                        boxShadow: `0 0 6px ${NEON}`,
+                      }}
+                    />
                     <NavLink
                       to={to}
                       onClick={() => playSound("tick")}
                       aria-label={label}
-                      className="absolute -top-[18px] flex h-[72px] w-[72px] items-center justify-center"
+                      className={cn(
+                        "absolute -top-[20px] flex h-[68px] w-[68px] items-center justify-center",
+                        active && "animate-[nav-pulse_2.4s_ease-in-out_infinite]"
+                      )}
                       style={{
-                        filter: active
-                          ? `drop-shadow(0 0 10px ${NEON})`
-                          : `drop-shadow(0 0 4px ${NEON}80)`,
+                        filter: `drop-shadow(0 0 6px ${NEON}) drop-shadow(0 0 12px hsl(199 100% 60% / 0.35))`,
                       }}
                     >
                       {/* hex border */}
@@ -75,7 +91,7 @@ export const BottomNav = () => {
                         aria-hidden
                         className="absolute inset-0"
                         style={{
-                          clipPath: HEX_CLIP,
+                          clipPath: HEX_CENTER,
                           background: NEON,
                         }}
                       />
@@ -84,34 +100,20 @@ export const BottomNav = () => {
                         aria-hidden
                         className="absolute inset-[1.5px]"
                         style={{
-                          clipPath: HEX_CLIP,
+                          clipPath: HEX_CENTER,
                           background:
-                            "radial-gradient(ellipse at center, hsl(199 70% 14%) 0%, #03060b 75%)",
+                            "radial-gradient(ellipse at center, hsl(199 80% 12%) 0%, #02060b 80%)",
                         }}
                       />
-                      <div className="relative flex flex-col items-center justify-center gap-0.5">
+                      <div className="relative flex flex-col items-center justify-center">
                         <Icon
                           strokeWidth={1.8}
-                          className={cn(
-                            "h-[22px] w-[22px]",
-                            active ? "text-primary" : "text-foreground/90"
-                          )}
-                          style={
-                            active
-                              ? { filter: `drop-shadow(0 0 6px ${NEON})` }
-                              : undefined
-                          }
+                          className="h-[20px] w-[20px] text-primary"
+                          style={{ filter: `drop-shadow(0 0 4px ${NEON})` }}
                         />
                         <span
-                          className={cn(
-                            "font-display text-[8.5px] font-bold leading-none tracking-[0.18em]",
-                            active ? "text-primary" : "text-foreground/90"
-                          )}
-                          style={
-                            active
-                              ? { textShadow: `0 0 6px ${NEON}` }
-                              : undefined
-                          }
+                          className="mt-0.5 font-display text-[8px] font-bold leading-none tracking-[0.22em] text-primary"
+                          style={{ textShadow: `0 0 4px ${NEON}` }}
                         >
                           {label}
                         </span>
@@ -127,39 +129,39 @@ export const BottomNav = () => {
                     to={to}
                     onClick={() => playSound("tick")}
                     aria-label={label}
-                    className="group relative flex h-[58px] w-full items-center justify-center"
+                    className="group relative flex h-[54px] w-full items-center justify-center"
                   >
                     <span
                       aria-hidden
-                      className="absolute inset-x-1 inset-y-1.5"
+                      className="absolute inset-x-[3px] inset-y-1"
                       style={{
-                        clipPath: HEX_CLIP,
+                        clipPath: HEX_SIDE,
                         background: active
-                          ? "linear-gradient(180deg, hsl(199 90% 14% / 0.85), hsl(199 90% 6% / 0.85))"
-                          : "linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.005))",
+                          ? "linear-gradient(180deg, hsl(199 80% 12% / 0.9), hsl(199 80% 5% / 0.9))"
+                          : "linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005))",
                         boxShadow: active
-                          ? `inset 0 0 10px ${NEON}66`
-                          : "inset 0 0 0 1px rgba(255,255,255,0.04)",
+                          ? `inset 0 0 0 1px ${NEON}, inset 0 0 10px ${NEON}55`
+                          : `inset 0 0 0 1px hsl(199 100% 60% / 0.18)`,
                       }}
                     />
-                    <div className="relative flex flex-col items-center justify-center gap-1 px-1">
+                    <div className="relative flex flex-col items-center justify-center gap-[3px]">
                       <Icon
                         strokeWidth={1.6}
                         className={cn(
-                          "h-[20px] w-[20px] transition-colors",
-                          active ? "text-primary" : "text-foreground/85"
+                          "h-[18px] w-[18px] transition-colors",
+                          active ? "text-primary" : "text-foreground/75"
                         )}
                         style={
-                          active ? { filter: `drop-shadow(0 0 5px ${NEON})` } : undefined
+                          active ? { filter: `drop-shadow(0 0 4px ${NEON})` } : undefined
                         }
                       />
                       <span
                         className={cn(
-                          "font-display text-[8px] font-semibold leading-none tracking-[0.16em] whitespace-nowrap transition-colors",
-                          active ? "text-primary" : "text-foreground/80"
+                          "font-display text-[7.5px] font-semibold leading-none tracking-[0.18em] whitespace-nowrap transition-colors",
+                          active ? "text-primary" : "text-foreground/75"
                         )}
                         style={
-                          active ? { textShadow: `0 0 5px ${NEON}` } : undefined
+                          active ? { textShadow: `0 0 4px ${NEON}` } : undefined
                         }
                       >
                         {label}
@@ -172,6 +174,13 @@ export const BottomNav = () => {
           </ul>
         </div>
       </div>
+
+      <style>{`
+        @keyframes nav-pulse {
+          0%, 100% { filter: drop-shadow(0 0 6px ${NEON}) drop-shadow(0 0 12px hsl(199 100% 60% / 0.35)); }
+          50% { filter: drop-shadow(0 0 9px ${NEON}) drop-shadow(0 0 18px hsl(199 100% 60% / 0.55)); }
+        }
+      `}</style>
     </nav>
   );
 };
