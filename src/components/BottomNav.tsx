@@ -10,13 +10,20 @@ import { cn } from "@/lib/utils";
  * - Rajdhani labels for clean, readable futuristic look
  */
 
-const TABS = [
+type Tab = {
+  to: string;
+  label: string;
+  Icon: typeof Home;
+  center?: boolean;
+};
+
+const TABS: Tab[] = [
   { to: "/leaderboard", label: "Leaderboard", Icon: Trophy },
   { to: "/tournaments", label: "Matches", Icon: Swords },
   { to: "/home", label: "Home", Icon: Home, center: true },
   { to: "/wallet", label: "Wallet", Icon: Wallet },
   { to: "/profile", label: "Profile", Icon: User },
-] as const;
+];
 
 const HEX = "polygon(14% 0%, 86% 0%, 100% 50%, 86% 100%, 14% 100%, 0% 50%)";
 const NEON = "hsl(199 100% 58%)";
