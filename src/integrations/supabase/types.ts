@@ -355,6 +355,35 @@ export type Database = {
         }
         Relationships: []
       }
+      tournament_rooms: {
+        Row: {
+          room_id: string | null
+          room_password: string | null
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          room_id?: string | null
+          room_password?: string | null
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          room_id?: string | null
+          room_password?: string | null
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_rooms_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: true
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tournaments: {
         Row: {
           banner_url: string | null
@@ -367,8 +396,6 @@ export type Database = {
           notes: string | null
           prize_pool: number
           published: boolean
-          room_id: string | null
-          room_password: string | null
           scheduled_at: string
           status: Database["public"]["Enums"]["tournament_status"]
           subtitle: string | null
@@ -386,8 +413,6 @@ export type Database = {
           notes?: string | null
           prize_pool?: number
           published?: boolean
-          room_id?: string | null
-          room_password?: string | null
           scheduled_at: string
           status?: Database["public"]["Enums"]["tournament_status"]
           subtitle?: string | null
@@ -405,8 +430,6 @@ export type Database = {
           notes?: string | null
           prize_pool?: number
           published?: boolean
-          room_id?: string | null
-          room_password?: string | null
           scheduled_at?: string
           status?: Database["public"]["Enums"]["tournament_status"]
           subtitle?: string | null
