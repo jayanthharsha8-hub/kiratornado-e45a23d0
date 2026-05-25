@@ -9,11 +9,14 @@ export const useAdmin = () => {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { setLoading(false); return; }
-    const allowed = user.email === "jayanthharsha8@gmail.com";
-    setIsAdmin(allowed);
-    setLoading(false);
-    if (allowed) supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
+    if (!user) { setIsAdmin(false); setLoading(false); return; }
+    let cancelled = false;
+    supabase.rpc("has_role", { _user_id: user.id, _role: "admin" }).then(({ data }) => {
+      if (cancelled) return;
+      setIsAdmin(!!data);
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
   }, [user, authLoading]);
 
   return { isAdmin, loading, user };
