@@ -1,0 +1,11 @@
+REVOKE EXECUTE ON FUNCTION public.prevent_player_coin_tampering() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.prevent_profile_field_tampering() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.sync_tournament_joined_count() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.update_updated_at_column() FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, app_role) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.admin_adjust_coins(uuid, integer, integer) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.admin_handle_wallet_request(uuid, public.wallet_request_status) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.ensure_player_account() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.join_tournament(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.request_withdrawal(integer, public.withdraw_type, text, text) FROM PUBLIC, anon;
