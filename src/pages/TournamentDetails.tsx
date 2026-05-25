@@ -33,7 +33,7 @@ const TournamentDetails = () => {
   const load = async () => {
     if (!id) return;
     const { data: tour } = await supabase.from("tournaments").select("*").eq("id", id).maybeSingle();
-    if (tour) setT(tour as Tournament);
+    if (tour) setT({ ...(tour as any), room_id: null, room_password: null } as Tournament);
     const { data: banner } = await db.from("tournament_banners").select("banner_image_url").eq("tournament_id", id).maybeSingle();
     setBannerUrl(banner?.banner_image_url ?? null);
     if (user) {
@@ -41,6 +41,10 @@ const TournamentDetails = () => {
         .from("registrations").select("id")
         .eq("tournament_id", id).eq("user_id", user.id).maybeSingle();
       setJoined(!!reg);
+      if (reg) {
+        const { data: room } = await db.from("tournament_rooms").select("room_id, room_password").eq("tournament_id", id).maybeSingle();
+        if (room) setT(prev => prev ? { ...prev, room_id: room.room_id, room_password: room.room_password } : prev);
+      }
     }
   };
 
