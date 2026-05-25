@@ -51,6 +51,7 @@ interface MatchHistory { id: string; tournament_title: string; created_at: strin
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [history, setHistory] = useState<MatchHistory[]>([]);
   const [editOpen, setEditOpen] = useState(false);
@@ -160,7 +161,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {user?.email === ADMIN_EMAIL && (
+          {isAdmin && (
             <Button onClick={() => navigate("/admin")} className="mt-4 w-full bg-primary font-display text-xs uppercase tracking-[0.24em] text-primary-foreground hover:bg-primary-glow">
               ADMIN PANEL
             </Button>
