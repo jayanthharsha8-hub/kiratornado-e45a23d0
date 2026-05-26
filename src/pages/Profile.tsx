@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAdmin } from "@/hooks/useAdmin";
 import { SystemPanel } from "@/components/SystemPanel";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,8 @@ import { ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Star, Crosshai
 import { toast } from "sonner";
 import { ReportDialog } from "@/components/ReportDialog";
 import { BottomNav } from "@/components/BottomNav";
+
+const ADMIN_EMAIL = "jayanthharsha8@gmail.com";
 
 interface Profile {
   username: string; player_name: string; ff_uid: string; player_level: number;
@@ -51,7 +52,6 @@ interface MatchHistory { id: string; tournament_title: string; created_at: strin
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [history, setHistory] = useState<MatchHistory[]>([]);
   const [editOpen, setEditOpen] = useState(false);
@@ -161,7 +161,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {isAdmin && (
+          {user?.email === ADMIN_EMAIL && (
             <Button onClick={() => navigate("/admin")} className="mt-4 w-full bg-primary font-display text-xs uppercase tracking-[0.24em] text-primary-foreground hover:bg-primary-glow">
               ADMIN PANEL
             </Button>

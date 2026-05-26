@@ -87,14 +87,13 @@ export default function AdminTournaments() {
     setOpen(true);
   };
 
-  const openRoom = async (t: Tournament) => {
-    const { data: room } = await (supabase as any).from("tournament_rooms").select("room_id, room_password").eq("tournament_id", t.id).maybeSingle();
-    setRoomForm({ id: t.id, room_id: room?.room_id ?? "", room_password: room?.room_password ?? "" });
+  const openRoom = (t: Tournament) => {
+    setRoomForm({ id: t.id, room_id: t.room_id ?? "", room_password: t.room_password ?? "" });
     setRoomOpen(true);
   };
 
   const saveRoom = async () => {
-    await (supabase as any).from("tournament_rooms").upsert({ tournament_id: roomForm.id, room_id: roomForm.room_id, room_password: roomForm.room_password, updated_at: new Date().toISOString() });
+    await supabase.from("tournaments").update({ room_id: roomForm.room_id, room_password: roomForm.room_password }).eq("id", roomForm.id);
     toast.success("Room details saved"); setRoomOpen(false); load();
   };
 
