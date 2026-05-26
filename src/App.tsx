@@ -35,6 +35,7 @@ import AdminWallet from "./pages/admin/WalletAdmin";
 import AdminNotifications from "./pages/admin/Notifications";
 import LeaderboardAdmin from "./pages/admin/LeaderboardAdmin";
 import AdminReports from "./pages/admin/Reports";
+import AdminAvatars from "./pages/admin/Avatars";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const App = () => (
             <Route path="/admin/tournaments" element={<AdminRoute><AdminLayout><AdminTournaments /></AdminLayout></AdminRoute>} />
             <Route path="/admin/banners" element={<AdminRoute><AdminLayout><AdminBanners /></AdminLayout></AdminRoute>} />
             <Route path="/admin/players" element={<AdminRoute><AdminLayout><AdminPlayers /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/avatars" element={<AdminRoute><AdminLayout><AdminAvatars /></AdminLayout></AdminRoute>} />
             <Route path="/admin/wallet" element={<AdminRoute><AdminLayout><AdminWallet /></AdminLayout></AdminRoute>} />
             <Route path="/admin/notifications" element={<AdminRoute><AdminLayout><AdminNotifications /></AdminLayout></AdminRoute>} />
             <Route path="/admin/leaderboard" element={<AdminRoute><AdminLayout><LeaderboardAdmin /></AdminLayout></AdminRoute>} />
