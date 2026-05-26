@@ -197,6 +197,33 @@ export type Database = {
         }
         Relationships: []
       }
+      profile_avatars: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          image_url: string
+          label: string | null
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url: string
+          label?: string | null
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string
+          label?: string | null
+          sort_order?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
