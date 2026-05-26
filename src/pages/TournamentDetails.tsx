@@ -14,7 +14,7 @@ import { toast } from "sonner";
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number; total_slots: number;
   joined_players_count: number;
-  prize_pool: number; scheduled_at: string; room_id: string | null; room_password: string | null;
+  prize_pool: number; scheduled_at: string; room_id?: string | null; room_password?: string | null;
   status: string; notes: string | null; level_requirement: number;
 }
 
@@ -33,7 +33,10 @@ const TournamentDetails = () => {
   const load = async () => {
     if (!id) return;
     const { data: tour } = await supabase.from("tournaments").select("*").eq("id", id).maybeSingle();
-    if (tour) setT(tour as Tournament);
+    if (tour) {
+      const { data: room } = await db.from("tournament_rooms").select("room_id,room_password").eq("tournament_id", id).maybeSingle();
+      setT({ ...(tour as any), room_id: room?.room_id ?? null, room_password: room?.room_password ?? null } as Tournament);
+    }
     const { data: banner } = await db.from("tournament_banners").select("banner_image_url").eq("tournament_id", id).maybeSingle();
     setBannerUrl(banner?.banner_image_url ?? null);
     if (user) {
