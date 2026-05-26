@@ -2,25 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
 import { SystemPanel } from "@/components/SystemPanel";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Star, Crosshair, Crown } from "lucide-react";
+import {
+  ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Crosshair, Crown,
+  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star,
+} from "lucide-react";
 import { toast } from "sonner";
 import { ReportDialog } from "@/components/ReportDialog";
 import { BottomNav } from "@/components/BottomNav";
-
-const ADMIN_EMAIL = "jayanthharsha8@gmail.com";
+import { AvatarPickerDialog } from "@/components/AvatarPickerDialog";
 
 interface Profile {
   username: string; player_name: string; ff_uid: string; player_level: number;
-  coins: number; matches_played: number; wins: number; total_kills: number; avatar_url: string | null;
+  coins: number; matches_played: number; wins: number; total_kills: number;
+  avatar_url: string | null; created_at?: string;
 }
 
-const RANK_LABELS = ["E", "D", "C", "B", "A", "S"];
 const getRank = (level: number) => {
   if (level >= 90) return "S";
   if (level >= 75) return "A";
@@ -30,64 +33,39 @@ const getRank = (level: number) => {
   return "E";
 };
 
-const RANK_COLORS: Record<string, string> = {
-  S: "text-yellow-400 border-yellow-400/60 bg-yellow-400/10",
-  A: "text-purple-400 border-purple-400/60 bg-purple-400/10",
-  B: "text-blue-400 border-blue-400/60 bg-blue-400/10",
-  C: "text-green-400 border-green-400/60 bg-green-400/10",
-  D: "text-orange-400 border-orange-400/60 bg-orange-400/10",
-  E: "text-muted-foreground border-muted bg-muted/20",
-};
-
-const ACHIEVEMENTS = [
-  { id: "first_match", label: "First Match", desc: "Play your first match", icon: Swords, check: (p: Profile) => p.matches_played >= 1 },
-  { id: "first_win", label: "First Win", desc: "Win a match", icon: Trophy, check: (p: Profile) => p.wins >= 1 },
-  { id: "kills_10", label: "10 Kills", desc: "Reach 10 total kills", icon: Target, check: (p: Profile) => p.total_kills >= 10 },
-  { id: "kills_50", label: "50 Kills", desc: "Reach 50 total kills", icon: Crosshair, check: (p: Profile) => p.total_kills >= 50 },
-  { id: "matches_10", label: "Veteran", desc: "Play 10 matches", icon: Star, check: (p: Profile) => p.matches_played >= 10 },
-];
-
-interface MatchHistory { id: string; tournament_title: string; created_at: string; }
+const rankStars = (rank: string) => ({ S: 5, A: 4, B: 3, C: 2, D: 1, E: 1 }[rank] ?? 1);
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [history, setHistory] = useState<MatchHistory[]>([]);
   const [editOpen, setEditOpen] = useState(false);
-  const [editForm, setEditForm] = useState({ player_name: "", ff_uid: "", player_level: "1" });
   const [reportOpen, setReportOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ player_name: "", ff_uid: "", player_level: "1" });
 
   useEffect(() => {
     if (!user) return;
+    let cancelled = false;
     supabase.from("profiles")
-      .select("username,player_name,ff_uid,player_level,coins,matches_played,wins,total_kills,avatar_url")
+      .select("username,player_name,ff_uid,player_level,coins,matches_played,wins,total_kills,avatar_url,created_at")
       .eq("id", user.id).maybeSingle()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) { toast.error("Failed to load profile"); return; }
         if (data) {
           setProfile(data as Profile);
           setEditForm({ player_name: data.player_name, ff_uid: data.ff_uid, player_level: String(data.player_level) });
         }
       });
-
-    supabase.from("registrations")
-      .select("id, created_at, tournaments(title)")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        setHistory((data ?? []).map((r: any) => ({
-          id: r.id,
-          tournament_title: r.tournaments?.title ?? "Unknown",
-          created_at: r.created_at,
-        })));
-      });
+    return () => { cancelled = true; };
   }, [user]);
 
   const saveEdit = async () => {
     if (!user || !editForm.player_name.trim()) { toast.error("Player name required"); return; }
     const nextLevel = Number(editForm.player_level);
-    if (!Number.isInteger(nextLevel) || nextLevel < 1 || nextLevel > 100) { toast.error("Level must be a number from 1 to 100"); return; }
+    if (!Number.isInteger(nextLevel) || nextLevel < 1 || nextLevel > 100) { toast.error("Level must be 1-100"); return; }
     await supabase.from("profiles").update({
       player_name: editForm.player_name.trim(),
       ff_uid: editForm.ff_uid.trim(),
@@ -98,127 +76,205 @@ const ProfilePage = () => {
     setProfile(p => p ? { ...p, player_name: editForm.player_name.trim(), ff_uid: editForm.ff_uid.trim(), player_level: nextLevel } : p);
   };
 
-  if (!profile) return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-xs uppercase tracking-[0.4em] text-primary text-glow animate-flicker">Loading...</div>
-    </div>
-  );
+  const copy = (text: string, label: string) => {
+    navigator.clipboard.writeText(text).then(() => toast.success(`${label} copied`));
+  };
+
+  if (!profile) {
+    return (
+      <div className="relative min-h-screen scanline pb-24">
+        <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
+        <div className="mx-auto max-w-md space-y-4 px-4 pt-6">
+          <div className="h-10 animate-pulse rounded border border-primary/20 bg-card/40" />
+          <div className="h-60 animate-pulse rounded border border-primary/20 bg-card/40" />
+          <div className="h-72 animate-pulse rounded border border-primary/20 bg-card/40" />
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   const rank = getRank(profile.player_level);
-  const winRate = profile.matches_played > 0 ? ((profile.wins / profile.matches_played) * 100).toFixed(1) : "0.0";
-  const avgKills = profile.matches_played > 0 ? (profile.total_kills / profile.matches_played).toFixed(1) : "0.0";
+  const stars = rankStars(rank);
+  const winRate = profile.matches_played > 0 ? (profile.wins / profile.matches_played) * 100 : 0;
+  const avgKills = profile.matches_played > 0 ? profile.total_kills / profile.matches_played : 0;
+  const deaths = Math.max(profile.matches_played - profile.wins, 1);
+  const kd = profile.total_kills / deaths;
+  const xpCurrent = profile.player_level * 650; // visual only
+  const xpMax = 97000;
+  const xpPct = Math.min(100, (xpCurrent / xpMax) * 100);
+  const joined = profile.created_at
+    ? new Date(profile.created_at).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" }).toUpperCase()
+    : "—";
 
   return (
-    <div className="relative min-h-screen scanline pb-24">
-      <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: 'var(--gradient-glow)' }} />
+    <div className="relative min-h-screen scanline pb-28">
+      <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
 
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
           <button onClick={() => navigate("/home")} className="flex items-center gap-1 text-primary hover:text-glow-soft">
             <ArrowLeft className="h-4 w-4" /><span className="text-xs uppercase tracking-widest">Back</span>
           </button>
-          <Logo size={28} />
+          <Logo size={26} />
+          <button onClick={() => setReportOpen(true)} aria-label="Settings" className="rounded border border-primary/40 bg-primary/10 p-1.5 text-primary hover:bg-primary/20">
+            <Settings className="h-4 w-4" />
+          </button>
         </div>
       </header>
 
-      <main className="mx-auto max-w-md space-y-5 px-4 pt-5">
-        {/* Profile Card */}
-        <div className="animate-float-up rounded border border-primary/50 bg-card/60 p-5 glow-soft text-center relative">
-          <div className="absolute top-3 right-3 flex gap-2">
-            <button onClick={() => setEditOpen(true)} className="rounded border border-primary/40 bg-primary/10 p-2 text-primary hover:bg-primary/20">
-              <Edit2 className="h-4 w-4" />
+      <main className="mx-auto max-w-md space-y-4 px-4 pt-4">
+        {/* PROFILE HEADER CARD */}
+        <section className="relative overflow-hidden rounded-xl border border-primary/50 bg-card/60 p-4 glow-soft animate-float-up">
+          {/* corner cuts */}
+          <span aria-hidden className="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-primary" />
+          <span aria-hidden className="pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-primary" />
+          <span aria-hidden className="pointer-events-none absolute left-0 bottom-0 h-3 w-3 border-l border-b border-primary" />
+          <span aria-hidden className="pointer-events-none absolute right-0 bottom-0 h-3 w-3 border-r border-b border-primary" />
+
+          <div className="flex gap-4">
+            {/* Avatar */}
+            <div className="relative shrink-0">
+              <button
+                onClick={() => setAvatarOpen(true)}
+                aria-label="Change avatar"
+                className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-2 border-primary/70 bg-primary/10 animate-pulse-glow"
+              >
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt={profile.player_name} className="h-full w-full object-cover" />
+                ) : (
+                  <Crown className="h-10 w-10 text-primary" />
+                )}
+              </button>
+              <button
+                onClick={() => setAvatarOpen(true)}
+                aria-label="Edit avatar"
+                className="absolute -top-1 -right-1 rounded-full border border-primary/60 bg-background p-1.5 text-primary hover:bg-primary/20"
+              >
+                <Edit2 className="h-3 w-3" />
+              </button>
+              {/* rank chip under avatar */}
+              <div className="mt-2 mx-auto flex w-fit items-center gap-1 rounded border border-primary/50 bg-background/70 px-2 py-0.5">
+                <span className="font-display text-[10px] font-bold text-primary">{rank}</span>
+                <span className="text-[9px] uppercase tracking-widest text-primary/80">Rank Hunter</span>
+              </div>
+            </div>
+
+            {/* Right side */}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <h1 className="font-display truncate text-lg font-bold uppercase tracking-wider text-foreground text-glow">
+                  {profile.player_name}
+                </h1>
+                <BadgeCheck className="h-4 w-4 shrink-0 text-primary" />
+              </div>
+              <p className="truncate text-xs text-muted-foreground">@{profile.username}</p>
+
+              <div className="mt-2 inline-flex items-center rounded border border-primary/50 bg-primary/10 px-2.5 py-1">
+                <span className="font-display text-[11px] font-bold uppercase tracking-widest text-primary text-glow-soft">
+                  Level {profile.player_level}
+                </span>
+              </div>
+
+              {/* XP bar */}
+              <div className="mt-2">
+                <div className="h-1.5 w-full overflow-hidden rounded-full border border-primary/30 bg-background/60">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-primary-glow shadow-[0_0_8px_hsl(var(--primary))]"
+                    style={{ width: `${xpPct}%` }}
+                  />
+                </div>
+                <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  XP {xpCurrent.toLocaleString()} / {xpMax.toLocaleString()}
+                </div>
+              </div>
+
+              <button onClick={() => setEditOpen(true)} aria-label="Edit profile"
+                className="absolute right-3 top-3 rounded border border-primary/40 bg-primary/10 p-1.5 text-primary hover:bg-primary/20">
+                <Edit2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* UID + COINS row */}
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <button onClick={() => copy(profile.ff_uid || "", "UID")} className="flex items-center justify-between rounded border border-primary/30 bg-background/40 px-3 py-2 text-left hover:border-primary/60">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">UID: <span className="text-primary">{profile.ff_uid || "—"}</span></span>
+              <Copy className="h-3.5 w-3.5 text-primary/70" />
             </button>
-            <button onClick={() => setReportOpen(true)} className="rounded border border-destructive/40 bg-destructive/10 p-2 text-destructive hover:bg-destructive/20">
-              <Shield className="h-4 w-4" />
+            <div className="flex items-center justify-between rounded border border-primary/30 bg-background/40 px-3 py-2">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">COINS: <span className="text-primary">{profile.coins.toLocaleString()}</span></span>
+              <Coins className="h-3.5 w-3.5 text-primary/70" />
+            </div>
+          </div>
+
+          {/* ADMIN PANEL — admins only */}
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="mt-4 flex w-full items-center justify-between rounded-lg border-2 border-primary/70 bg-primary/15 px-4 py-3 transition hover:bg-primary/25 glow-soft"
+            >
+              <span className="flex items-center gap-2">
+                <Crown className="h-4 w-4 text-primary" />
+                <span className="font-display text-sm font-bold uppercase tracking-[0.24em] text-primary text-glow-soft">Admin Panel</span>
+              </span>
+              <ChevronRight className="h-4 w-4 text-primary" />
             </button>
-          </div>
-
-          {/* Avatar */}
-          <div className="relative mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary/60 bg-primary/10 animate-pulse-glow">
-            <Crown className="h-10 w-10 text-primary" />
-          </div>
-
-          <h2 className="font-display text-xl font-bold uppercase tracking-wider text-foreground text-glow">{profile.player_name}</h2>
-          <p className="text-xs text-muted-foreground">@{profile.username}</p>
-
-          {/* Rank Badge */}
-          <div className="mx-auto mt-3 flex items-center justify-center gap-2">
-            <div className={`flex h-12 w-12 items-center justify-center rounded border-2 font-display text-lg font-bold animate-pulse-glow ${RANK_COLORS[rank]}`}>
-              {rank}
-            </div>
-            <div className="text-left">
-              <div className="font-display text-sm font-bold text-foreground">{rank} Rank Hunter</div>
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Level {profile.player_level}</div>
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-            <div className="rounded border border-primary/20 bg-background/40 p-2">
-              <span className="text-muted-foreground">UID:</span> <span className="text-primary">{profile.ff_uid}</span>
-            </div>
-            <div className="rounded border border-primary/20 bg-background/40 p-2">
-              <span className="text-muted-foreground">Coins:</span> <span className="text-primary">{profile.coins}</span>
-            </div>
-          </div>
-
-          {user?.email === ADMIN_EMAIL && (
-            <Button onClick={() => navigate("/admin")} className="mt-4 w-full bg-primary font-display text-xs uppercase tracking-[0.24em] text-primary-foreground hover:bg-primary-glow">
-              ADMIN PANEL
-            </Button>
           )}
-        </div>
+        </section>
 
-        {/* Stats */}
-        <SystemPanel title="Combat Stats">
-          <div className="grid grid-cols-2 gap-3">
+        {/* COMBAT STATS */}
+        <SystemPanel
+          title="Combat Stats"
+          right={
+            <button className="flex items-center gap-1 rounded border border-primary/40 bg-primary/10 px-2 py-1 text-[10px] uppercase tracking-widest text-primary hover:bg-primary/20">
+              View More <ChevronRight className="h-3 w-3" />
+            </button>
+          }
+        >
+          <div className="grid grid-cols-3 gap-2">
             <StatBox label="Matches" value={profile.matches_played} icon={<Swords className="h-4 w-4" />} />
             <StatBox label="Wins" value={profile.wins} icon={<Trophy className="h-4 w-4" />} />
             <StatBox label="Total Kills" value={profile.total_kills} icon={<Target className="h-4 w-4" />} />
-            <StatBox label="Avg Kills" value={avgKills} icon={<Crosshair className="h-4 w-4" />} />
-            <StatBox label="Win Rate" value={`${winRate}%`} icon={<Award className="h-4 w-4" />} />
-            <StatBox label="Level" value={profile.player_level} icon={<Star className="h-4 w-4" />} />
+            <StatBox label="K/D Ratio" value={kd.toFixed(2)} icon={<Crosshair className="h-4 w-4" />} />
+            <StatBox label="Avg Kills" value={avgKills.toFixed(2)} icon={<Target className="h-4 w-4" />} />
+            <StatBox label="Win Rate" value={`${winRate.toFixed(1)}%`} icon={<Award className="h-4 w-4" />} />
           </div>
         </SystemPanel>
 
-        {/* Achievements */}
-        <SystemPanel title="Achievements">
-          <div className="space-y-2">
-            {ACHIEVEMENTS.map(a => {
-              const unlocked = a.check(profile);
-              return (
-                <div key={a.id} className={`flex items-center gap-3 rounded border p-3 transition ${unlocked ? "border-primary/50 bg-primary/10" : "border-muted bg-card/30 opacity-50"}`}>
-                  <div className={`flex h-9 w-9 items-center justify-center rounded border ${unlocked ? "border-primary text-primary" : "border-muted text-muted-foreground"}`}>
-                    <a.icon className="h-4 w-4" />
-                  </div>
-                  <div className="flex-1">
-                    <div className={`font-display text-xs font-bold uppercase tracking-widest ${unlocked ? "text-primary text-glow-soft" : "text-muted-foreground"}`}>{a.label}</div>
-                    <div className="text-[10px] text-muted-foreground">{a.desc}</div>
-                  </div>
-                  {unlocked && <div className="text-[10px] font-display uppercase tracking-widest text-primary">Unlocked</div>}
-                </div>
-              );
-            })}
-          </div>
-        </SystemPanel>
-
-        {/* Match History */}
-        <SystemPanel title="Match History">
-          {history.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">No matches yet. Join a tournament, Hunter.</p>
-          ) : (
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {history.map(h => (
-                <div key={h.id} className="flex items-center justify-between rounded border border-primary/20 bg-card/40 p-3">
-                  <div>
-                    <div className="font-display text-xs font-bold text-foreground">{h.tournament_title}</div>
-                    <div className="text-[10px] text-muted-foreground">{new Date(h.created_at).toLocaleDateString()}</div>
-                  </div>
-                  <Swords className="h-4 w-4 text-primary/50" />
-                </div>
-              ))}
+        {/* CURRENT RANK */}
+        <section className="rounded-xl border border-primary/40 bg-card/60 p-4 glow-soft">
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center">
+              <Shield className="absolute h-20 w-20 text-primary/30" strokeWidth={1} />
+              <span className="relative font-display text-3xl font-extrabold text-primary text-glow">{rank}</span>
             </div>
-          )}
-        </SystemPanel>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Current Rank</div>
+              <div className="font-display text-base font-bold uppercase tracking-wider text-foreground text-glow-soft">{rank} Rank Hunter</div>
+              <div className="mt-1 flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className={`h-3.5 w-3.5 ${i < stars ? "fill-primary text-primary" : "text-primary/30"}`} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 border-t border-primary/20 pt-3">
+            <div className="flex items-center gap-2 text-xs">
+              <Calendar className="h-3.5 w-3.5 text-primary" />
+              <span className="uppercase tracking-widest text-muted-foreground">Joined</span>
+              <span className="ml-auto font-display text-foreground">{joined}</span>
+            </div>
+            <div className="mt-2 flex items-center gap-2 text-xs">
+              <Clock className="h-3.5 w-3.5 text-primary" />
+              <span className="uppercase tracking-widest text-muted-foreground">Last Active</span>
+              <span className="ml-auto flex items-center gap-1.5 font-display text-[hsl(140_70%_55%)]">
+                ONLINE <span className="inline-block h-2 w-2 rounded-full bg-[hsl(140_70%_55%)] shadow-[0_0_6px_hsl(140_70%_55%)]" />
+              </span>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Edit Dialog */}
@@ -246,16 +302,26 @@ const ProfilePage = () => {
       </Dialog>
 
       <ReportDialog open={reportOpen} onOpenChange={setReportOpen} />
+      {user && (
+        <AvatarPickerDialog
+          open={avatarOpen}
+          onOpenChange={setAvatarOpen}
+          userId={user.id}
+          currentUrl={profile.avatar_url}
+          onPicked={(url) => setProfile(p => p ? { ...p, avatar_url: url } : p)}
+        />
+      )}
+
       <BottomNav />
     </div>
   );
 };
 
 const StatBox = ({ label, value, icon }: { label: string; value: string | number; icon: React.ReactNode }) => (
-  <div className="rounded border border-primary/30 bg-card/40 p-3 text-center">
-    <div className="flex items-center justify-center gap-1 text-primary/80 mb-1">{icon}</div>
+  <div className="rounded-lg border border-primary/30 bg-card/40 p-3 text-center">
+    <div className="mb-1 flex items-center justify-center text-primary/80">{icon}</div>
     <div className="font-display text-lg font-bold text-foreground text-glow-soft">{value}</div>
-    <div className="text-[9px] uppercase tracking-widest text-muted-foreground">{label}</div>
+    <div className="mt-0.5 text-[9px] uppercase tracking-widest text-muted-foreground">{label}</div>
   </div>
 );
 
