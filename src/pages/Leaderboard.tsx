@@ -126,73 +126,94 @@ const Leaderboard = () => {
   );
 
   return (
-    <div className="relative min-h-screen pb-28 overflow-hidden">
-      {/* Ambient backdrop */}
-      <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
+    <div className="relative min-h-screen pb-28 overflow-hidden bg-[#03060d]">
+      {/* Cinematic backdrop */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[420px]"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(199 100% 55% / 0.22), transparent 65%)" }}
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[560px]"
+        style={{ background: "radial-gradient(ellipse at 50% -10%, hsl(199 100% 55% / 0.28), transparent 60%)" }}
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.05] mix-blend-screen"
+        className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 h-[60vh]"
+        style={{
+          background:
+            "linear-gradient(to top, hsl(220 60% 6% / 0.9), transparent), radial-gradient(ellipse at 50% 100%, hsl(210 80% 28% / 0.22), transparent 60%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] mix-blend-screen"
         style={{
           backgroundImage:
             "linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
+          backgroundSize: "44px 44px",
+          maskImage: "radial-gradient(ellipse at 50% 30%, black 30%, transparent 78%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 50% 30%, black 30%, transparent 78%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 opacity-50"
+        style={{
+          backgroundImage:
+            "radial-gradient(1px 1px at 18% 28%, hsl(199 100% 75% / 0.7), transparent 60%), radial-gradient(1px 1px at 72% 62%, hsl(199 100% 75% / 0.55), transparent 60%), radial-gradient(1px 1px at 42% 82%, hsl(199 100% 75% / 0.5), transparent 60%), radial-gradient(1px 1px at 88% 18%, hsl(199 100% 75% / 0.6), transparent 60%), radial-gradient(1px 1px at 10% 70%, hsl(199 100% 75% / 0.5), transparent 60%)",
         }}
       />
 
       {/* Header */}
       <header className="relative z-20">
-        <div className="mx-auto flex max-w-md items-start justify-between px-4 pt-4">
+        <div className="mx-auto flex max-w-md items-start justify-between px-4 pt-5">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 rounded-md border border-primary/30 bg-black/40 px-2.5 py-1.5 text-primary backdrop-blur transition hover:border-primary/60 hover:bg-primary/10"
-            style={{ boxShadow: "0 0 12px hsl(199 100% 55% / 0.15)" }}
+            className="flex items-center gap-1.5 rounded-md border border-primary/25 bg-black/50 px-2.5 py-1.5 text-primary/90 backdrop-blur-md transition hover:border-primary/60 hover:bg-primary/10"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            <span className="font-display text-[10px] font-semibold uppercase tracking-[0.25em]">Back</span>
+            <span className="font-display text-[10px] font-semibold uppercase tracking-[0.3em]">Back</span>
           </button>
           <div className="relative">
-            <Avatar name={myProfile?.player_name ?? "You"} src={myProfile?.avatar_url} size={40} />
+            <Avatar name={myProfile?.player_name ?? "You"} src={myProfile?.avatar_url} size={42} />
             <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-background" style={{ boxShadow: "0 0 8px rgb(52 211 153 / 0.9)" }} />
           </div>
         </div>
 
-        <div className="mx-auto mt-2 max-w-md px-4 animate-fade-in">
-          <HeroLogo size={180} className="!mx-auto" />
+        <div className="relative mx-auto mt-3 max-w-md px-4 animate-fade-in">
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 -z-10 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: "radial-gradient(circle, hsl(199 100% 55% / 0.32), transparent 65%)", filter: "blur(10px)" }}
+          />
+          <HeroLogo size={200} className="!mx-auto drop-shadow-[0_0_24px_hsl(199_100%_55%_/_0.45)]" />
         </div>
       </header>
 
       <main className="relative z-10 mx-auto max-w-md px-4">
         {/* Title */}
-        <section className="mt-2 text-center animate-fade-in">
-          <p className="font-display text-[10px] font-medium uppercase tracking-[0.45em] text-primary/80">Hunter Rankings</p>
+        <section className="mt-4 text-center animate-fade-in">
+          <p className="font-display text-[10px] font-medium uppercase tracking-[0.5em] text-primary/70">Hunter Rankings</p>
           <h1
-            className="mt-2 font-display text-[34px] font-black uppercase leading-[1.02] tracking-[0.06em] text-primary"
-            style={{ textShadow: "0 0 22px hsl(199 100% 55% / 0.55), 0 0 4px hsl(199 100% 70% / 0.8)" }}
+            className="mt-3 font-display text-[36px] font-black uppercase leading-[1.02] tracking-[0.05em] bg-gradient-to-b from-[#dff3ff] via-[#5cc6ff] to-[#1f7fc9] bg-clip-text text-transparent"
+            style={{ filter: "drop-shadow(0 0 18px hsl(199 100% 55% / 0.4))" }}
           >
             Weekly<br />Leaderboard
           </h1>
-          <p className="mt-2 text-[11px] tracking-[0.3em] text-muted-foreground">Compete • Rise • Dominate</p>
-          <div className="mx-auto mt-3 h-px w-40 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+          <p className="mt-3 text-[11px] tracking-[0.32em] text-muted-foreground/80">Compete • Rise • Dominate</p>
+          <div className="mx-auto mt-3 h-px w-44 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         </section>
 
         {/* Rewards */}
-        <section className="mt-5 animate-fade-in" style={{ animationDelay: "60ms" }}>
+        <section className="mt-6 animate-fade-in" style={{ animationDelay: "60ms" }}>
           <div
-            className="rounded-2xl border border-primary/30 bg-black/40 p-3 backdrop-blur"
-            style={{ boxShadow: "inset 0 1px 0 hsl(0 0% 100% / 0.04), 0 0 30px hsl(199 100% 55% / 0.1)" }}
+            className="rounded-2xl border border-primary/20 bg-gradient-to-b from-white/[0.03] to-black/40 p-3.5 backdrop-blur-xl"
+            style={{ boxShadow: "inset 0 1px 0 hsl(0 0% 100% / 0.05), 0 8px 40px hsl(199 100% 55% / 0.08)" }}
           >
-            <div className="mb-3 flex items-center gap-2 px-1">
-              <Gift className="h-4 w-4 text-primary" />
-              <h2 className="font-display text-[11px] font-bold uppercase tracking-[0.3em] text-foreground">
+            <div className="mb-3 flex items-center gap-2 px-0.5">
+              <Gift className="h-3.5 w-3.5 text-primary" />
+              <h2 className="font-display text-[10.5px] font-bold uppercase tracking-[0.32em] text-foreground/90">
                 Weekly Leaderboard Rewards
               </h2>
             </div>
-            <div className="grid grid-cols-3 gap-2.5 pt-2">
+            <div className="grid grid-cols-3 gap-2.5">
               <RewardCard rank={1} coins={rewardFor(1)} />
               <RewardCard rank={2} coins={rewardFor(2)} />
               <RewardCard rank={3} coins={rewardFor(3)} />
@@ -201,8 +222,8 @@ const Leaderboard = () => {
         </section>
 
         {/* Tabs + Region */}
-        <section className="mt-5 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "120ms" }}>
-          <div className="flex flex-1 items-center gap-1 rounded-xl border border-primary/25 bg-black/40 p-1 backdrop-blur">
+        <section className="mt-6 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "120ms" }}>
+          <div className="flex flex-1 items-center gap-1 rounded-xl border border-primary/15 bg-white/[0.02] p-1 backdrop-blur-xl">
             {TABS.map((t) => {
               const active = t === tab;
               return (
@@ -210,14 +231,15 @@ const Leaderboard = () => {
                   key={t}
                   onClick={() => setTab(t)}
                   className={cn(
-                    "flex-1 rounded-lg px-2 py-2 font-display text-[10px] font-bold uppercase tracking-[0.18em] transition-all",
-                    active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                    "flex-1 rounded-lg px-2 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-300",
+                    active ? "text-primary" : "text-muted-foreground/70 hover:text-foreground"
                   )}
                   style={
                     active
                       ? {
-                          background: "linear-gradient(135deg, hsl(199 100% 55%), hsl(199 100% 70%))",
-                          boxShadow: "0 0 14px hsl(199 100% 55% / 0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
+                          background: "linear-gradient(180deg, hsl(199 100% 55% / 0.16), hsl(199 100% 55% / 0.04))",
+                          boxShadow: "inset 0 0 0 1px hsl(199 100% 55% / 0.45), 0 0 18px hsl(199 100% 55% / 0.22)",
+                          textShadow: "0 0 10px hsl(199 100% 70% / 0.65)",
                         }
                       : undefined
                   }
@@ -227,7 +249,7 @@ const Leaderboard = () => {
               );
             })}
           </div>
-          <button className="flex items-center gap-1.5 rounded-xl border border-primary/25 bg-black/40 px-3 py-2 font-display text-[10px] font-bold uppercase tracking-[0.18em] text-foreground/90 backdrop-blur transition hover:border-primary/50">
+          <button className="flex items-center gap-1.5 rounded-xl border border-primary/15 bg-white/[0.02] px-3 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/85 backdrop-blur-xl transition hover:border-primary/40">
             <Globe className="h-3.5 w-3.5 text-primary" />
             All
             <ChevronDown className="h-3 w-3 opacity-70" />
@@ -260,13 +282,13 @@ const Leaderboard = () => {
               return (
                 <li
                   key={e.id}
-                  className="grid grid-cols-[44px,1fr,auto] items-center gap-3 rounded-xl border bg-gradient-to-r from-card/60 to-black/40 p-2.5 transition-all hover:border-primary/50 animate-fade-in"
+                  className="group grid grid-cols-[44px,1fr,auto] items-center gap-3 rounded-xl border bg-gradient-to-r from-white/[0.025] via-white/[0.015] to-transparent p-2.5 backdrop-blur-md transition-all duration-300 hover:scale-[1.01] hover:border-primary/40 animate-fade-in"
                   style={{
                     animationDelay: `${140 + i * 35}ms`,
-                    borderColor: podium ? podium.glow : "hsl(var(--primary) / 0.18)",
+                    borderColor: podium ? `${podium.glow}` : "hsl(199 100% 55% / 0.12)",
                     boxShadow: podium
-                      ? `0 0 18px ${podium.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`
-                      : "inset 0 1px 0 rgba(255,255,255,0.03)",
+                      ? `0 0 16px ${podium.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`
+                      : "inset 0 1px 0 rgba(255,255,255,0.025)",
                   }}
                 >
                   {/* Rank badge */}
