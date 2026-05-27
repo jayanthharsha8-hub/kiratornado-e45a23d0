@@ -282,13 +282,13 @@ const Leaderboard = () => {
               return (
                 <li
                   key={e.id}
-                  className="grid grid-cols-[44px,1fr,auto] items-center gap-3 rounded-xl border bg-gradient-to-r from-card/60 to-black/40 p-2.5 transition-all hover:border-primary/50 animate-fade-in"
+                  className="group grid grid-cols-[44px,1fr,auto] items-center gap-3 rounded-xl border bg-gradient-to-r from-white/[0.025] via-white/[0.015] to-transparent p-2.5 backdrop-blur-md transition-all duration-300 hover:scale-[1.01] hover:border-primary/40 animate-fade-in"
                   style={{
                     animationDelay: `${140 + i * 35}ms`,
-                    borderColor: podium ? podium.glow : "hsl(var(--primary) / 0.18)",
+                    borderColor: podium ? `${podium.glow}` : "hsl(199 100% 55% / 0.12)",
                     boxShadow: podium
-                      ? `0 0 18px ${podium.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`
-                      : "inset 0 1px 0 rgba(255,255,255,0.03)",
+                      ? `0 0 16px ${podium.glow}, inset 0 1px 0 rgba(255,255,255,0.04)`
+                      : "inset 0 1px 0 rgba(255,255,255,0.025)",
                   }}
                 >
                   {/* Rank badge */}
