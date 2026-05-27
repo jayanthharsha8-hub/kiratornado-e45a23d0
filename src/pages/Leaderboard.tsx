@@ -126,58 +126,79 @@ const Leaderboard = () => {
   );
 
   return (
-    <div className="relative min-h-screen pb-28 overflow-hidden">
-      {/* Ambient backdrop */}
-      <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
+    <div className="relative min-h-screen pb-28 overflow-hidden bg-[#03060d]">
+      {/* Cinematic backdrop */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[420px]"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(199 100% 55% / 0.22), transparent 65%)" }}
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[560px]"
+        style={{ background: "radial-gradient(ellipse at 50% -10%, hsl(199 100% 55% / 0.28), transparent 60%)" }}
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.05] mix-blend-screen"
+        className="pointer-events-none fixed inset-x-0 bottom-0 -z-10 h-[60vh]"
+        style={{
+          background:
+            "linear-gradient(to top, hsl(220 60% 6% / 0.9), transparent), radial-gradient(ellipse at 50% 100%, hsl(210 80% 28% / 0.22), transparent 60%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] mix-blend-screen"
         style={{
           backgroundImage:
             "linear-gradient(to right, hsl(var(--primary)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--primary)) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
+          backgroundSize: "44px 44px",
+          maskImage: "radial-gradient(ellipse at 50% 30%, black 30%, transparent 78%)",
+          WebkitMaskImage: "radial-gradient(ellipse at 50% 30%, black 30%, transparent 78%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 opacity-50"
+        style={{
+          backgroundImage:
+            "radial-gradient(1px 1px at 18% 28%, hsl(199 100% 75% / 0.7), transparent 60%), radial-gradient(1px 1px at 72% 62%, hsl(199 100% 75% / 0.55), transparent 60%), radial-gradient(1px 1px at 42% 82%, hsl(199 100% 75% / 0.5), transparent 60%), radial-gradient(1px 1px at 88% 18%, hsl(199 100% 75% / 0.6), transparent 60%), radial-gradient(1px 1px at 10% 70%, hsl(199 100% 75% / 0.5), transparent 60%)",
         }}
       />
 
       {/* Header */}
       <header className="relative z-20">
-        <div className="mx-auto flex max-w-md items-start justify-between px-4 pt-4">
+        <div className="mx-auto flex max-w-md items-start justify-between px-4 pt-5">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 rounded-md border border-primary/30 bg-black/40 px-2.5 py-1.5 text-primary backdrop-blur transition hover:border-primary/60 hover:bg-primary/10"
-            style={{ boxShadow: "0 0 12px hsl(199 100% 55% / 0.15)" }}
+            className="flex items-center gap-1.5 rounded-md border border-primary/25 bg-black/50 px-2.5 py-1.5 text-primary/90 backdrop-blur-md transition hover:border-primary/60 hover:bg-primary/10"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            <span className="font-display text-[10px] font-semibold uppercase tracking-[0.25em]">Back</span>
+            <span className="font-display text-[10px] font-semibold uppercase tracking-[0.3em]">Back</span>
           </button>
           <div className="relative">
-            <Avatar name={myProfile?.player_name ?? "You"} src={myProfile?.avatar_url} size={40} />
+            <Avatar name={myProfile?.player_name ?? "You"} src={myProfile?.avatar_url} size={42} />
             <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-background" style={{ boxShadow: "0 0 8px rgb(52 211 153 / 0.9)" }} />
           </div>
         </div>
 
-        <div className="mx-auto mt-2 max-w-md px-4 animate-fade-in">
-          <HeroLogo size={180} className="!mx-auto" />
+        <div className="relative mx-auto mt-3 max-w-md px-4 animate-fade-in">
+          <div
+            aria-hidden
+            className="absolute left-1/2 top-1/2 -z-10 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: "radial-gradient(circle, hsl(199 100% 55% / 0.32), transparent 65%)", filter: "blur(10px)" }}
+          />
+          <HeroLogo size={200} className="!mx-auto drop-shadow-[0_0_24px_hsl(199_100%_55%_/_0.45)]" />
         </div>
       </header>
 
       <main className="relative z-10 mx-auto max-w-md px-4">
         {/* Title */}
-        <section className="mt-2 text-center animate-fade-in">
-          <p className="font-display text-[10px] font-medium uppercase tracking-[0.45em] text-primary/80">Hunter Rankings</p>
+        <section className="mt-4 text-center animate-fade-in">
+          <p className="font-display text-[10px] font-medium uppercase tracking-[0.5em] text-primary/70">Hunter Rankings</p>
           <h1
-            className="mt-2 font-display text-[34px] font-black uppercase leading-[1.02] tracking-[0.06em] text-primary"
-            style={{ textShadow: "0 0 22px hsl(199 100% 55% / 0.55), 0 0 4px hsl(199 100% 70% / 0.8)" }}
+            className="mt-3 font-display text-[36px] font-black uppercase leading-[1.02] tracking-[0.05em] bg-gradient-to-b from-[#dff3ff] via-[#5cc6ff] to-[#1f7fc9] bg-clip-text text-transparent"
+            style={{ filter: "drop-shadow(0 0 18px hsl(199 100% 55% / 0.4))" }}
           >
             Weekly<br />Leaderboard
           </h1>
-          <p className="mt-2 text-[11px] tracking-[0.3em] text-muted-foreground">Compete • Rise • Dominate</p>
-          <div className="mx-auto mt-3 h-px w-40 bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
+          <p className="mt-3 text-[11px] tracking-[0.32em] text-muted-foreground/80">Compete • Rise • Dominate</p>
+          <div className="mx-auto mt-3 h-px w-44 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
         </section>
 
         {/* Rewards */}
