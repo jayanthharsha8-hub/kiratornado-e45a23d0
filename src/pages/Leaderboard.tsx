@@ -202,18 +202,18 @@ const Leaderboard = () => {
         </section>
 
         {/* Rewards */}
-        <section className="mt-5 animate-fade-in" style={{ animationDelay: "60ms" }}>
+        <section className="mt-6 animate-fade-in" style={{ animationDelay: "60ms" }}>
           <div
-            className="rounded-2xl border border-primary/30 bg-black/40 p-3 backdrop-blur"
-            style={{ boxShadow: "inset 0 1px 0 hsl(0 0% 100% / 0.04), 0 0 30px hsl(199 100% 55% / 0.1)" }}
+            className="rounded-2xl border border-primary/20 bg-gradient-to-b from-white/[0.03] to-black/40 p-3.5 backdrop-blur-xl"
+            style={{ boxShadow: "inset 0 1px 0 hsl(0 0% 100% / 0.05), 0 8px 40px hsl(199 100% 55% / 0.08)" }}
           >
-            <div className="mb-3 flex items-center gap-2 px-1">
-              <Gift className="h-4 w-4 text-primary" />
-              <h2 className="font-display text-[11px] font-bold uppercase tracking-[0.3em] text-foreground">
+            <div className="mb-3 flex items-center gap-2 px-0.5">
+              <Gift className="h-3.5 w-3.5 text-primary" />
+              <h2 className="font-display text-[10.5px] font-bold uppercase tracking-[0.32em] text-foreground/90">
                 Weekly Leaderboard Rewards
               </h2>
             </div>
-            <div className="grid grid-cols-3 gap-2.5 pt-2">
+            <div className="grid grid-cols-3 gap-2.5">
               <RewardCard rank={1} coins={rewardFor(1)} />
               <RewardCard rank={2} coins={rewardFor(2)} />
               <RewardCard rank={3} coins={rewardFor(3)} />
@@ -222,8 +222,8 @@ const Leaderboard = () => {
         </section>
 
         {/* Tabs + Region */}
-        <section className="mt-5 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "120ms" }}>
-          <div className="flex flex-1 items-center gap-1 rounded-xl border border-primary/25 bg-black/40 p-1 backdrop-blur">
+        <section className="mt-6 flex items-center gap-2 animate-fade-in" style={{ animationDelay: "120ms" }}>
+          <div className="flex flex-1 items-center gap-1 rounded-xl border border-primary/15 bg-white/[0.02] p-1 backdrop-blur-xl">
             {TABS.map((t) => {
               const active = t === tab;
               return (
@@ -231,14 +231,15 @@ const Leaderboard = () => {
                   key={t}
                   onClick={() => setTab(t)}
                   className={cn(
-                    "flex-1 rounded-lg px-2 py-2 font-display text-[10px] font-bold uppercase tracking-[0.18em] transition-all",
-                    active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                    "flex-1 rounded-lg px-2 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-300",
+                    active ? "text-primary" : "text-muted-foreground/70 hover:text-foreground"
                   )}
                   style={
                     active
                       ? {
-                          background: "linear-gradient(135deg, hsl(199 100% 55%), hsl(199 100% 70%))",
-                          boxShadow: "0 0 14px hsl(199 100% 55% / 0.55), inset 0 1px 0 rgba(255,255,255,0.25)",
+                          background: "linear-gradient(180deg, hsl(199 100% 55% / 0.16), hsl(199 100% 55% / 0.04))",
+                          boxShadow: "inset 0 0 0 1px hsl(199 100% 55% / 0.45), 0 0 18px hsl(199 100% 55% / 0.22)",
+                          textShadow: "0 0 10px hsl(199 100% 70% / 0.65)",
                         }
                       : undefined
                   }
@@ -248,7 +249,7 @@ const Leaderboard = () => {
               );
             })}
           </div>
-          <button className="flex items-center gap-1.5 rounded-xl border border-primary/25 bg-black/40 px-3 py-2 font-display text-[10px] font-bold uppercase tracking-[0.18em] text-foreground/90 backdrop-blur transition hover:border-primary/50">
+          <button className="flex items-center gap-1.5 rounded-xl border border-primary/15 bg-white/[0.02] px-3 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/85 backdrop-blur-xl transition hover:border-primary/40">
             <Globe className="h-3.5 w-3.5 text-primary" />
             All
             <ChevronDown className="h-3 w-3 opacity-70" />
