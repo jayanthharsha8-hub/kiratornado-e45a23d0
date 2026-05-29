@@ -126,7 +126,7 @@ const Leaderboard = () => {
   );
 
   return (
-    <div className="relative min-h-screen pb-28 overflow-hidden bg-[#03060d]">
+    <div className="relative min-h-screen pb-28 overflow-hidden bg-[#02050b]">
       {/* Cinematic backdrop */}
       <div
         aria-hidden
