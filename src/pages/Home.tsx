@@ -104,16 +104,9 @@ const Home = () => {
                        {banner.image_url ? (
                          <img src={banner.image_url} alt={banner.title || "Home banner"} width={1280} height={480} className="h-full w-full object-cover" />
                        ) : (
-                         <div className="flex h-full w-full items-center justify-center bg-card text-xs uppercase tracking-[0.3em] text-muted-foreground">No Banner</div>
+                         <div className="h-full w-full bg-card" />
                        )}
-                       <div className="absolute inset-y-0 left-0 flex w-2/3 flex-col justify-center p-3">
-                         <p className="text-[9px] uppercase tracking-[0.24em] text-primary/90">[ System Welcome ]</p>
-                         <h2 className="font-display text-base font-black uppercase tracking-wider text-foreground text-glow">
-                          {banner.title || "No Banner"}
-                        </h2>
-                         <p className="mt-1 text-[11px] text-muted-foreground">
-                          {banner.subtitle || <>Hunter <span className="text-primary">{playerName}</span> -- choose your arena.</>}
-                        </p>
+                       <div className="absolute inset-y-0 left-0 hidden w-2/3 flex-col justify-center p-3">
                         {banner.button_text && <span className="mt-2 w-fit rounded-sm border border-primary/50 bg-primary/10 px-2 py-1 text-[9px] uppercase tracking-widest text-primary">{banner.button_text}</span>}
                       </div>
                     </div>
