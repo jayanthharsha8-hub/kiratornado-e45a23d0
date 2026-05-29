@@ -160,6 +160,52 @@ const Leaderboard = () => {
             "radial-gradient(1px 1px at 18% 28%, hsl(199 100% 75% / 0.7), transparent 60%), radial-gradient(1px 1px at 72% 62%, hsl(199 100% 75% / 0.55), transparent 60%), radial-gradient(1px 1px at 42% 82%, hsl(199 100% 75% / 0.5), transparent 60%), radial-gradient(1px 1px at 88% 18%, hsl(199 100% 75% / 0.6), transparent 60%), radial-gradient(1px 1px at 10% 70%, hsl(199 100% 75% / 0.5), transparent 60%)",
         }}
       />
+      {/* Mountain silhouette layer */}
+      <svg
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-[280px] -z-10 w-full opacity-60"
+        viewBox="0 0 400 140"
+        preserveAspectRatio="none"
+        style={{ height: 220 }}
+      >
+        <defs>
+          <linearGradient id="lb-mtn" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="hsl(210 70% 10%)" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="hsl(215 80% 4%)" stopOpacity="0.95" />
+          </linearGradient>
+          <linearGradient id="lb-mtn2" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stopColor="hsl(199 80% 18%)" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="hsl(215 80% 4%)" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0,140 L0,90 L25,70 L48,85 L72,50 L100,80 L128,45 L160,72 L192,40 L222,68 L252,48 L282,75 L312,55 L344,82 L372,60 L400,78 L400,140 Z"
+          fill="url(#lb-mtn2)"
+        />
+        <path
+          d="M0,140 L0,108 L30,92 L58,104 L88,80 L120,100 L150,82 L184,102 L214,86 L244,104 L276,90 L308,108 L340,94 L372,110 L400,98 L400,140 Z"
+          fill="url(#lb-mtn)"
+        />
+      </svg>
+      {/* Soft horizon fog */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-[380px] -z-10 h-[180px]"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, hsl(199 100% 55% / 0.16), transparent 65%)",
+          filter: "blur(10px)",
+        }}
+      />
+      {/* Vignette */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 50%, transparent 45%, hsl(0 0% 0% / 0.55) 100%)",
+        }}
+      />
 
       {/* Header */}
       <header className="relative z-20">
