@@ -43,24 +43,33 @@ export const BottomNav = () => {
       className="fixed inset-x-0 bottom-0 z-40"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="mx-auto w-full max-w-md">
+      <div className="mx-auto w-full max-w-md px-2 pb-1.5">
         <div
-          className="relative flex items-center"
+          className="relative flex items-center rounded-2xl overflow-hidden backdrop-blur-xl"
           style={{
             height: NAV_H,
             background:
-              "linear-gradient(180deg, #05080d 0%, #000000 100%)",
-            borderTop: `1px solid ${NEON_DIM}`,
-            boxShadow: `0 -6px 18px -8px ${NEON_DIM}`,
+              "linear-gradient(180deg, rgba(8,14,24,0.92) 0%, rgba(2,5,10,0.96) 100%)",
+            border: `1px solid hsl(199 100% 58% / 0.18)`,
+            boxShadow: `0 8px 28px -12px hsl(199 100% 58% / 0.35), inset 0 1px 0 hsl(199 100% 70% / 0.08)`,
           }}
         >
           {/* thin neon top accent */}
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-x-8 top-0 h-px"
+            className="pointer-events-none absolute inset-x-12 top-0 h-px"
             style={{
               background: `linear-gradient(90deg, transparent, ${NEON} 50%, transparent)`,
-              opacity: 0.6,
+              opacity: 0.45,
+            }}
+          />
+          {/* ambient inner glow */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 60% 80% at 50% 120%, hsl(199 100% 50% / 0.12), transparent 70%)",
             }}
           />
 

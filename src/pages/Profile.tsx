@@ -26,7 +26,7 @@ interface Profile {
 
 const getRank = (level: number) => {
   if (level >= 81) return "S";
-  if (level >= 76) return "A";
+  if (level >= 70) return "A";
   if (level >= 61) return "B";
   if (level >= 41) return "C";
   if (level >= 21) return "D";
