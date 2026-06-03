@@ -4,10 +4,10 @@ import { playSound } from "@/hooks/useSound";
 import { cn } from "@/lib/utils";
 
 /**
- * Premium esports bottom navigation.
- * - 5 perfectly equal hex tabs, HOME centered and 8% larger
- * - Tight, contained neon glow (never overflows nav height)
- * - Rajdhani labels for clean, readable futuristic look
+ * Edge-attached bottom navigation.
+ * - Fixed to the bottom edge (no floating card, no detached shadow)
+ * - Glassmorphic dark navy bar with soft neon-blue border
+ * - 5 tabs with a raised futuristic HOME center tab
  */
 
 type Tab = {
@@ -25,13 +25,13 @@ const TABS: Tab[] = [
   { to: "/profile", label: "Profile", Icon: User },
 ];
 
-const HEX = "polygon(14% 0%, 86% 0%, 100% 50%, 86% 100%, 14% 100%, 0% 50%)";
 const NEON = "hsl(199 100% 58%)";
-const NEON_DIM = "hsl(199 100% 58% / 0.35)";
+const NEON_SOFT = "hsl(199 100% 58% / 0.25)";
 
-const NAV_H = 68; // overall nav height (px)
-const TAB_H = 52; // standard tab height
-const TAB_H_CENTER = Math.round(TAB_H * 1.08); // HOME 8% larger ≈ 56
+const NAV_H = 64;
+// Raised home shape (trapezoid-like). Reduced height ~17%.
+const HOME_CLIP =
+  "polygon(18% 18%, 82% 18%, 96% 60%, 88% 100%, 12% 100%, 4% 60%)";
 
 export const BottomNav = () => {
   const { pathname } = useLocation();
@@ -43,98 +43,83 @@ export const BottomNav = () => {
       className="fixed inset-x-0 bottom-0 z-40"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="mx-auto w-full max-w-md px-2 pb-1.5">
-        <div
-          className="relative flex items-center rounded-2xl overflow-hidden backdrop-blur-xl"
+      <div
+        className="relative w-full backdrop-blur-xl"
+        style={{
+          height: NAV_H,
+          background:
+            "linear-gradient(180deg, rgba(6,11,20,0.88) 0%, rgba(2,4,9,0.96) 100%)",
+          borderTop: `1px solid ${NEON_SOFT}`,
+        }}
+      >
+        {/* soft neon top hairline */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px"
           style={{
-            height: NAV_H,
-            background:
-              "linear-gradient(180deg, rgba(8,14,24,0.92) 0%, rgba(2,5,10,0.96) 100%)",
-            border: `1px solid hsl(199 100% 58% / 0.18)`,
-            boxShadow: `0 8px 28px -12px hsl(199 100% 58% / 0.35), inset 0 1px 0 hsl(199 100% 70% / 0.08)`,
+            background: `linear-gradient(90deg, transparent, ${NEON} 50%, transparent)`,
+            opacity: 0.35,
           }}
-        >
-          {/* thin neon top accent */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-x-12 top-0 h-px"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${NEON} 50%, transparent)`,
-              opacity: 0.45,
-            }}
-          />
-          {/* ambient inner glow */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse 60% 80% at 50% 120%, hsl(199 100% 50% / 0.12), transparent 70%)",
-            }}
-          />
+        />
+        {/* subtle ambient glow */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 50% 70% at 50% 100%, hsl(199 100% 50% / 0.08), transparent 70%)",
+          }}
+        />
 
-          <ul className="relative z-10 grid h-full w-full grid-cols-5 items-center gap-1.5 px-3">
-            {TABS.map(({ to, label, Icon, center }) => {
-              const active = isActive(to);
-              const h = center ? TAB_H_CENTER : TAB_H;
+        <ul className="relative z-10 grid h-full w-full max-w-md mx-auto grid-cols-5 items-center">
+          {TABS.map(({ to, label, Icon, center }) => {
+            const active = isActive(to);
 
+            if (center) {
               return (
                 <li key={to} className="flex items-center justify-center">
                   <NavLink
                     to={to}
                     onClick={() => playSound("tick")}
                     aria-label={label}
-                    className={cn(
-                      "group relative flex w-full items-center justify-center",
-                      active && center && "animate-[nav-pulse_2.6s_ease-in-out_infinite]"
-                    )}
-                    style={{ height: h }}
+                    className="relative flex items-center justify-center"
+                    style={{ width: 64, height: 52, marginTop: -10 }}
                   >
-                    {/* hex border */}
+                    {/* outer neon edge */}
                     <span
                       aria-hidden
                       className="absolute inset-0"
                       style={{
-                        clipPath: HEX,
+                        clipPath: HOME_CLIP,
                         background: active
                           ? `linear-gradient(180deg, ${NEON}, hsl(199 100% 45%))`
-                          : "hsl(199 100% 58% / 0.32)",
+                          : `${NEON_SOFT}`,
                       }}
                     />
-                    {/* hex inner */}
+                    {/* inner fill */}
                     <span
                       aria-hidden
-                      className="absolute inset-[1px]"
+                      className="absolute inset-[1.5px]"
                       style={{
-                        clipPath: HEX,
+                        clipPath: HOME_CLIP,
                         background: active
-                          ? "radial-gradient(ellipse at center, hsl(199 90% 14%) 0%, #03070c 85%)"
+                          ? "radial-gradient(ellipse at center, hsl(199 90% 14%) 0%, #03070c 90%)"
                           : "linear-gradient(180deg, #0a0f16 0%, #02050a 100%)",
+                        boxShadow: active
+                          ? `inset 0 0 8px hsl(199 100% 58% / 0.45)`
+                          : undefined,
                       }}
                     />
-                    {/* tight inner glow when active (contained) */}
-                    {active && (
-                      <span
-                        aria-hidden
-                        className="absolute inset-[1px]"
-                        style={{
-                          clipPath: HEX,
-                          boxShadow: `inset 0 0 8px hsl(199 100% 58% / 0.55)`,
-                        }}
-                      />
-                    )}
-
-                    {/* content */}
-                    <div className="relative flex flex-col items-center justify-center gap-[3px] leading-none">
+                    <div className="relative flex flex-col items-center justify-center gap-[2px] leading-none">
                       <Icon
                         strokeWidth={1.75}
                         className={cn(
                           "transition-colors",
-                          active ? "text-primary" : "text-foreground/70"
+                          active ? "text-primary" : "text-white/85"
                         )}
                         style={{
-                          width: center ? 19 : 17,
-                          height: center ? 19 : 17,
+                          width: 18,
+                          height: 18,
                           filter: active
                             ? `drop-shadow(0 0 3px ${NEON})`
                             : undefined,
@@ -142,14 +127,14 @@ export const BottomNav = () => {
                       />
                       <span
                         className={cn(
-                          "font-body uppercase whitespace-nowrap transition-colors",
-                          active ? "text-primary" : "text-foreground/70"
+                          "font-body transition-colors",
+                          active ? "text-primary" : "text-white/85"
                         )}
                         style={{
-                          fontSize: center ? 9 : 8.5,
+                          fontSize: 9.5,
                           fontWeight: 600,
-                          letterSpacing: "0.14em",
-                          textShadow: active ? `0 0 4px ${NEON}` : undefined,
+                          letterSpacing: "0.04em",
+                          textShadow: active ? `0 0 3px ${NEON}` : undefined,
                         }}
                       >
                         {label}
@@ -158,17 +143,50 @@ export const BottomNav = () => {
                   </NavLink>
                 </li>
               );
-            })}
-          </ul>
-        </div>
-      </div>
+            }
 
-      <style>{`
-        @keyframes nav-pulse {
-          0%, 100% { filter: drop-shadow(0 0 2px ${NEON}); }
-          50%      { filter: drop-shadow(0 0 5px ${NEON}); }
-        }
-      `}</style>
+            return (
+              <li key={to} className="flex items-center justify-center">
+                <NavLink
+                  to={to}
+                  onClick={() => playSound("tick")}
+                  aria-label={label}
+                  className="group flex h-full w-full flex-col items-center justify-center gap-[3px]"
+                >
+                  <Icon
+                    strokeWidth={1.75}
+                    className={cn(
+                      "transition-colors",
+                      active ? "text-primary" : "text-white/55"
+                    )}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      filter: active
+                        ? `drop-shadow(0 0 2.5px ${NEON})`
+                        : undefined,
+                    }}
+                  />
+                  <span
+                    className={cn(
+                      "font-body transition-colors",
+                      active ? "text-primary" : "text-white/55"
+                    )}
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: 600,
+                      letterSpacing: "0.04em",
+                      textShadow: active ? `0 0 3px ${NEON}` : undefined,
+                    }}
+                  >
+                    {label}
+                  </span>
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 };
