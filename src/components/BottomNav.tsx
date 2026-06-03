@@ -29,23 +29,24 @@ const NEON = "hsl(199 100% 58%)";
 // SVG viewBox geometry — 400 wide x 80 tall
 // Path traces a continuous frame: left section -> rises -> over HOME -> falls -> right section
 // HOME bump is centered at x=200, spans ~140..260, peaks at y=8
+// HOME bump: +15% wider (124..276), +10% taller (side-top y=24, peak y=2)
 const FRAME_PATH =
-  "M 14 22 \
-   Q 4 22 4 32 \
-   L 4 66 \
-   Q 4 76 14 76 \
-   L 386 76 \
-   Q 396 76 396 66 \
-   L 396 32 \
-   Q 396 22 386 22 \
-   L 266 22 \
-   Q 258 22 254 16 \
-   L 244 6 \
-   Q 240 2 234 2 \
-   L 166 2 \
-   Q 160 2 156 6 \
-   L 146 16 \
-   Q 142 22 134 22 \
+  "M 14 24 \
+   Q 4 24 4 34 \
+   L 4 68 \
+   Q 4 78 14 78 \
+   L 386 78 \
+   Q 396 78 396 68 \
+   L 396 34 \
+   Q 396 24 386 24 \
+   L 286 24 \
+   Q 278 24 273 18 \
+   L 262 6 \
+   Q 258 2 252 2 \
+   L 148 2 \
+   Q 142 2 138 6 \
+   L 127 18 \
+   Q 122 24 114 24 \
    Z";
 
 export const BottomNav = () => {
@@ -54,11 +55,14 @@ export const BottomNav = () => {
     pathname === to || (to === "/wallet" && pathname.startsWith("/wallet"));
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-40"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-    >
-      <div className="relative w-full mx-auto max-w-md" style={{ height: 72 }}>
+    <nav className="fixed inset-x-0 bottom-0 z-40">
+      <div
+        className="relative w-full"
+        style={{
+          height: 76,
+          paddingBottom: "env(safe-area-inset-bottom)",
+        }}
+      >
         {/* Single continuous frame (border + fill) */}
         <svg
           viewBox="0 0 400 80"
@@ -68,29 +72,34 @@ export const BottomNav = () => {
         >
           <defs>
             <linearGradient id="navFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(6,11,20,0.92)" />
-              <stop offset="100%" stopColor="rgba(2,4,9,0.98)" />
+              <stop offset="0%" stopColor="rgba(6,11,20,0.95)" />
+              <stop offset="100%" stopColor="rgba(2,4,9,0.99)" />
             </linearGradient>
-            <linearGradient id="navStroke" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(199 100% 68%)" />
-              <stop offset="100%" stopColor="hsl(199 100% 45%)" />
-            </linearGradient>
-            <filter id="navGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="1.2" result="blur" />
+            <filter id="navGlow" x="-10%" y="-30%" width="120%" height="160%">
+              <feGaussianBlur stdDeviation="1.4" result="b1" />
               <feMerge>
-                <feMergeNode in="blur" />
+                <feMergeNode in="b1" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
           </defs>
           <path d={FRAME_PATH} fill="url(#navFill)" />
+          {/* soft outer glow */}
           <path
             d={FRAME_PATH}
             fill="none"
-            stroke="url(#navStroke)"
-            strokeWidth="1.25"
-            opacity="0.75"
+            stroke="#00d9ff"
+            strokeWidth="2.4"
+            opacity="0.32"
             filter="url(#navGlow)"
+          />
+          {/* crisp neon edge */}
+          <path
+            d={FRAME_PATH}
+            fill="none"
+            stroke="#00d9ff"
+            strokeWidth="1.1"
+            opacity="0.95"
           />
         </svg>
 
