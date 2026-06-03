@@ -28,25 +28,24 @@ const NEON = "hsl(199 100% 58%)";
 
 // SVG viewBox geometry — 400 wide x 80 tall
 // Path traces a continuous frame: left section -> rises -> over HOME -> falls -> right section
-// HOME bump is centered at x=200, spans ~140..260, peaks at y=8
-// HOME bump: +15% wider (124..276), +10% taller (side-top y=24, peak y=2)
+// HOME bump enlarged: width ~170 (115..285), height ~24 (side-top y=26, peak y=2)
 const FRAME_PATH =
-  "M 14 24 \
-   Q 4 24 4 34 \
-   L 4 68 \
-   Q 4 78 14 78 \
-   L 386 78 \
-   Q 396 78 396 68 \
-   L 396 34 \
-   Q 396 24 386 24 \
-   L 286 24 \
-   Q 278 24 273 18 \
-   L 262 6 \
-   Q 258 2 252 2 \
-   L 148 2 \
-   Q 142 2 138 6 \
-   L 127 18 \
-   Q 122 24 114 24 \
+  "M 14 26 \
+   Q 4 26 4 36 \
+   L 4 70 \
+   Q 4 80 14 80 \
+   L 386 80 \
+   Q 396 80 396 70 \
+   L 396 36 \
+   Q 396 26 386 26 \
+   L 295 26 \
+   Q 287 26 282 19 \
+   L 270 6 \
+   Q 266 2 260 2 \
+   L 140 2 \
+   Q 134 2 130 6 \
+   L 118 19 \
+   Q 113 26 105 26 \
    Z";
 
 export const BottomNav = () => {
@@ -59,15 +58,14 @@ export const BottomNav = () => {
       <div
         className="relative w-full"
         style={{
-          height: 76,
+          height: 78,
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        {/* Single continuous frame (border + fill) */}
         <svg
-          viewBox="0 0 400 80"
+          viewBox="0 0 400 82"
           preserveAspectRatio="none"
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full overflow-visible"
           aria-hidden
         >
           <defs>
@@ -75,8 +73,8 @@ export const BottomNav = () => {
               <stop offset="0%" stopColor="rgba(6,11,20,0.95)" />
               <stop offset="100%" stopColor="rgba(2,4,9,0.99)" />
             </linearGradient>
-            <filter id="navGlow" x="-10%" y="-30%" width="120%" height="160%">
-              <feGaussianBlur stdDeviation="1.4" result="b1" />
+            <filter id="navGlow" x="-15%" y="-40%" width="130%" height="180%">
+              <feGaussianBlur stdDeviation="2.2" result="b1" />
               <feMerge>
                 <feMergeNode in="b1" />
                 <feMergeNode in="SourceGraphic" />
@@ -84,22 +82,31 @@ export const BottomNav = () => {
             </filter>
           </defs>
           <path d={FRAME_PATH} fill="url(#navFill)" />
-          {/* soft outer glow */}
+          {/* wide outer halo */}
           <path
             d={FRAME_PATH}
             fill="none"
             stroke="#00d9ff"
-            strokeWidth="2.4"
-            opacity="0.32"
+            strokeWidth="3.5"
+            opacity="0.28"
+            filter="url(#navGlow)"
+          />
+          {/* mid glow */}
+          <path
+            d={FRAME_PATH}
+            fill="none"
+            stroke="#33e3ff"
+            strokeWidth="1.8"
+            opacity="0.55"
             filter="url(#navGlow)"
           />
           {/* crisp neon edge */}
           <path
             d={FRAME_PATH}
             fill="none"
-            stroke="#00d9ff"
-            strokeWidth="1.1"
-            opacity="0.95"
+            stroke="#5ee9ff"
+            strokeWidth="1.25"
+            opacity="1"
           />
         </svg>
 
