@@ -72,6 +72,7 @@ const App = () => (
             <Route path="/wallet/redeem/confirm" element={<ProtectedRoute><WalletRedeemConfirm /></ProtectedRoute>} />
             <Route path="/wallet/upi" element={<ProtectedRoute><WalletUpi /></ProtectedRoute>} />
             <Route path="/wallet/history" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
+            <Route path="/hunter-chat" element={<ProtectedRoute><HunterChat /></ProtectedRoute>} />
             {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
             <Route path="/admin/tournaments" element={<AdminRoute><AdminLayout><AdminTournaments /></AdminLayout></AdminRoute>} />
