@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Shield, Coins, Plus, ShieldAlert, Bot, Clock, Menu } from "lucide-react";
+import { ArrowLeft, Send, Shield, Coins, Plus, ShieldAlert, Bot, Clock, Plus as PlusIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Logo } from "@/components/Logo";
@@ -37,7 +37,6 @@ const getRank = (level: number) => {
 
 const COOLDOWN_MS = 3000;
 
-// Detection patterns for KIRA SYSTEM bot moderation
 const ROOM_ID_RE = /\b\d{6,}\b/;
 const PASSWORD_RE = /\b(pass(word)?|pwd|pw)\s*[:=\-]?\s*\S+/i;
 const LINK_RE = /(https?:\/\/|www\.|\.com|\.in|\.net|t\.me\/|wa\.me\/|bit\.ly)/i;
@@ -56,15 +55,14 @@ const formatTime = (iso: string) => {
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-// Color hash for username based on rank
 const rankColor = (rank: string) => {
   switch (rank) {
-    case "S": return "text-[hsl(45_100%_60%)]";
-    case "A": return "text-[hsl(35_100%_60%)]";
+    case "S": return "text-[hsl(45_100%_62%)]";
+    case "A": return "text-[hsl(28_100%_62%)]";
     case "B": return "text-primary";
-    case "C": return "text-[hsl(140_70%_55%)]";
-    case "D": return "text-[hsl(280_80%_70%)]";
-    default: return "text-muted-foreground";
+    case "C": return "text-[hsl(140_70%_58%)]";
+    case "D": return "text-[hsl(280_85%_72%)]";
+    default: return "text-foreground";
   }
 };
 
@@ -80,7 +78,6 @@ const HunterChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastSentRef = useRef(0);
 
-  // Load profile
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles")
@@ -89,7 +86,6 @@ const HunterChat = () => {
       .then(({ data }) => { if (data) setProfile(data as MyProfile); });
   }, [user]);
 
-  // Load initial messages
   useEffect(() => {
     supabase.from("chat_messages")
       .select("*")
@@ -100,7 +96,6 @@ const HunterChat = () => {
       });
   }, []);
 
-  // Realtime subscription + presence
   useEffect(() => {
     if (!user) return;
     const channel = supabase
@@ -114,8 +109,7 @@ const HunterChat = () => {
       })
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
-        const count = Object.keys(state).length;
-        setOnlineCount(Math.max(count, 1));
+        setOnlineCount(Math.max(Object.keys(state).length, 1));
       })
       .subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
@@ -125,12 +119,10 @@ const HunterChat = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user]);
 
-  // Auto-scroll
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  // Cooldown ticker
   useEffect(() => {
     if (cooldownLeft <= 0) return;
     const id = setInterval(() => {
@@ -161,9 +153,6 @@ const HunterChat = () => {
     lastSentRef.current = Date.now();
     setCooldownLeft(COOLDOWN_MS);
 
-    // Bot moderation — runs server-side via service role would be ideal,
-    // but for demo we let any client insert a bot-style notice via RPC... 
-    // Since policy blocks is_bot=true, we render a *local* warning card instead.
     const violation = detectViolation(text);
     if (violation) {
       const botMsg: ChatMessage = {
@@ -184,69 +173,83 @@ const HunterChat = () => {
   const myRank = useMemo(() => profile ? getRank(profile.player_level) : "E", [profile]);
 
   return (
-    <div className="relative flex h-[100dvh] flex-col bg-background scanline">
-      <div className="pointer-events-none fixed inset-0 -z-10" style={{ background: "var(--gradient-glow)" }} />
+    <div className="relative flex h-[100dvh] flex-col bg-background scanline overflow-hidden">
+      {/* Atmospheric backdrop */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 0%, hsl(199 100% 50% / 0.18), transparent 60%)" }} />
+        <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ background: "radial-gradient(80% 60% at 50% 100%, hsl(199 100% 50% / 0.12), transparent 70%)" }} />
+      </div>
 
       {/* HEADER */}
-      <header className="relative z-20 border-b border-primary/30 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-md items-center gap-2 px-4 py-3">
-          <button onClick={() => navigate(-1)} className="text-primary hover:text-glow-soft">
-            <ArrowLeft className="h-5 w-5" />
+      <header className="relative z-20 border-b border-primary/40 bg-background/80 backdrop-blur-xl">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
+
+        {/* Top action row */}
+        <div className="mx-auto flex max-w-md items-center gap-2 px-4 pt-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="grid h-9 w-9 place-items-center rounded-md border border-primary/50 bg-card/60 text-primary glow-soft hover:bg-primary/15"
+          >
+            <ArrowLeft className="h-4 w-4" />
           </button>
           <Logo size={22} />
           <div className="flex-1" />
+
+          {/* Rank floating card */}
           {profile && (
-            <div className="flex items-center gap-1.5 rounded border border-primary/50 bg-primary/10 px-2 py-1">
-              <Shield className="h-3.5 w-3.5 text-primary" />
-              <div className="leading-tight">
-                <div className="font-display text-[10px] font-bold uppercase tracking-widest text-primary text-glow-soft">
+            <div className="relative flex items-center gap-2 rounded-md border border-primary/60 bg-gradient-to-b from-primary/20 to-background/40 px-2.5 py-1.5 shadow-[0_0_14px_hsl(var(--primary)/0.35),inset_0_0_10px_hsl(var(--primary)/0.15)]">
+              <div className="grid h-7 w-7 place-items-center rounded border border-primary/70 bg-background/60 text-primary glow-soft">
+                <Shield className="h-3.5 w-3.5" />
+              </div>
+              <div className="leading-none">
+                <div className="font-display text-[10px] font-extrabold uppercase tracking-[0.15em] text-primary text-glow-soft">
                   {myRank} Rank
                 </div>
-                <div className="text-[9px] uppercase tracking-widest text-muted-foreground">Lvl {profile.player_level}</div>
+                <div className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Lvl {profile.player_level}</div>
               </div>
             </div>
           )}
-          <div className="flex items-center gap-1 rounded border border-primary/40 bg-background/60 px-2 py-1.5">
-            <Coins className="h-3.5 w-3.5 text-primary" />
-            <span className="font-display text-xs text-foreground">{profile?.coins.toLocaleString() ?? 0}</span>
-            <Plus className="h-3 w-3 text-primary" />
+
+          {/* Wallet floating card */}
+          <div className="flex items-center gap-1.5 rounded-md border border-primary/60 bg-gradient-to-b from-primary/15 to-background/40 px-2.5 py-1.5 shadow-[0_0_14px_hsl(var(--primary)/0.3)]">
+            <Coins className="h-3.5 w-3.5 text-primary text-glow-soft" />
+            <span className="font-display text-xs font-bold text-foreground">{profile?.coins.toLocaleString() ?? 0}</span>
+            <button className="grid h-4 w-4 place-items-center rounded-full border border-primary/70 bg-primary/20 text-primary">
+              <PlusIcon className="h-2.5 w-2.5" />
+            </button>
           </div>
         </div>
 
-        {/* TITLE STRIP */}
-        <div className="mx-auto max-w-md px-4 pb-3">
-          <h1 className="font-display text-2xl font-extrabold uppercase tracking-widest text-foreground text-glow">
-            Hunter Chat
+        {/* Title block */}
+        <div className="mx-auto max-w-md px-4 pb-4 pt-3">
+          <h1 className="font-display text-3xl font-black uppercase leading-none tracking-[0.18em] text-foreground text-glow">
+            Hunter <span className="text-primary">Chat</span>
           </h1>
-          <div className="mt-1 flex items-center gap-2 text-xs">
-            <span className="inline-block h-2 w-2 rounded-full bg-[hsl(140_70%_55%)] shadow-[0_0_8px_hsl(140_70%_55%)] animate-pulse" />
-            <span className="font-display uppercase tracking-widest text-muted-foreground">
+          <div className="mt-2 flex items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inset-0 animate-ping rounded-full bg-[hsl(140_70%_55%)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(140_70%_55%)] shadow-[0_0_8px_hsl(140_70%_55%)]" />
+            </span>
+            <span className="font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(140_70%_60%)]">
               {onlineCount} Hunters Online
             </span>
+            <div className="ml-2 h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent" />
           </div>
         </div>
       </header>
 
       {/* MESSAGES */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md space-y-2.5 px-3 py-3">
-          {/* SYSTEM NOTICE */}
-          <div className="flex items-center gap-2 rounded-lg border border-primary/40 bg-card/60 px-3 py-2.5 glow-soft">
-            <ShieldAlert className="h-4 w-4 shrink-0 text-primary" />
-            <p className="flex-1 text-xs text-muted-foreground">
-              Be respectful, Hunters. Misbehavior leads to warnings or bans.
-            </p>
-            <span className="flex items-center gap-1 font-display text-[10px] uppercase tracking-widest text-primary">
-              <Shield className="h-3 w-3" /> Kira System
-            </span>
-          </div>
+        <div className="mx-auto max-w-md space-y-3 px-3 py-4">
+          {/* System notice */}
+          <SystemNoticeCard />
 
           {messages.map((m) => (
             <MessageCard key={m.id} message={m} />
           ))}
 
           {messages.length === 0 && (
-            <p className="py-12 text-center text-xs uppercase tracking-widest text-muted-foreground">
+            <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-muted-foreground">
               No messages yet. Be the first Hunter to speak.
             </p>
           )}
@@ -254,14 +257,15 @@ const HunterChat = () => {
       </div>
 
       {/* INPUT */}
-      <div className="relative z-20 border-t border-primary/30 bg-background/90 backdrop-blur">
+      <div className="relative z-20 border-t border-primary/40 bg-background/85 backdrop-blur-xl">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_12px_hsl(var(--primary)/0.7)]" />
         <div className="mx-auto max-w-md px-3 py-3">
           <div className="flex items-center gap-2">
             <button
-              aria-label="Menu"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-primary/60 bg-primary/10 text-primary glow-soft"
+              aria-label="Add"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-primary/70 bg-gradient-to-b from-primary/25 to-primary/10 text-primary shadow-[0_0_14px_hsl(var(--primary)/0.55),inset_0_0_8px_hsl(var(--primary)/0.3)]"
             >
-              <Menu className="h-4 w-4" />
+              <Plus className="h-5 w-5" />
             </button>
             <div className="relative flex-1">
               <input
@@ -270,13 +274,13 @@ const HunterChat = () => {
                 onKeyDown={(e) => { if (e.key === "Enter") send(); }}
                 placeholder="Type your message..."
                 maxLength={240}
-                className="h-10 w-full rounded-full border border-primary/40 bg-card/60 px-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none"
+                className="h-11 w-full rounded-full border border-primary/50 bg-card/70 px-5 pr-14 text-sm text-foreground placeholder:text-muted-foreground/70 shadow-[inset_0_0_10px_hsl(var(--primary)/0.12)] focus:border-primary focus:shadow-[0_0_14px_hsl(var(--primary)/0.45),inset_0_0_10px_hsl(var(--primary)/0.2)] focus:outline-none transition"
               />
               <button
                 onClick={send}
                 disabled={!input.trim() || sending || cooldownLeft > 0}
                 aria-label="Send"
-                className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full text-primary hover:bg-primary/15 disabled:text-primary/40"
+                className="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full bg-gradient-to-b from-primary to-primary/70 text-primary-foreground shadow-[0_0_14px_hsl(var(--primary)/0.7)] disabled:opacity-40 disabled:shadow-none"
               >
                 <Send className="h-4 w-4" />
               </button>
@@ -294,28 +298,50 @@ const HunterChat = () => {
   );
 };
 
+const SystemNoticeCard = () => (
+  <div className="relative overflow-hidden rounded-xl border border-primary/60 bg-gradient-to-br from-primary/15 via-background/60 to-background/40 p-3.5 shadow-[0_0_22px_hsl(var(--primary)/0.35),inset_0_0_18px_hsl(var(--primary)/0.12)]">
+    <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 80% at 0% 50%, hsl(var(--primary)/0.18), transparent 60%)" }} />
+    <div className="relative flex items-center gap-3">
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-primary/70 bg-background/70 text-primary glow-soft">
+        <ShieldAlert className="h-4 w-4" />
+      </div>
+      <p className="flex-1 text-[13px] leading-snug text-foreground/85">
+        Be respectful, Hunters. Misbehavior leads to warnings or bans.
+      </p>
+      <span className="flex items-center gap-1 rounded-md border border-primary/60 bg-primary/15 px-2 py-1 font-display text-[9px] font-bold uppercase tracking-[0.18em] text-primary text-glow-soft">
+        <Shield className="h-3 w-3" /> Kira
+      </span>
+    </div>
+  </div>
+);
+
 const MessageCard = ({ message }: { message: ChatMessage }) => {
   const rank = getRank(message.player_level);
   const isBot = message.is_bot;
 
   if (isBot) {
     return (
-      <div className="rounded-lg border border-primary/60 bg-primary/10 p-3 glow-soft animate-float-up">
-        <div className="flex gap-3">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-primary/70 bg-background text-primary glow-soft">
-            <Bot className="h-5 w-5" />
+      <div className="relative overflow-hidden rounded-xl border border-primary/70 bg-gradient-to-br from-primary/20 via-primary/5 to-background/40 p-4 shadow-[0_0_28px_hsl(var(--primary)/0.45),inset_0_0_22px_hsl(var(--primary)/0.18)] animate-float-up">
+        <div className="pointer-events-none absolute -left-8 -top-8 h-24 w-24 rounded-full bg-primary/30 blur-2xl" />
+        <div className="pointer-events-none absolute -right-8 -bottom-10 h-28 w-28 rounded-full bg-primary/20 blur-2xl" />
+        <div className="relative flex gap-3.5">
+          <div className="relative shrink-0">
+            <div className="absolute inset-0 rounded-xl bg-primary/40 blur-md" />
+            <div className="relative grid h-12 w-12 place-items-center rounded-xl border-2 border-primary bg-background text-primary shadow-[0_0_16px_hsl(var(--primary)/0.8)]">
+              <Bot className="h-6 w-6" />
+            </div>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-display text-sm font-bold uppercase tracking-wider text-primary text-glow-soft">
+              <span className="font-display text-[15px] font-extrabold uppercase tracking-[0.08em] text-primary text-glow">
                 KIRA SYSTEM
               </span>
-              <span className="rounded border border-primary/60 bg-primary/20 px-1.5 py-0.5 font-display text-[9px] font-bold uppercase tracking-widest text-primary">
+              <span className="rounded-md border border-primary bg-primary/25 px-1.5 py-0.5 font-display text-[9px] font-black uppercase tracking-[0.2em] text-primary text-glow-soft shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
                 BOT
               </span>
-              <span className="ml-auto text-[10px] text-muted-foreground">{formatTime(message.created_at)}</span>
+              <span className="ml-auto font-display text-[10px] uppercase tracking-widest text-primary/70">{formatTime(message.created_at)}</span>
             </div>
-            <p className="mt-1 text-sm text-foreground/90">{message.content}</p>
+            <p className="mt-1.5 text-[14px] leading-relaxed text-foreground/95">{message.content}</p>
           </div>
         </div>
       </div>
@@ -323,28 +349,33 @@ const MessageCard = ({ message }: { message: ChatMessage }) => {
   }
 
   return (
-    <div className="rounded-lg border border-primary/25 bg-card/50 p-2.5 hover:border-primary/40 transition-colors animate-float-up">
-      <div className="flex gap-3">
-        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-primary/40 bg-primary/10">
-          {message.avatar_url ? (
-            <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
-          ) : (
-            <div className="grid h-full w-full place-items-center font-display text-sm font-bold text-primary">
-              {message.player_name.charAt(0).toUpperCase()}
-            </div>
-          )}
+    <div className="group relative rounded-xl border border-primary/30 bg-gradient-to-br from-card/80 to-background/40 p-3.5 shadow-[0_0_14px_hsl(var(--primary)/0.12),inset_0_0_10px_hsl(var(--primary)/0.05)] transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.25)] animate-float-up">
+      <div className="flex gap-3.5">
+        <div className="relative shrink-0">
+          <div className="absolute inset-0 rounded-xl bg-primary/30 blur-md opacity-70" />
+          <div className="relative h-12 w-12 overflow-hidden rounded-xl border-2 border-primary/70 bg-primary/10 shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
+            {message.avatar_url ? (
+              <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
+            ) : (
+              <div className="grid h-full w-full place-items-center font-display text-base font-extrabold text-primary text-glow-soft">
+                {message.player_name.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className={`truncate font-display text-sm font-bold ${rankColor(rank)}`}>
+            <span className={`truncate font-display text-[15px] font-extrabold tracking-wide ${rankColor(rank)}`}>
               {message.player_name}
             </span>
-            <span className="shrink-0 rounded border border-primary/40 bg-primary/10 px-1.5 py-0.5 font-display text-[9px] font-bold uppercase tracking-widest text-primary">
+            <span className="shrink-0 rounded-md border border-primary/50 bg-primary/10 px-1.5 py-0.5 font-display text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
               {rank} Rank Hunter
             </span>
-            <span className="ml-auto shrink-0 text-[10px] text-muted-foreground">{formatTime(message.created_at)}</span>
+            <span className="ml-auto shrink-0 font-display text-[10px] uppercase tracking-widest text-muted-foreground">
+              {formatTime(message.created_at)}
+            </span>
           </div>
-          <p className="mt-0.5 break-words text-sm text-foreground/90">{message.content}</p>
+          <p className="mt-1.5 break-words text-[14px] leading-relaxed text-foreground/90">{message.content}</p>
         </div>
       </div>
     </div>
