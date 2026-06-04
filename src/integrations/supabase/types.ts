@@ -62,6 +62,42 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          avatar_url: string | null
+          content: string
+          created_at: string
+          id: string
+          is_bot: boolean
+          player_level: number
+          player_name: string
+          user_id: string | null
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_bot?: boolean
+          player_level?: number
+          player_name: string
+          user_id?: string | null
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_bot?: boolean
+          player_level?: number
+          player_name?: string
+          user_id?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           created_at: string
