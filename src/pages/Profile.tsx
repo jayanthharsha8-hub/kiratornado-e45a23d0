@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Crosshair, Crown,
-  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star,
+  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star, MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReportDialog } from "@/components/ReportDialog";
