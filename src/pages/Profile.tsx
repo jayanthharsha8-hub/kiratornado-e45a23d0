@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Crosshair, Crown,
-  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star,
+  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star, MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReportDialog } from "@/components/ReportDialog";
@@ -222,6 +222,27 @@ const ProfilePage = () => {
             </button>
           )}
         </section>
+
+        {/* HUNTER CHAT ENTRY */}
+        <button
+          onClick={() => navigate("/hunter-chat")}
+          className="group relative flex w-full items-center justify-between overflow-hidden rounded-xl border border-primary/60 bg-card/60 px-4 py-3 glow-soft transition hover:bg-primary/10"
+        >
+          <span className="flex items-center gap-3">
+            <span className="relative grid h-10 w-10 place-items-center rounded-lg border border-primary/70 bg-primary/15 text-primary animate-pulse-glow">
+              <MessageCircle className="h-5 w-5" />
+            </span>
+            <span className="text-left">
+              <span className="block font-display text-sm font-bold uppercase tracking-widest text-foreground text-glow-soft">
+                Hunter Chat
+              </span>
+              <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+                Live global community
+              </span>
+            </span>
+          </span>
+          <ChevronRight className="h-4 w-4 text-primary" />
+        </button>
 
         {/* COMBAT STATS */}
         <SystemPanel
