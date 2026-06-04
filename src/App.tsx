@@ -27,6 +27,7 @@ import WalletRedeem from "./pages/WalletRedeem";
 import WalletRedeemConfirm from "./pages/WalletRedeemConfirm";
 import WalletUpi from "./pages/WalletUpi";
 import TransactionHistory from "./pages/TransactionHistory";
+import HunterChat from "./pages/HunterChat";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminTournaments from "./pages/admin/Tournaments";
 import AdminBanners from "./pages/admin/Banners";
