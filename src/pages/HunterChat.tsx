@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, Shield, Coins, Plus, ShieldAlert, Bot, Clock, Plus as PlusIcon } from "lucide-react";
+import { Send, Shield, Bot, Clock, Menu, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Logo } from "@/components/Logo";
 import { toast } from "sonner";
+import heroBg from "@/assets/hunter-hero-bg.jpg";
 
 interface ChatMessage {
   id: string;
@@ -36,16 +37,15 @@ const getRank = (level: number) => {
 };
 
 const COOLDOWN_MS = 3000;
-
 const ROOM_ID_RE = /\b\d{6,}\b/;
 const PASSWORD_RE = /\b(pass(word)?|pwd|pw)\s*[:=\-]?\s*\S+/i;
 const LINK_RE = /(https?:\/\/|www\.|\.com|\.in|\.net|t\.me\/|wa\.me\/|bit\.ly)/i;
 const TOXIC_RE = /\b(fuck|shit|bitch|bastard|mc|bc|bhenchod|madarchod|chutiya|gandu|lavda|nigger|retard)\b/i;
 
 const detectViolation = (text: string): string | null => {
-  if (LINK_RE.test(text)) return "Links share cheyyadam nishedham. Warning issued.";
-  if (PASSWORD_RE.test(text)) return "Passwords share cheyyadam nishedham. Warning issued.";
-  if (ROOM_ID_RE.test(text)) return "Room ID's share cheyyadam nishedham. Warning issued.";
+  if (LINK_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
+  if (PASSWORD_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
+  if (ROOM_ID_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
   if (TOXIC_RE.test(text)) return "Toxic/abusive language detect ayyindi. Be respectful, Hunter.";
   return null;
 };
@@ -55,16 +55,27 @@ const formatTime = (iso: string) => {
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
-const rankColor = (rank: string) => {
-  switch (rank) {
-    case "S": return "text-[hsl(45_100%_62%)]";
-    case "A": return "text-[hsl(28_100%_62%)]";
-    case "B": return "text-primary";
-    case "C": return "text-[hsl(140_70%_58%)]";
-    case "D": return "text-[hsl(280_85%_72%)]";
-    default: return "text-foreground";
-  }
+// Color per rank (matches reference palette)
+const rankNameColor: Record<string, string> = {
+  S: "#ff4d5a",
+  A: "#f5a623",
+  B: "#3ea6ff",
+  C: "#4ade80",
+  D: "#c084fc",
+  E: "#e2e8f0",
 };
+const rankLabelColor: Record<string, string> = {
+  S: "#f5a623",
+  A: "#f5a623",
+  B: "#3ea6ff",
+  C: "#4ade80",
+  D: "#c084fc",
+  E: "#94a3b8",
+};
+
+const PURPLE = "#a855f7";
+const PURPLE_DEEP = "#7c3aed";
+const PURPLE_SOFT = "rgba(168,85,247,0.35)";
 
 const HunterChat = () => {
   const navigate = useNavigate();
@@ -91,9 +102,7 @@ const HunterChat = () => {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(60)
-      .then(({ data }) => {
-        if (data) setMessages((data as ChatMessage[]).reverse());
-      });
+      .then(({ data }) => { if (data) setMessages((data as ChatMessage[]).reverse()); });
   }, []);
 
   useEffect(() => {
@@ -136,7 +145,6 @@ const HunterChat = () => {
     const text = input.trim();
     if (!text || !user || !profile || sending) return;
     if (Date.now() - lastSentRef.current < COOLDOWN_MS) return;
-
     setSending(true);
     const { error } = await supabase.from("chat_messages").insert({
       user_id: user.id,
@@ -173,83 +181,131 @@ const HunterChat = () => {
   const myRank = useMemo(() => profile ? getRank(profile.player_level) : "E", [profile]);
 
   return (
-    <div className="relative flex h-[100dvh] flex-col bg-background scanline overflow-hidden">
-      {/* Atmospheric backdrop */}
-      <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0" style={{ background: "radial-gradient(120% 60% at 50% 0%, hsl(199 100% 50% / 0.18), transparent 60%)" }} />
-        <div className="absolute inset-x-0 bottom-0 h-1/2" style={{ background: "radial-gradient(80% 60% at 50% 100%, hsl(199 100% 50% / 0.12), transparent 70%)" }} />
-      </div>
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden" style={{ background: "#08060d" }}>
+      {/* HEADER with hero art */}
+      <header className="relative z-20 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${heroBg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "right center",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, #08060d 0%, rgba(8,6,13,0.85) 35%, rgba(8,6,13,0.35) 70%, rgba(8,6,13,0.6) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-x-0 bottom-0 h-24"
+          style={{ background: "linear-gradient(to bottom, transparent, #08060d)" }}
+        />
 
-      {/* HEADER */}
-      <header className="relative z-20 border-b border-primary/40 bg-background/80 backdrop-blur-xl">
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_12px_hsl(var(--primary)/0.8)]" />
-
-        {/* Top action row */}
-        <div className="mx-auto flex max-w-md items-center gap-2 px-4 pt-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="grid h-9 w-9 place-items-center rounded-md border border-primary/50 bg-card/60 text-primary glow-soft hover:bg-primary/15"
-          >
-            <ArrowLeft className="h-4 w-4" />
+        {/* Top bar */}
+        <div className="relative mx-auto flex max-w-md items-center gap-2 px-4 pt-4">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2">
+            <Logo size={26} />
+            <div className="leading-none">
+              <div className="font-display text-base font-black uppercase tracking-widest text-white" style={{ textShadow: `0 0 12px ${PURPLE_SOFT}` }}>KIRA</div>
+              <div className="font-display text-[9px] font-bold uppercase tracking-[0.3em]" style={{ color: PURPLE }}>TORNADO</div>
+            </div>
           </button>
-          <Logo size={22} />
           <div className="flex-1" />
 
-          {/* Rank floating card */}
+          {/* Center S Rank badge */}
           {profile && (
-            <div className="relative flex items-center gap-2 rounded-md border border-primary/60 bg-gradient-to-b from-primary/20 to-background/40 px-2.5 py-1.5 shadow-[0_0_14px_hsl(var(--primary)/0.35),inset_0_0_10px_hsl(var(--primary)/0.15)]">
-              <div className="grid h-7 w-7 place-items-center rounded border border-primary/70 bg-background/60 text-primary glow-soft">
-                <Shield className="h-3.5 w-3.5" />
+            <div className="flex items-center gap-2 rounded-lg px-2 py-1">
+              <div
+                className="grid h-9 w-9 place-items-center rounded-md"
+                style={{
+                  background: "linear-gradient(180deg, #8b5a1a, #4a2a08)",
+                  boxShadow: `0 0 12px rgba(245,166,35,0.55), inset 0 0 6px rgba(255,200,80,0.4)`,
+                  border: "1px solid #f5a623",
+                }}
+              >
+                <Shield className="h-4 w-4" style={{ color: "#ffd76b" }} fill="#7c4a10" />
               </div>
-              <div className="leading-none">
-                <div className="font-display text-[10px] font-extrabold uppercase tracking-[0.15em] text-primary text-glow-soft">
-                  {myRank} Rank
+              <div className="leading-tight">
+                <div className="font-display text-[11px] font-black uppercase tracking-[0.12em] text-white">
+                  {myRank} RANK HUNTER
                 </div>
-                <div className="mt-0.5 text-[9px] uppercase tracking-[0.18em] text-muted-foreground">Lvl {profile.player_level}</div>
+                <div className="font-display text-[10px] uppercase tracking-[0.15em]" style={{ color: PURPLE }}>
+                  Level {profile.player_level}
+                </div>
               </div>
             </div>
           )}
+          <div className="flex-1" />
 
-          {/* Wallet floating card */}
-          <div className="flex items-center gap-1.5 rounded-md border border-primary/60 bg-gradient-to-b from-primary/15 to-background/40 px-2.5 py-1.5 shadow-[0_0_14px_hsl(var(--primary)/0.3)]">
-            <Coins className="h-3.5 w-3.5 text-primary text-glow-soft" />
-            <span className="font-display text-xs font-bold text-foreground">{profile?.coins.toLocaleString() ?? 0}</span>
-            <button className="grid h-4 w-4 place-items-center rounded-full border border-primary/70 bg-primary/20 text-primary">
-              <PlusIcon className="h-2.5 w-2.5" />
+          {/* Wallet pill */}
+          <div
+            className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5"
+            style={{
+              background: "rgba(20,12,35,0.85)",
+              border: `1px solid ${PURPLE_SOFT}`,
+              boxShadow: `0 0 14px rgba(124,58,237,0.35)`,
+            }}
+          >
+            <div className="h-3 w-3 rotate-45" style={{ background: PURPLE, boxShadow: `0 0 6px ${PURPLE}` }} />
+            <span className="font-display text-xs font-bold text-white">{profile?.coins.toLocaleString() ?? 0}</span>
+            <button className="grid h-4 w-4 place-items-center rounded-full text-white" style={{ background: PURPLE_DEEP }}>
+              <Plus className="h-2.5 w-2.5" />
             </button>
           </div>
         </div>
 
-        {/* Title block */}
-        <div className="mx-auto max-w-md px-4 pb-4 pt-3">
-          <h1 className="font-display text-3xl font-black uppercase leading-none tracking-[0.18em] text-foreground text-glow">
-            Hunter <span className="text-primary">Chat</span>
+        {/* Title */}
+        <div className="relative mx-auto max-w-md px-4 pb-5 pt-6">
+          <h1
+            className="font-display text-4xl font-black uppercase leading-none tracking-[0.04em]"
+            style={{
+              background: "linear-gradient(180deg, #ffffff 0%, #c4b5fd 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              filter: `drop-shadow(0 0 18px rgba(168,85,247,0.55))`,
+            }}
+          >
+            GLOBAL CHAT
           </h1>
           <div className="mt-2 flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 animate-ping rounded-full bg-[hsl(140_70%_55%)] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[hsl(140_70%_55%)] shadow-[0_0_8px_hsl(140_70%_55%)]" />
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inset-0 animate-ping rounded-full" style={{ background: "#22c55e", opacity: 0.7 }} />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ background: "#22c55e", boxShadow: "0 0 8px #22c55e" }} />
             </span>
-            <span className="font-display text-[11px] font-semibold uppercase tracking-[0.2em] text-[hsl(140_70%_60%)]">
-              {onlineCount} Hunters Online
-            </span>
-            <div className="ml-2 h-px flex-1 bg-gradient-to-r from-primary/50 to-transparent" />
+            <span className="text-[13px] font-medium text-white/90">{onlineCount} Hunters Online</span>
           </div>
         </div>
       </header>
 
       {/* MESSAGES */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md space-y-3 px-3 py-4">
+        <div className="mx-auto max-w-md space-y-3 px-4 pb-4 pt-1">
           {/* System notice */}
-          <SystemNoticeCard />
+          <div
+            className="relative flex items-center gap-3 rounded-xl px-4 py-3"
+            style={{
+              background: "linear-gradient(180deg, rgba(30,18,55,0.9), rgba(15,10,30,0.9))",
+              border: `1px solid ${PURPLE_SOFT}`,
+              boxShadow: `0 0 18px rgba(124,58,237,0.25), inset 0 0 12px rgba(124,58,237,0.1)`,
+            }}
+          >
+            <Shield className="h-4 w-4 shrink-0" style={{ color: PURPLE }} />
+            <p className="flex-1 text-[12.5px] text-white/85">Be respectful, Hunters. Misbehavior leads to warnings or bans.</p>
+            <div className="flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5" style={{ color: PURPLE }} />
+              <span className="font-display text-[10px] font-black uppercase tracking-[0.15em]" style={{ color: PURPLE, textShadow: `0 0 8px ${PURPLE_SOFT}` }}>
+                KIRA SYSTEM
+              </span>
+            </div>
+          </div>
 
-          {messages.map((m) => (
-            <MessageCard key={m.id} message={m} />
-          ))}
+          {messages.map((m) => <MessageCard key={m.id} message={m} />)}
 
           {messages.length === 0 && (
-            <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-white/40">
               No messages yet. Be the first Hunter to speak.
             </p>
           )}
@@ -257,63 +313,57 @@ const HunterChat = () => {
       </div>
 
       {/* INPUT */}
-      <div className="relative z-20 border-t border-primary/40 bg-background/85 backdrop-blur-xl">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/80 to-transparent shadow-[0_0_12px_hsl(var(--primary)/0.7)]" />
-        <div className="mx-auto max-w-md px-3 py-3">
-          <div className="flex items-center gap-2">
+      <div className="relative z-20 px-4 pb-3 pt-2" style={{ background: "linear-gradient(to top, #08060d 70%, transparent)" }}>
+        <div className="mx-auto flex max-w-md items-center gap-2">
+          <button
+            aria-label="Menu"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-full"
+            style={{
+              background: "rgba(20,12,35,0.9)",
+              border: `2px solid ${PURPLE}`,
+              boxShadow: `0 0 16px rgba(168,85,247,0.6), inset 0 0 10px rgba(168,85,247,0.2)`,
+              color: PURPLE,
+            }}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <div
+            className="relative flex-1 rounded-full"
+            style={{
+              background: "rgba(15,10,28,0.9)",
+              border: `1px solid ${PURPLE_SOFT}`,
+              boxShadow: `inset 0 0 10px rgba(124,58,237,0.15)`,
+            }}
+          >
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+              placeholder="Type your message..."
+              maxLength={240}
+              className="h-12 w-full rounded-full bg-transparent px-5 pr-12 text-sm text-white placeholder:text-white/40 focus:outline-none"
+            />
             <button
-              aria-label="Add"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-primary/70 bg-gradient-to-b from-primary/25 to-primary/10 text-primary shadow-[0_0_14px_hsl(var(--primary)/0.55),inset_0_0_8px_hsl(var(--primary)/0.3)]"
+              onClick={send}
+              disabled={!input.trim() || sending || cooldownLeft > 0}
+              aria-label="Send"
+              className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full transition disabled:opacity-40"
+              style={{ color: PURPLE }}
             >
-              <Plus className="h-5 w-5" />
+              <Send className="h-5 w-5" style={{ filter: `drop-shadow(0 0 6px ${PURPLE})` }} />
             </button>
-            <div className="relative flex-1">
-              <input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") send(); }}
-                placeholder="Type your message..."
-                maxLength={240}
-                className="h-11 w-full rounded-full border border-primary/50 bg-card/70 px-5 pr-14 text-sm text-foreground placeholder:text-muted-foreground/70 shadow-[inset_0_0_10px_hsl(var(--primary)/0.12)] focus:border-primary focus:shadow-[0_0_14px_hsl(var(--primary)/0.45),inset_0_0_10px_hsl(var(--primary)/0.2)] focus:outline-none transition"
-              />
-              <button
-                onClick={send}
-                disabled={!input.trim() || sending || cooldownLeft > 0}
-                aria-label="Send"
-                className="absolute right-1.5 top-1.5 grid h-8 w-8 place-items-center rounded-full bg-gradient-to-b from-primary to-primary/70 text-primary-foreground shadow-[0_0_14px_hsl(var(--primary)/0.7)] disabled:opacity-40 disabled:shadow-none"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </div>
           </div>
-          {cooldownLeft > 0 && (
-            <div className="mt-2 flex items-center justify-center gap-1.5 text-[11px] text-primary/80">
-              <Clock className="h-3 w-3" />
-              <span>You can send another message in {(cooldownLeft / 1000).toFixed(1)}s</span>
-            </div>
-          )}
         </div>
+        {cooldownLeft > 0 && (
+          <div className="mt-2 flex items-center justify-center gap-1.5 text-[11px]" style={{ color: PURPLE }}>
+            <Clock className="h-3 w-3" />
+            <span>You can send another message in {(cooldownLeft / 1000).toFixed(1)}s</span>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-const SystemNoticeCard = () => (
-  <div className="relative overflow-hidden rounded-xl border border-primary/60 bg-gradient-to-br from-primary/15 via-background/60 to-background/40 p-3.5 shadow-[0_0_22px_hsl(var(--primary)/0.35),inset_0_0_18px_hsl(var(--primary)/0.12)]">
-    <div className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 80% at 0% 50%, hsl(var(--primary)/0.18), transparent 60%)" }} />
-    <div className="relative flex items-center gap-3">
-      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-primary/70 bg-background/70 text-primary glow-soft">
-        <ShieldAlert className="h-4 w-4" />
-      </div>
-      <p className="flex-1 text-[13px] leading-snug text-foreground/85">
-        Be respectful, Hunters. Misbehavior leads to warnings or bans.
-      </p>
-      <span className="flex items-center gap-1 rounded-md border border-primary/60 bg-primary/15 px-2 py-1 font-display text-[9px] font-bold uppercase tracking-[0.18em] text-primary text-glow-soft">
-        <Shield className="h-3 w-3" /> Kira
-      </span>
-    </div>
-  </div>
-);
 
 const MessageCard = ({ message }: { message: ChatMessage }) => {
   const rank = getRank(message.player_level);
@@ -321,61 +371,82 @@ const MessageCard = ({ message }: { message: ChatMessage }) => {
 
   if (isBot) {
     return (
-      <div className="relative overflow-hidden rounded-xl border border-primary/70 bg-gradient-to-br from-primary/20 via-primary/5 to-background/40 p-4 shadow-[0_0_28px_hsl(var(--primary)/0.45),inset_0_0_22px_hsl(var(--primary)/0.18)] animate-float-up">
-        <div className="pointer-events-none absolute -left-8 -top-8 h-24 w-24 rounded-full bg-primary/30 blur-2xl" />
-        <div className="pointer-events-none absolute -right-8 -bottom-10 h-28 w-28 rounded-full bg-primary/20 blur-2xl" />
-        <div className="relative flex gap-3.5">
-          <div className="relative shrink-0">
-            <div className="absolute inset-0 rounded-xl bg-primary/40 blur-md" />
-            <div className="relative grid h-12 w-12 place-items-center rounded-xl border-2 border-primary bg-background text-primary shadow-[0_0_16px_hsl(var(--primary)/0.8)]">
-              <Bot className="h-6 w-6" />
-            </div>
+      <div
+        className="relative overflow-hidden rounded-xl px-4 py-3.5"
+        style={{
+          background: "linear-gradient(135deg, rgba(60,30,110,0.55) 0%, rgba(25,12,50,0.85) 60%, rgba(80,30,140,0.4) 100%)",
+          border: `1px solid ${PURPLE}`,
+          boxShadow: `0 0 22px rgba(168,85,247,0.5), inset 0 0 18px rgba(168,85,247,0.15)`,
+        }}
+      >
+        <div className="relative flex gap-3">
+          <div
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
+            style={{
+              background: "linear-gradient(180deg, #4c1d95, #1e0a45)",
+              border: `1.5px solid ${PURPLE}`,
+              boxShadow: `0 0 12px rgba(168,85,247,0.7)`,
+            }}
+          >
+            <Shield className="h-6 w-6 text-white" />
+            <span className="absolute bottom-0.5 font-display text-[8px] font-black tracking-wider text-white/80">KIRA</span>
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-display text-[15px] font-extrabold uppercase tracking-[0.08em] text-primary text-glow">
+              <span className="font-display text-[14px] font-black uppercase tracking-[0.06em]" style={{ color: PURPLE, textShadow: `0 0 10px ${PURPLE_SOFT}` }}>
                 KIRA SYSTEM
               </span>
-              <span className="rounded-md border border-primary bg-primary/25 px-1.5 py-0.5 font-display text-[9px] font-black uppercase tracking-[0.2em] text-primary text-glow-soft shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
+              <span
+                className="rounded px-1.5 py-0.5 font-display text-[9px] font-black uppercase tracking-[0.18em] text-white"
+                style={{ background: PURPLE_DEEP, boxShadow: `0 0 8px rgba(124,58,237,0.7)` }}
+              >
                 BOT
               </span>
-              <span className="ml-auto font-display text-[10px] uppercase tracking-widest text-primary/70">{formatTime(message.created_at)}</span>
+              <span className="ml-auto text-[10px] text-white/50">{formatTime(message.created_at)}</span>
             </div>
-            <p className="mt-1.5 text-[14px] leading-relaxed text-foreground/95">{message.content}</p>
+            <p className="mt-1 text-[13px] leading-relaxed text-white/90">{message.content}</p>
           </div>
         </div>
       </div>
     );
   }
 
+  const nameColor = rankNameColor[rank];
+  const labelColor = rankLabelColor[rank];
+
   return (
-    <div className="group relative rounded-xl border border-primary/30 bg-gradient-to-br from-card/80 to-background/40 p-3.5 shadow-[0_0_14px_hsl(var(--primary)/0.12),inset_0_0_10px_hsl(var(--primary)/0.05)] transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.25)] animate-float-up">
-      <div className="flex gap-3.5">
-        <div className="relative shrink-0">
-          <div className="absolute inset-0 rounded-xl bg-primary/30 blur-md opacity-70" />
-          <div className="relative h-12 w-12 overflow-hidden rounded-xl border-2 border-primary/70 bg-primary/10 shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
-            {message.avatar_url ? (
-              <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
-            ) : (
-              <div className="grid h-full w-full place-items-center font-display text-base font-extrabold text-primary text-glow-soft">
-                {message.player_name.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
+    <div
+      className="rounded-xl px-3.5 py-3"
+      style={{
+        background: "linear-gradient(180deg, rgba(20,14,38,0.85), rgba(12,8,22,0.85))",
+        border: "1px solid rgba(124,58,237,0.18)",
+        boxShadow: "0 0 10px rgba(0,0,0,0.4)",
+      }}
+    >
+      <div className="flex gap-3">
+        <div
+          className="h-12 w-12 shrink-0 overflow-hidden rounded-xl"
+          style={{ border: `1.5px solid ${PURPLE_SOFT}`, boxShadow: `0 0 8px rgba(124,58,237,0.35)` }}
+        >
+          {message.avatar_url ? (
+            <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
+          ) : (
+            <div className="grid h-full w-full place-items-center font-display text-base font-extrabold text-white" style={{ background: "linear-gradient(180deg, #3b1a6b, #14072e)" }}>
+              {message.player_name.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className={`truncate font-display text-[15px] font-extrabold tracking-wide ${rankColor(rank)}`}>
+            <span className="truncate font-display text-[14px] font-extrabold tracking-wide" style={{ color: nameColor }}>
               {message.player_name}
             </span>
-            <span className="shrink-0 rounded-md border border-primary/50 bg-primary/10 px-1.5 py-0.5 font-display text-[9px] font-bold uppercase tracking-[0.18em] text-primary">
+            <span className="shrink-0 font-display text-[11px] font-bold" style={{ color: labelColor }}>
               {rank} Rank Hunter
             </span>
-            <span className="ml-auto shrink-0 font-display text-[10px] uppercase tracking-widest text-muted-foreground">
-              {formatTime(message.created_at)}
-            </span>
+            <span className="ml-auto shrink-0 text-[10px] text-white/45">{formatTime(message.created_at)}</span>
           </div>
-          <p className="mt-1.5 break-words text-[14px] leading-relaxed text-foreground/90">{message.content}</p>
+          <p className="mt-1 break-words text-[13.5px] leading-relaxed text-white/85">{message.content}</p>
         </div>
       </div>
     </div>
