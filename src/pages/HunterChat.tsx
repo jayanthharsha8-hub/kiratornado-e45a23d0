@@ -323,12 +323,12 @@ const HunterChat = () => {
       </div>
 
       {/* ====== INPUT ====== */}
-      <div className="relative z-20 px-4 pb-3 pt-2" style={{ background: "linear-gradient(to top, #06040b 75%, transparent)" }}>
+      <div className="relative z-20 px-3 pb-2 pt-1.5" style={{ background: "linear-gradient(to top, #06040b 75%, transparent)" }}>
         <div className="absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.45), transparent)" }} />
         <div className="mx-auto flex max-w-md items-center gap-2">
           <button
             aria-label="Menu"
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full"
             style={{
               background: "rgba(18,11,32,0.95)",
               border: `1px solid ${PURPLE}`,
@@ -336,15 +336,15 @@ const HunterChat = () => {
               color: PURPLE,
             }}
           >
-            <Menu className="h-4.5 w-4.5" />
+            <Menu className="h-4 w-4" />
           </button>
           <div
             className="relative flex-1 rounded-full"
             style={{
-              background: "rgba(14,9,26,0.85)",
+              background: "rgba(14,9,26,0.6)",
               border: `1px solid ${PURPLE_LINE}`,
-              backdropFilter: "blur(10px)",
-              boxShadow: "0 0 14px rgba(168,85,247,0.18), inset 0 0 12px rgba(168,85,247,0.05)",
+              backdropFilter: "blur(14px)",
+              boxShadow: "0 0 16px rgba(168,85,247,0.22), inset 0 0 12px rgba(168,85,247,0.06)",
             }}
           >
             <input
@@ -353,20 +353,20 @@ const HunterChat = () => {
               onKeyDown={(e) => { if (e.key === "Enter") send(); }}
               placeholder="Message the Hunter Network..."
               maxLength={240}
-              className="h-11 w-full rounded-full bg-transparent px-5 pr-12 text-sm text-white placeholder:text-white/40 focus:outline-none"
+              className="h-9 w-full rounded-full bg-transparent px-4 pr-10 text-[13px] text-white placeholder:text-white/40 focus:outline-none"
             />
             <button
               onClick={send}
               disabled={!input.trim() || sending || cooldownLeft > 0}
               aria-label="Send"
-              className="absolute right-1.5 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full transition disabled:opacity-40"
+              className="absolute right-1 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full transition disabled:opacity-40"
               style={{
                 background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE_DEEP})`,
                 boxShadow: "0 0 14px rgba(168,85,247,0.65)",
                 color: "#fff",
               }}
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
