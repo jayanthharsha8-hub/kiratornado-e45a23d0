@@ -388,41 +388,40 @@ const MessageCard = ({ message }: { message: ChatMessage }) => {
   if (isBot) {
     return (
       <div
-        className="relative overflow-hidden rounded-xl px-3 py-2.5"
+        className="relative overflow-hidden rounded-lg px-2.5 py-1.5"
         style={{
           background: "linear-gradient(135deg, rgba(76,29,149,0.55), rgba(24,12,52,0.85))",
-          border: `1px solid rgba(168,85,247,0.45)`,
-          boxShadow: "0 0 16px rgba(124,58,237,0.28), inset 0 1px 0 rgba(255,255,255,0.06)",
+          border: `1px solid rgba(168,85,247,0.5)`,
+          boxShadow: "0 0 14px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
           backdropFilter: "blur(10px)",
         }}
       >
-        {/* glowing left edge */}
         <span className="absolute inset-y-0 left-0 w-[3px]" style={{ background: "linear-gradient(180deg,#a855f7,#4c1d95)", boxShadow: "0 0 10px rgba(168,85,247,0.7)" }} />
-        <div className="flex gap-2.5">
+        <div className="flex items-start gap-2">
           <div
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
             style={{
               background: "linear-gradient(180deg, #4c1d95, #1e0a45)",
               border: `1px solid ${PURPLE}`,
-              boxShadow: "0 0 8px rgba(168,85,247,0.5)",
+              boxShadow: "0 0 8px rgba(168,85,247,0.55)",
             }}
           >
-            <Shield className="h-4 w-4 text-white" />
+            <Shield className="h-3.5 w-3.5 text-white" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <span className="font-display text-[12.5px] font-black uppercase tracking-[0.08em]" style={{ color: "#e9d5ff", textShadow: "0 0 8px rgba(168,85,247,0.6)" }}>
+            <div className="flex items-center gap-1.5">
+              <span className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]" style={{ color: "#e9d5ff", textShadow: "0 0 8px rgba(168,85,247,0.6)" }}>
                 KIRA SYSTEM
               </span>
               <span
-                className="rounded px-1.5 py-px font-display text-[8.5px] font-black uppercase tracking-[0.18em] text-white"
+                className="rounded px-1 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"
                 style={{ background: `linear-gradient(135deg,${PURPLE},${PURPLE_DEEP})`, boxShadow: "0 0 6px rgba(168,85,247,0.6)" }}
               >
                 BOT
               </span>
-              <span className="ml-auto text-[9.5px] text-white/50">{formatTime(message.created_at)}</span>
+              <span className="ml-auto text-[9px] text-white/50">{formatTime(message.created_at)}</span>
             </div>
-            <p className="mt-1 text-[12px] leading-snug text-white/90">{message.content}</p>
+            <p className="mt-0.5 text-[11.5px] leading-snug text-white/90">{message.content}</p>
           </div>
         </div>
       </div>
@@ -433,42 +432,42 @@ const MessageCard = ({ message }: { message: ChatMessage }) => {
 
   return (
     <div
-      className="rounded-xl px-3 py-2.5 transition"
+      className="rounded-lg px-2.5 py-1.5 transition"
       style={{
-        background: "linear-gradient(180deg, rgba(20,12,38,0.7), rgba(10,7,22,0.7))",
+        background: "linear-gradient(180deg, rgba(20,12,38,0.65), rgba(10,7,22,0.65))",
         border: `1px solid ${PURPLE_LINE}`,
-        boxShadow: `0 0 10px rgba(168,85,247,0.08), inset 0 1px 0 rgba(255,255,255,0.03)`,
+        boxShadow: `0 0 8px rgba(168,85,247,0.06), inset 0 1px 0 rgba(255,255,255,0.03)`,
         backdropFilter: "blur(8px)",
       }}
     >
-      <div className="flex gap-2.5">
+      <div className="flex items-start gap-2">
         <div
-          className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg"
+          className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full"
           style={{
             border: `1.5px solid ${t.border}`,
-            boxShadow: `0 0 8px ${t.glow}`,
+            boxShadow: `0 0 7px ${t.glow}`,
           }}
         >
           {message.avatar_url ? (
             <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
           ) : (
-            <div className="grid h-full w-full place-items-center font-display text-base font-extrabold text-white" style={{ background: t.grad }}>
+            <div className="grid h-full w-full place-items-center font-display text-sm font-extrabold text-white" style={{ background: t.grad }}>
               {message.player_name.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span
-              className="truncate font-display text-[13px] font-extrabold tracking-wide"
+              className="truncate font-display text-[12px] font-extrabold tracking-wide"
               style={{ color: t.name, textShadow: `0 0 6px ${t.glow}` }}
             >
               {message.player_name}
             </span>
             <RankBadge rank={rank} size="sm" />
-            <span className="ml-auto shrink-0 text-[9.5px] text-white/45">{formatTime(message.created_at)}</span>
+            <span className="ml-auto shrink-0 text-[9px] text-white/45">{formatTime(message.created_at)}</span>
           </div>
-          <p className="mt-1 break-words text-[12.5px] leading-snug text-white/85">{message.content}</p>
+          <p className="mt-0.5 break-words text-[11.5px] leading-snug text-white/85">{message.content}</p>
         </div>
       </div>
     </div>
