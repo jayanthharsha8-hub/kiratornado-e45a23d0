@@ -40,14 +40,15 @@ const AUTO_DELETE_MS = 30 * 60 * 1000; // 30 minutes
 const GROUP_WINDOW_MS = 5 * 60 * 1000; // group within 5 minutes
 const ROOM_ID_RE = /\b\d{6,}\b/;
 const PASSWORD_RE = /\b(pass(word)?|pwd|pw)\s*[:=\-]?\s*\S+/i;
-const LINK_RE = /(https?:\/\/|www\.|\.com|\.in|\.net|t\.me\/|wa\.me\/|bit\.ly)/i;
-const TOXIC_RE = /\b(fuck|shit|bitch|bastard|mc|bc|bhenchod|madarchod|chutiya|gandu|lavda|nigger|retard)\b/i;
+const LINK_RE = /(https?:\/\/|www\.|\.com|\.in|\.net|t\.me\/|wa\.me\/|bit\.ly|discord\.gg)/i;
+const TOXIC_RE = /\b(fuck|f\*ck|shit|bitch|bastard|bhenchod|madarchod|chutiya|gandu|lavda|nigger|retard|whore|slut|rape|sex|nude|nsfw|porn)\b/i;
+const SPAM_RE = /(.)\1{6,}/i;
 
 const detectViolation = (text: string): string | null => {
-  if (LINK_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
-  if (PASSWORD_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
-  if (ROOM_ID_RE.test(text)) return "Room ID's, Passwords, Links share cheyyadam nishedham. Ala chesthe warning ivvadam jaruguthundi.";
-  if (TOXIC_RE.test(text)) return "Toxic/abusive language detect ayyindi. Be respectful, Hunter.";
+  if (LINK_RE.test(text) || PASSWORD_RE.test(text) || ROOM_ID_RE.test(text))
+    return "Room IDs, Passwords and Links are not allowed in Global Chat.";
+  if (TOXIC_RE.test(text)) return "Message removed: Toxic / Abusive Language Detected. Please be respectful, Hunter.";
+  if (SPAM_RE.test(text)) return "Message removed: Spam detected. Please avoid repeated characters.";
   return null;
 };
 
