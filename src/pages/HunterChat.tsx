@@ -84,8 +84,8 @@ const RankBadge = ({ rank, size = "md" }: { rank: string; size?: "sm" | "md" }) 
         textShadow: "0 1px 2px rgba(0,0,0,0.6)",
       }}
     >
-      <Crown className="h-2.5 w-2.5" />
-      {rank} Rank
+      <Crown className={size === "sm" ? "h-2 w-2" : "h-2.5 w-2.5"} />
+      {rank}
     </span>
   );
 };
