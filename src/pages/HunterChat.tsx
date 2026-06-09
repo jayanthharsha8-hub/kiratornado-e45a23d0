@@ -72,7 +72,7 @@ const PURPLE_LINE = "rgba(168,85,247,0.22)";
 
 const RankBadge = ({ rank, size = "md" }: { rank: string; size?: "sm" | "md" }) => {
   const t = rankTheme[rank];
-  const dim = size === "sm" ? "h-5 px-1.5 text-[9px]" : "h-6 px-2 text-[10px]";
+  const dim = size === "sm" ? "h-3.5 px-1 text-[7.5px]" : "h-5 px-1.5 text-[9px]";
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-md font-display font-black uppercase tracking-[0.14em] ${dim}`}
