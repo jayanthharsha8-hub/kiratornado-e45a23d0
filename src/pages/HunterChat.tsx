@@ -218,6 +218,29 @@ const HunterChat = () => {
     const text = input.trim();
     if (!text || !user || !profile || sending) return;
     if (Date.now() - lastSentRef.current < COOLDOWN_MS) return;
+
+    // ===== SMART AUTO-MODERATION: block before insert =====
+    const violation = detectViolation(text);
+    if (violation) {
+      setInput("");
+      lastSentRef.current = Date.now();
+      setCooldownLeft(COOLDOWN_MS);
+      const botMsg: ChatMessage = {
+        id: `bot-${Date.now()}`,
+        user_id: null,
+        username: "kira_system",
+        player_name: "KIRA SYSTEM",
+        player_level: 0,
+        avatar_url: null,
+        content: violation,
+        is_bot: true,
+        created_at: new Date().toISOString(),
+      };
+      setMessages((p) => [...p, botMsg]);
+      toast.error("Message blocked by KIRA SYSTEM");
+      return;
+    }
+
     setSending(true);
     const { error } = await supabase.from("chat_messages").insert({
       user_id: user.id,
@@ -233,22 +256,6 @@ const HunterChat = () => {
     setInput("");
     lastSentRef.current = Date.now();
     setCooldownLeft(COOLDOWN_MS);
-
-    const violation = detectViolation(text);
-    if (violation) {
-      const botMsg: ChatMessage = {
-        id: `bot-${Date.now()}`,
-        user_id: null,
-        username: "kira_system",
-        player_name: "KIRA SYSTEM",
-        player_level: 0,
-        avatar_url: null,
-        content: violation,
-        is_bot: true,
-        created_at: new Date().toISOString(),
-      };
-      setTimeout(() => setMessages((p) => [...p, botMsg]), 400);
-    }
   };
 
   const myRank = useMemo(() => profile ? getRank(profile.player_level) : "E", [profile]);
