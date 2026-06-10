@@ -467,10 +467,12 @@ const HunterChat = () => {
           <div
             className="relative flex-1 rounded-full"
             style={{
-              background: "rgba(14,9,26,0.6)",
-              border: `1px solid ${PURPLE_LINE}`,
-              backdropFilter: "blur(14px)",
-              boxShadow: "0 0 16px rgba(168,85,247,0.22), inset 0 0 12px rgba(168,85,247,0.06)",
+              background: "rgba(14,9,26,0.45)",
+              border: `1px solid rgba(168,85,247,0.45)`,
+              backdropFilter: "blur(22px) saturate(140%)",
+              WebkitBackdropFilter: "blur(22px) saturate(140%)",
+              boxShadow:
+                "0 0 28px rgba(168,85,247,0.45), 0 0 60px rgba(124,58,237,0.18), inset 0 0 18px rgba(168,85,247,0.10), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
             <input
