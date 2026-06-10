@@ -296,7 +296,7 @@ const HunterChat = () => {
       {/* ====== COMPACT HERO HEADER ====== */}
       <header className="relative z-20 overflow-hidden">
         <div className="relative w-full" style={{ aspectRatio: "21 / 9", maxHeight: "22vh" }}>
-          <img src={heroBg} alt="Hunters Online" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={heroBg} alt="Hunters Online" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "center 18%" }} />
           <div
             className="absolute inset-x-0 bottom-0 h-3/4"
             style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(6,4,11,0.7) 60%, #06040b 100%)" }}
