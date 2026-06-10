@@ -472,21 +472,43 @@ const HunterChat = () => {
       </div>
 
       {/* ====== MESSAGES ====== */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
-          <div className="flex flex-col gap-1">
-            {groups.map((g) => (
-              <MessageGroup key={g[0].id} messages={g} />
-            ))}
-          </div>
+      <div className="relative flex-1 overflow-hidden">
+        <div ref={scrollRef} className="h-full overflow-y-auto">
+          <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
+            <div className="flex flex-col gap-1">
+              {groups.map((g) => (
+                <MessageGroup key={g[0].id} messages={g} />
+              ))}
+            </div>
 
-          {visibleMessages.length === 0 && (
-            <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-white/40">
-              No messages yet. Be the first Hunter to speak.
-            </p>
-          )}
+            {visibleMessages.length === 0 && (
+              <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-white/40">
+                No messages yet. Be the first Hunter to speak.
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* New Messages pill */}
+        {showNewMsgPill && (
+          <button
+            onClick={() => scrollToBottom("smooth")}
+            className="absolute left-1/2 bottom-2 z-30 -translate-x-1/2 rounded-full px-3.5 py-1.5 transition active:scale-95 msg-enter"
+            style={{
+              background: "linear-gradient(180deg, rgba(124,58,237,0.95), rgba(88,28,200,0.95))",
+              border: `1px solid rgba(168,85,247,0.6)`,
+              boxShadow: "0 6px 22px rgba(124,58,237,0.55), inset 0 1px 0 rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+              color: "#fff",
+            }}
+          >
+            <span className="font-display text-[10.5px] font-bold uppercase tracking-[0.18em]">
+              ↓ {unreadCount > 0 ? `${unreadCount} New ${unreadCount === 1 ? "Message" : "Messages"}` : "New Messages"}
+            </span>
+          </button>
+        )}
       </div>
+
 
       {/* ====== TYPING INDICATOR ====== */}
       <div className="relative z-20 mx-auto h-5 w-full max-w-md px-4">
