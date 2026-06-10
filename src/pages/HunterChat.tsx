@@ -120,6 +120,9 @@ const HunterChat = () => {
   const lastSentRef = useRef(0);
   const channelRef = useRef<any>(null);
   const typingSentAtRef = useRef(0);
+  const isNearBottomRef = useRef(true);
+  const [showNewMsgPill, setShowNewMsgPill] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
