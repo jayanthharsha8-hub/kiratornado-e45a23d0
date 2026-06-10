@@ -120,6 +120,9 @@ const HunterChat = () => {
   const lastSentRef = useRef(0);
   const channelRef = useRef<any>(null);
   const typingSentAtRef = useRef(0);
+  const isNearBottomRef = useRef(true);
+  const [showNewMsgPill, setShowNewMsgPill] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -188,9 +191,54 @@ const HunterChat = () => {
     [messages, now]
   );
 
+  // Track scroll position — only auto-scroll if user is near bottom
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [visibleMessages.length, typingUsers]);
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
+      const near = dist < 80;
+      isNearBottomRef.current = near;
+      if (near) {
+        setShowNewMsgPill(false);
+        setUnreadCount(0);
+      }
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior });
+    setShowNewMsgPill(false);
+    setUnreadCount(0);
+  };
+
+  // Auto-scroll only if user is already at/near the bottom; otherwise show pill
+  const prevCountRef = useRef(0);
+  useEffect(() => {
+    const count = visibleMessages.length;
+    const prev = prevCountRef.current;
+    prevCountRef.current = count;
+    if (count > prev) {
+      if (isNearBottomRef.current) {
+        requestAnimationFrame(() => scrollToBottom("smooth"));
+      } else {
+        setShowNewMsgPill(true);
+        setUnreadCount((c) => c + (count - prev));
+      }
+    }
+  }, [visibleMessages.length]);
+
+  // Initial scroll to bottom on first load (instant)
+  useEffect(() => {
+    if (visibleMessages.length > 0 && prevCountRef.current === visibleMessages.length) {
+      scrollToBottom("auto");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleMessages.length > 0]);
 
   useEffect(() => {
     if (cooldownLeft <= 0) return;
@@ -232,6 +280,8 @@ const HunterChat = () => {
     setInput("");
     lastSentRef.current = Date.now();
     setCooldownLeft(COOLDOWN_MS);
+    // When user sends, they expect to see their own message — force scroll
+    isNearBottomRef.current = true;
 
     const violation = detectViolation(text);
     if (violation) {
@@ -296,7 +346,7 @@ const HunterChat = () => {
       {/* ====== COMPACT HERO HEADER ====== */}
       <header className="relative z-20 overflow-hidden">
         <div className="relative w-full" style={{ aspectRatio: "21 / 9", maxHeight: "22vh" }}>
-          <img src={heroBg} alt="Hunters Online" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={heroBg} alt="Hunters Online" className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: "center 18%" }} />
           <div
             className="absolute inset-x-0 bottom-0 h-3/4"
             style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(6,4,11,0.7) 60%, #06040b 100%)" }}
@@ -422,21 +472,43 @@ const HunterChat = () => {
       </div>
 
       {/* ====== MESSAGES ====== */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
-          <div className="flex flex-col gap-1">
-            {groups.map((g) => (
-              <MessageGroup key={g[0].id} messages={g} />
-            ))}
-          </div>
+      <div className="relative flex-1 overflow-hidden">
+        <div ref={scrollRef} className="h-full overflow-y-auto">
+          <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
+            <div className="flex flex-col gap-1">
+              {groups.map((g) => (
+                <MessageGroup key={g[0].id} messages={g} />
+              ))}
+            </div>
 
-          {visibleMessages.length === 0 && (
-            <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-white/40">
-              No messages yet. Be the first Hunter to speak.
-            </p>
-          )}
+            {visibleMessages.length === 0 && (
+              <p className="py-12 text-center font-display text-xs uppercase tracking-[0.2em] text-white/40">
+                No messages yet. Be the first Hunter to speak.
+              </p>
+            )}
+          </div>
         </div>
+
+        {/* New Messages pill */}
+        {showNewMsgPill && (
+          <button
+            onClick={() => scrollToBottom("smooth")}
+            className="absolute left-1/2 bottom-2 z-30 -translate-x-1/2 rounded-full px-3.5 py-1.5 transition active:scale-95 msg-enter"
+            style={{
+              background: "linear-gradient(180deg, rgba(124,58,237,0.95), rgba(88,28,200,0.95))",
+              border: `1px solid rgba(168,85,247,0.6)`,
+              boxShadow: "0 6px 22px rgba(124,58,237,0.55), inset 0 1px 0 rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+              color: "#fff",
+            }}
+          >
+            <span className="font-display text-[10.5px] font-bold uppercase tracking-[0.18em]">
+              ↓ {unreadCount > 0 ? `${unreadCount} New ${unreadCount === 1 ? "Message" : "Messages"}` : "New Messages"}
+            </span>
+          </button>
+        )}
       </div>
+
 
       {/* ====== TYPING INDICATOR ====== */}
       <div className="relative z-20 mx-auto h-5 w-full max-w-md px-4">
