@@ -402,27 +402,31 @@ const HunterChat = () => {
         <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.5), transparent)" }} />
       </header>
 
+      {/* ====== STICKY NOTICE ====== */}
+      <div className="relative z-10 px-3 pt-2">
+        <div
+          className="mx-auto flex max-w-md items-center gap-2 rounded-lg px-2.5 py-1.5"
+          style={{
+            background: "linear-gradient(180deg, rgba(28,16,52,0.78), rgba(14,9,28,0.85))",
+            border: `1px solid ${PURPLE_LINE}`,
+            backdropFilter: "blur(10px)",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.4)",
+          }}
+        >
+          <Shield className="h-3 w-3 shrink-0" style={{ color: PURPLE }} />
+          <p className="flex-1 text-[10.5px] text-white/70">Be respectful, Hunters. Messages auto-delete after 30 min.</p>
+          <span className="font-display text-[8.5px] font-black uppercase tracking-[0.18em]" style={{ color: PURPLE }}>
+            KIRA
+          </span>
+        </div>
+      </div>
+
       {/* ====== MESSAGES ====== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md px-3 pb-3 pt-2">
-          <div
-            className="mb-2 flex items-center gap-2 rounded-lg px-2.5 py-1.5"
-            style={{
-              background: "linear-gradient(180deg, rgba(28,16,52,0.6), rgba(14,9,28,0.7))",
-              border: `1px solid ${PURPLE_LINE}`,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            <Shield className="h-3 w-3 shrink-0" style={{ color: PURPLE }} />
-            <p className="flex-1 text-[10.5px] text-white/70">Be respectful, Hunters. Messages auto-delete after 30 min.</p>
-            <span className="font-display text-[8.5px] font-black uppercase tracking-[0.18em]" style={{ color: PURPLE }}>
-              KIRA
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            {grouped.map(({ m, grouped: isGrouped }) => (
-              <MessageCard key={m.id} message={m} grouped={isGrouped} />
+        <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
+          <div className="flex flex-col gap-1">
+            {groups.map((g) => (
+              <MessageGroup key={g[0].id} messages={g} />
             ))}
           </div>
 
