@@ -509,14 +509,15 @@ const HunterChat = () => {
   );
 };
 
-const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: boolean }) => {
-  const rank = getRank(message.player_level);
-  const isBot = message.is_bot;
+const MessageGroup = ({ messages }: { messages: ChatMessage[] }) => {
+  const head = messages[0];
+  const isBot = head.is_bot;
+  const rank = getRank(head.player_level);
 
   if (isBot) {
     return (
       <div
-        className={`msg-enter relative overflow-hidden rounded-lg px-2.5 py-1.5 ${grouped ? "mt-0.5" : "mt-1.5"}`}
+        className="msg-enter relative overflow-hidden rounded-lg px-2 py-1"
         style={{
           background: "linear-gradient(135deg, rgba(91,33,182,0.6), rgba(24,12,52,0.9))",
           border: `1px solid rgba(168,85,247,0.6)`,
@@ -528,65 +529,54 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
           className="absolute inset-y-0 left-0 w-[3px]"
           style={{ background: "linear-gradient(180deg,#c084fc,#4c1d95)", boxShadow: "0 0 14px rgba(168,85,247,0.9)" }}
         />
-        {grouped ? (
-          <div className="pl-10">
-            <p className="text-[11.5px] leading-snug text-white/90">{message.content}</p>
+        <div className="flex items-start gap-2">
+          <div
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
+            style={{
+              background: "linear-gradient(180deg, #6d28d9, #1e0a45)",
+              border: `1px solid ${PURPLE}`,
+              boxShadow: "0 0 12px rgba(168,85,247,0.75)",
+            }}
+          >
+            <Shield className="h-3.5 w-3.5 text-white" />
           </div>
-        ) : (
-          <div className="flex items-start gap-2">
-            <div
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
-              style={{
-                background: "linear-gradient(180deg, #6d28d9, #1e0a45)",
-                border: `1px solid ${PURPLE}`,
-                boxShadow: "0 0 12px rgba(168,85,247,0.75)",
-              }}
-            >
-              <Shield className="h-3.5 w-3.5 text-white" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]"
+                style={{ color: "#f3e8ff", textShadow: "0 0 10px rgba(168,85,247,0.8)" }}
+              >
+                KIRA SYSTEM
+              </span>
+              <span
+                className="inline-flex items-center gap-0.5 rounded-md px-1.5 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"
+                style={{
+                  background: `linear-gradient(135deg,${PURPLE},${PURPLE_DEEP})`,
+                  boxShadow: "0 0 10px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
+                <Shield className="h-2 w-2" />
+                BOT
+              </span>
+              <span className="ml-auto text-[9px] text-white/50">{formatTime(head.created_at)}</span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]"
-                  style={{ color: "#f3e8ff", textShadow: "0 0 10px rgba(168,85,247,0.8)" }}
-                >
-                  KIRA SYSTEM
-                </span>
-                <span
-                  className="inline-flex items-center gap-0.5 rounded-md px-1.5 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"
-                  style={{
-                    background: `linear-gradient(135deg,${PURPLE},${PURPLE_DEEP})`,
-                    boxShadow: "0 0 10px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                >
-                  <Shield className="h-2 w-2" />
-                  BOT
-                </span>
-                <span className="ml-auto text-[9px] text-white/50">{formatTime(message.created_at)}</span>
-              </div>
-              <p className="mt-0.5 text-[11.5px] leading-snug text-white/90">{message.content}</p>
-            </div>
+            {messages.map((m, i) => (
+              <p key={m.id} className={`${i === 0 ? "mt-0.5" : "mt-0.5"} text-[11.5px] leading-snug text-white/90`}>
+                {m.content}
+              </p>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     );
   }
 
   const t = rankTheme[rank];
 
-  // Grouped: just content, indented under avatar column
-  if (grouped) {
-    return (
-      <div className="msg-enter pl-10 pr-2.5">
-        <p className="break-words text-[11.5px] leading-snug text-white/85">{message.content}</p>
-      </div>
-    );
-  }
-
   return (
     <div
-      className="msg-enter mt-1.5 rounded-lg px-2.5 py-1.5 transition"
+      className="msg-enter rounded-lg px-2 py-1 transition"
       style={{
         background: "linear-gradient(180deg, rgba(20,12,38,0.55), rgba(10,7,22,0.55))",
         border: `1px solid ${PURPLE_LINE}`,
@@ -602,11 +592,11 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
             boxShadow: `0 0 7px ${t.glow}`,
           }}
         >
-          {message.avatar_url ? (
-            <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
+          {head.avatar_url ? (
+            <img src={head.avatar_url} alt={head.player_name} className="h-full w-full object-cover" />
           ) : (
             <div className="grid h-full w-full place-items-center font-display text-sm font-extrabold text-white" style={{ background: t.grad }}>
-              {message.player_name.charAt(0).toUpperCase()}
+              {head.player_name.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
@@ -616,12 +606,16 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
               className="truncate font-display text-[12px] font-extrabold tracking-wide"
               style={{ color: t.name, textShadow: `0 0 6px ${t.glow}` }}
             >
-              {message.player_name}
+              {head.player_name}
             </span>
             <RankBadge rank={rank} size="sm" />
-            <span className="ml-auto shrink-0 text-[9px] text-white/45">{formatTime(message.created_at)}</span>
+            <span className="ml-auto shrink-0 text-[9px] text-white/45">{formatTime(head.created_at)}</span>
           </div>
-          <p className="mt-0.5 break-words text-[11.5px] leading-snug text-white/85">{message.content}</p>
+          {messages.map((m, i) => (
+            <p key={m.id} className={`${i === 0 ? "mt-0.5" : "mt-0.5"} break-words text-[11.5px] leading-snug text-white/85`}>
+              {m.content}
+            </p>
+          ))}
         </div>
       </div>
     </div>
