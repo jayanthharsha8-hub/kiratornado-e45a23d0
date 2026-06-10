@@ -252,17 +252,21 @@ const HunterChat = () => {
 
   const myRank = useMemo(() => profile ? getRank(profile.player_level) : "E", [profile]);
 
-  // Build grouped message rows (Discord style)
-  const grouped = useMemo(() => {
-    return visibleMessages.map((m, i) => {
-      const prev = visibleMessages[i - 1];
+  // Build message groups — consecutive same-author messages stay in ONE card
+  const groups = useMemo(() => {
+    const out: ChatMessage[][] = [];
+    visibleMessages.forEach((m) => {
+      const last = out[out.length - 1];
+      const prev = last?.[last.length - 1];
       const sameAuthor =
         prev &&
         prev.is_bot === m.is_bot &&
         ((m.user_id && prev.user_id === m.user_id) || (m.is_bot && prev.is_bot)) &&
         new Date(m.created_at).getTime() - new Date(prev.created_at).getTime() < GROUP_WINDOW_MS;
-      return { m, grouped: !!sameAuthor };
+      if (sameAuthor) last.push(m);
+      else out.push([m]);
     });
+    return out;
   }, [visibleMessages]);
 
   const typingList = Object.values(typingUsers);
@@ -291,7 +295,7 @@ const HunterChat = () => {
 
       {/* ====== COMPACT HERO HEADER ====== */}
       <header className="relative z-20 overflow-hidden">
-        <div className="relative w-full" style={{ aspectRatio: "21 / 9", maxHeight: "26vh" }}>
+        <div className="relative w-full" style={{ aspectRatio: "21 / 9", maxHeight: "22vh" }}>
           <img src={heroBg} alt="Hunters Online" className="absolute inset-0 h-full w-full object-cover" />
           <div
             className="absolute inset-x-0 bottom-0 h-3/4"
@@ -398,27 +402,31 @@ const HunterChat = () => {
         <div className="h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(168,85,247,0.5), transparent)" }} />
       </header>
 
+      {/* ====== STICKY NOTICE ====== */}
+      <div className="relative z-10 px-3 pt-2">
+        <div
+          className="mx-auto flex max-w-md items-center gap-2 rounded-lg px-2.5 py-1.5"
+          style={{
+            background: "linear-gradient(180deg, rgba(28,16,52,0.78), rgba(14,9,28,0.85))",
+            border: `1px solid ${PURPLE_LINE}`,
+            backdropFilter: "blur(10px)",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.4)",
+          }}
+        >
+          <Shield className="h-3 w-3 shrink-0" style={{ color: PURPLE }} />
+          <p className="flex-1 text-[10.5px] text-white/70">Be respectful, Hunters. Messages auto-delete after 30 min.</p>
+          <span className="font-display text-[8.5px] font-black uppercase tracking-[0.18em]" style={{ color: PURPLE }}>
+            KIRA
+          </span>
+        </div>
+      </div>
+
       {/* ====== MESSAGES ====== */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-md px-3 pb-3 pt-2">
-          <div
-            className="mb-2 flex items-center gap-2 rounded-lg px-2.5 py-1.5"
-            style={{
-              background: "linear-gradient(180deg, rgba(28,16,52,0.6), rgba(14,9,28,0.7))",
-              border: `1px solid ${PURPLE_LINE}`,
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            <Shield className="h-3 w-3 shrink-0" style={{ color: PURPLE }} />
-            <p className="flex-1 text-[10.5px] text-white/70">Be respectful, Hunters. Messages auto-delete after 30 min.</p>
-            <span className="font-display text-[8.5px] font-black uppercase tracking-[0.18em]" style={{ color: PURPLE }}>
-              KIRA
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            {grouped.map(({ m, grouped: isGrouped }) => (
-              <MessageCard key={m.id} message={m} grouped={isGrouped} />
+        <div className="mx-auto max-w-md px-3 pb-3 pt-1.5">
+          <div className="flex flex-col gap-1">
+            {groups.map((g) => (
+              <MessageGroup key={g[0].id} messages={g} />
             ))}
           </div>
 
@@ -459,10 +467,12 @@ const HunterChat = () => {
           <div
             className="relative flex-1 rounded-full"
             style={{
-              background: "rgba(14,9,26,0.6)",
-              border: `1px solid ${PURPLE_LINE}`,
-              backdropFilter: "blur(14px)",
-              boxShadow: "0 0 16px rgba(168,85,247,0.22), inset 0 0 12px rgba(168,85,247,0.06)",
+              background: "rgba(14,9,26,0.45)",
+              border: `1px solid rgba(168,85,247,0.45)`,
+              backdropFilter: "blur(22px) saturate(140%)",
+              WebkitBackdropFilter: "blur(22px) saturate(140%)",
+              boxShadow:
+                "0 0 28px rgba(168,85,247,0.45), 0 0 60px rgba(124,58,237,0.18), inset 0 0 18px rgba(168,85,247,0.10), inset 0 1px 0 rgba(255,255,255,0.06)",
             }}
           >
             <input
@@ -499,14 +509,15 @@ const HunterChat = () => {
   );
 };
 
-const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: boolean }) => {
-  const rank = getRank(message.player_level);
-  const isBot = message.is_bot;
+const MessageGroup = ({ messages }: { messages: ChatMessage[] }) => {
+  const head = messages[0];
+  const isBot = head.is_bot;
+  const rank = getRank(head.player_level);
 
   if (isBot) {
     return (
       <div
-        className={`msg-enter relative overflow-hidden rounded-lg px-2.5 py-1.5 ${grouped ? "mt-0.5" : "mt-1.5"}`}
+        className="msg-enter relative overflow-hidden rounded-lg px-2 py-1"
         style={{
           background: "linear-gradient(135deg, rgba(91,33,182,0.6), rgba(24,12,52,0.9))",
           border: `1px solid rgba(168,85,247,0.6)`,
@@ -518,65 +529,54 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
           className="absolute inset-y-0 left-0 w-[3px]"
           style={{ background: "linear-gradient(180deg,#c084fc,#4c1d95)", boxShadow: "0 0 14px rgba(168,85,247,0.9)" }}
         />
-        {grouped ? (
-          <div className="pl-10">
-            <p className="text-[11.5px] leading-snug text-white/90">{message.content}</p>
+        <div className="flex items-start gap-2">
+          <div
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
+            style={{
+              background: "linear-gradient(180deg, #6d28d9, #1e0a45)",
+              border: `1px solid ${PURPLE}`,
+              boxShadow: "0 0 12px rgba(168,85,247,0.75)",
+            }}
+          >
+            <Shield className="h-3.5 w-3.5 text-white" />
           </div>
-        ) : (
-          <div className="flex items-start gap-2">
-            <div
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
-              style={{
-                background: "linear-gradient(180deg, #6d28d9, #1e0a45)",
-                border: `1px solid ${PURPLE}`,
-                boxShadow: "0 0 12px rgba(168,85,247,0.75)",
-              }}
-            >
-              <Shield className="h-3.5 w-3.5 text-white" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span
+                className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]"
+                style={{ color: "#f3e8ff", textShadow: "0 0 10px rgba(168,85,247,0.8)" }}
+              >
+                KIRA SYSTEM
+              </span>
+              <span
+                className="inline-flex items-center gap-0.5 rounded-md px-1.5 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"
+                style={{
+                  background: `linear-gradient(135deg,${PURPLE},${PURPLE_DEEP})`,
+                  boxShadow: "0 0 10px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
+                <Shield className="h-2 w-2" />
+                BOT
+              </span>
+              <span className="ml-auto text-[9px] text-white/50">{formatTime(head.created_at)}</span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span
-                  className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]"
-                  style={{ color: "#f3e8ff", textShadow: "0 0 10px rgba(168,85,247,0.8)" }}
-                >
-                  KIRA SYSTEM
-                </span>
-                <span
-                  className="inline-flex items-center gap-0.5 rounded-md px-1.5 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"
-                  style={{
-                    background: `linear-gradient(135deg,${PURPLE},${PURPLE_DEEP})`,
-                    boxShadow: "0 0 10px rgba(168,85,247,0.8), inset 0 1px 0 rgba(255,255,255,0.25)",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                >
-                  <Shield className="h-2 w-2" />
-                  BOT
-                </span>
-                <span className="ml-auto text-[9px] text-white/50">{formatTime(message.created_at)}</span>
-              </div>
-              <p className="mt-0.5 text-[11.5px] leading-snug text-white/90">{message.content}</p>
-            </div>
+            {messages.map((m, i) => (
+              <p key={m.id} className={`${i === 0 ? "mt-0.5" : "mt-0.5"} text-[11.5px] leading-snug text-white/90`}>
+                {m.content}
+              </p>
+            ))}
           </div>
-        )}
+        </div>
       </div>
     );
   }
 
   const t = rankTheme[rank];
 
-  // Grouped: just content, indented under avatar column
-  if (grouped) {
-    return (
-      <div className="msg-enter pl-10 pr-2.5">
-        <p className="break-words text-[11.5px] leading-snug text-white/85">{message.content}</p>
-      </div>
-    );
-  }
-
   return (
     <div
-      className="msg-enter mt-1.5 rounded-lg px-2.5 py-1.5 transition"
+      className="msg-enter rounded-lg px-2 py-1 transition"
       style={{
         background: "linear-gradient(180deg, rgba(20,12,38,0.55), rgba(10,7,22,0.55))",
         border: `1px solid ${PURPLE_LINE}`,
@@ -592,11 +592,11 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
             boxShadow: `0 0 7px ${t.glow}`,
           }}
         >
-          {message.avatar_url ? (
-            <img src={message.avatar_url} alt={message.player_name} className="h-full w-full object-cover" />
+          {head.avatar_url ? (
+            <img src={head.avatar_url} alt={head.player_name} className="h-full w-full object-cover" />
           ) : (
             <div className="grid h-full w-full place-items-center font-display text-sm font-extrabold text-white" style={{ background: t.grad }}>
-              {message.player_name.charAt(0).toUpperCase()}
+              {head.player_name.charAt(0).toUpperCase()}
             </div>
           )}
         </div>
@@ -606,12 +606,16 @@ const MessageCard = ({ message, grouped }: { message: ChatMessage; grouped: bool
               className="truncate font-display text-[12px] font-extrabold tracking-wide"
               style={{ color: t.name, textShadow: `0 0 6px ${t.glow}` }}
             >
-              {message.player_name}
+              {head.player_name}
             </span>
             <RankBadge rank={rank} size="sm" />
-            <span className="ml-auto shrink-0 text-[9px] text-white/45">{formatTime(message.created_at)}</span>
+            <span className="ml-auto shrink-0 text-[9px] text-white/45">{formatTime(head.created_at)}</span>
           </div>
-          <p className="mt-0.5 break-words text-[11.5px] leading-snug text-white/85">{message.content}</p>
+          {messages.map((m, i) => (
+            <p key={m.id} className={`${i === 0 ? "mt-0.5" : "mt-0.5"} break-words text-[11.5px] leading-snug text-white/85`}>
+              {m.content}
+            </p>
+          ))}
         </div>
       </div>
     </div>
