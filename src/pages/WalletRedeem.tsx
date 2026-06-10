@@ -27,20 +27,23 @@ const WalletRedeem = () => {
   };
 
   return (
-    <div className="relative min-h-screen pb-24" style={{ background: "#05070d" }}>
+    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-24">
       <Particles />
-      <header className="sticky top-0 z-30 border-b border-primary/30 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
-          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary"><ArrowLeft className="h-5 w-5" /></button>
+      <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-2.5">
+          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary transition hover:text-primary-glow"><ArrowLeft className="h-5 w-5" /></button>
           <h1 className="mx-auto font-display text-sm font-bold uppercase tracking-[0.35em] text-primary text-glow-soft">Redeem Code</h1>
           <span className="w-5" />
         </div>
       </header>
 
       <main className="mx-auto max-w-md space-y-8 px-4 pt-8">
-        <div className="text-center">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Available</p>
-          <p className="font-display text-3xl font-black text-primary text-glow-soft">{coins} <span className="text-sm tracking-widest">COINS</span></p>
+        <div className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(260,40%,6%)]/70 p-5 text-center backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.12),transparent_70%)]" />
+          <div className="relative">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Available</p>
+            <p className="mt-1 font-display text-3xl font-black text-primary text-glow-soft">{coins} <span className="text-sm tracking-widest">COINS</span></p>
+          </div>
         </div>
 
         <section>
@@ -54,14 +57,14 @@ const WalletRedeem = () => {
                   key={a}
                   disabled={locked}
                   onClick={() => { playSound("tick"); setSelected(a); }}
-                  className={`aspect-square rounded-md border font-display text-2xl font-black uppercase transition ${
+                  className={`aspect-square rounded-xl border font-display text-2xl font-black uppercase transition ${
                     locked
-                      ? "border-muted/30 bg-card/30 text-muted-foreground/40"
+                      ? "border-muted/30 bg-[hsl(260,40%,6%)]/30 text-muted-foreground/40"
                       : active
                         ? "border-primary bg-primary/15 text-primary"
-                        : "border-primary/40 bg-card/60 text-foreground hover:border-primary"
+                        : "border-primary/40 bg-[hsl(260,40%,7%)]/60 text-foreground hover:border-primary"
                   }`}
-                  style={active ? { boxShadow: "0 0 18px hsl(var(--primary) / 0.5)" } : undefined}
+                  style={active ? { boxShadow: "0 0 24px hsl(var(--primary) / 0.55), inset 0 0 12px hsl(var(--primary) / 0.08)" } : undefined}
                 >
                   {a}
                 </button>
@@ -78,8 +81,8 @@ const WalletRedeem = () => {
         <button
           onClick={next}
           disabled={selected == null}
-          className="w-full rounded-md border border-primary/60 bg-primary/15 p-4 font-display text-sm font-bold uppercase tracking-[0.3em] text-primary transition hover:bg-primary/25 disabled:opacity-40"
-          style={selected != null ? { boxShadow: "0 0 22px hsl(var(--primary) / 0.45)" } : undefined}
+          className="w-full rounded-xl border border-primary/60 bg-primary/15 p-4 font-display text-sm font-bold uppercase tracking-[0.3em] text-primary transition hover:bg-primary/25 disabled:opacity-40"
+          style={selected != null ? { boxShadow: "0 0 28px hsl(var(--primary) / 0.5), inset 0 0 12px hsl(var(--primary) / 0.06)" } : undefined}
         >
           Next
         </button>

@@ -22,17 +22,19 @@ const TransactionHistory = () => {
   }, [user]);
 
   return (
-    <div className="relative min-h-screen pb-8 scanline">
+    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-8 scanline">
       <Particles />
-      <header className="sticky top-0 z-30 border-b border-primary/30 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2">
-          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary"><ArrowLeft className="h-5 w-5" /></button>
+      <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2.5">
+          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary transition hover:text-primary-glow"><ArrowLeft className="h-5 w-5" /></button>
           <h1 className="mx-auto font-display text-sm font-bold uppercase tracking-[0.35em] text-primary text-glow-soft">History</h1>
           <span className="w-5" />
         </div>
       </header>
       <main className="mx-auto max-w-md px-3 pt-4">
-        <TransactionList items={items} />
+        <div className="rounded-lg border border-primary/15 bg-[hsl(260,40%,5%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
+          <TransactionList items={items} />
+        </div>
       </main>
     </div>
   );

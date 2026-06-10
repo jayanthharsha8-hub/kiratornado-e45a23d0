@@ -45,43 +45,45 @@ const WalletPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen pb-20 scanline">
+    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-20 scanline">
       <Particles />
-      <header className="sticky top-0 z-30 border-b border-primary/30 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2">
-          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary"><ArrowLeft className="h-5 w-5" /></button>
+      <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2.5">
+          <button onClick={() => { playSound("tick"); navigate(-1); }} className="text-primary transition hover:text-primary-glow"><ArrowLeft className="h-5 w-5" /></button>
           <h1 className="mx-auto font-display text-sm font-bold uppercase tracking-[0.35em] text-primary text-glow-soft">Wallet</h1>
           <span className="w-5" />
         </div>
       </header>
 
-      <main className="mx-auto max-w-md space-y-4 px-3 pt-4">
+      <main className="mx-auto max-w-md space-y-5 px-3 pt-5">
         {/* Balance */}
-        <section className="text-center animate-float-up">
-          <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Total Coins</p>
-          <p
-            className="mt-1 font-display text-5xl font-black text-primary"
-            style={{ textShadow: "0 0 18px hsl(var(--primary) / 0.55), 0 0 36px hsl(var(--primary) / 0.25)" }}
-          >
-            {coins}
-          </p>
+        <section className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(260,40%,6%)]/70 p-6 text-center animate-float-up backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.12),transparent_70%)]" />
+          <div className="relative">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Total Coins</p>
+            <p className="mt-2 font-display text-5xl font-black text-primary" style={{ textShadow: "0 0 20px hsl(var(--primary) / 0.7), 0 0 45px hsl(var(--primary) / 0.35), 0 0 80px hsl(var(--primary) / 0.15)" }}>
+              {coins}
+            </p>
+          </div>
         </section>
 
         <section className="grid grid-cols-2 gap-3">
-          <button onClick={() => addCoins(30)} className="flex h-14 items-center justify-center gap-2 border border-primary/70 bg-transparent font-display text-xs font-bold uppercase tracking-widest text-primary transition hover:bg-primary/5 active:scale-[0.97] active:glow-soft">
+          <button onClick={() => addCoins(30)} className="flex h-14 items-center justify-center gap-2 rounded-lg border border-primary/50 bg-primary/5 font-display text-xs font-bold uppercase tracking-widest text-primary transition hover:bg-primary/10 hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] active:scale-[0.97]">
             <Plus className="h-4 w-4" /> Add Coins
           </button>
-          <button onClick={() => go("/wallet/withdraw")} className="flex h-14 items-center justify-center gap-2 border border-primary/70 bg-transparent font-display text-xs font-bold uppercase tracking-widest text-primary transition hover:bg-primary/5 active:scale-[0.97] active:glow-soft">
+          <button onClick={() => go("/wallet/withdraw")} className="flex h-14 items-center justify-center gap-2 rounded-lg border border-primary/50 bg-primary/5 font-display text-xs font-bold uppercase tracking-widest text-primary transition hover:bg-primary/10 hover:shadow-[0_0_20px_hsl(var(--primary)/0.3)] active:scale-[0.97]">
             <PlayCircle className="h-4 w-4" /> Withdraw
           </button>
         </section>
 
-        <section className="space-y-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-foreground">HISTORY HERE</h2>
-            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 text-xs text-primary">View All <ChevronRight className="h-3 w-3" /></button>
+        <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.25em] text-foreground/80">History</h2>
+            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 text-xs text-primary transition hover:text-primary-glow">View All <ChevronRight className="h-3 w-3" /></button>
           </div>
-          <TransactionList items={transactions} />
+          <div className="rounded-lg border border-primary/15 bg-[hsl(260,40%,5%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
+            <TransactionList items={transactions} />
+          </div>
         </section>
 
         <p className="pt-2 text-center text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
