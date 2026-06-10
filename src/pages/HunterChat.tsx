@@ -191,9 +191,54 @@ const HunterChat = () => {
     [messages, now]
   );
 
+  // Track scroll position — only auto-scroll if user is near bottom
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [visibleMessages.length, typingUsers]);
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
+      const near = dist < 80;
+      isNearBottomRef.current = near;
+      if (near) {
+        setShowNewMsgPill(false);
+        setUnreadCount(0);
+      }
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior });
+    setShowNewMsgPill(false);
+    setUnreadCount(0);
+  };
+
+  // Auto-scroll only if user is already at/near the bottom; otherwise show pill
+  const prevCountRef = useRef(0);
+  useEffect(() => {
+    const count = visibleMessages.length;
+    const prev = prevCountRef.current;
+    prevCountRef.current = count;
+    if (count > prev) {
+      if (isNearBottomRef.current) {
+        requestAnimationFrame(() => scrollToBottom("smooth"));
+      } else {
+        setShowNewMsgPill(true);
+        setUnreadCount((c) => c + (count - prev));
+      }
+    }
+  }, [visibleMessages.length]);
+
+  // Initial scroll to bottom on first load (instant)
+  useEffect(() => {
+    if (visibleMessages.length > 0 && prevCountRef.current === visibleMessages.length) {
+      scrollToBottom("auto");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleMessages.length > 0]);
 
   useEffect(() => {
     if (cooldownLeft <= 0) return;
