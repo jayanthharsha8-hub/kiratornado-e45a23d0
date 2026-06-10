@@ -280,6 +280,8 @@ const HunterChat = () => {
     setInput("");
     lastSentRef.current = Date.now();
     setCooldownLeft(COOLDOWN_MS);
+    // When user sends, they expect to see their own message — force scroll
+    isNearBottomRef.current = true;
 
     const violation = detectViolation(text);
     if (violation) {
