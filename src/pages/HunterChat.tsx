@@ -252,17 +252,21 @@ const HunterChat = () => {
 
   const myRank = useMemo(() => profile ? getRank(profile.player_level) : "E", [profile]);
 
-  // Build grouped message rows (Discord style)
-  const grouped = useMemo(() => {
-    return visibleMessages.map((m, i) => {
-      const prev = visibleMessages[i - 1];
+  // Build message groups — consecutive same-author messages stay in ONE card
+  const groups = useMemo(() => {
+    const out: ChatMessage[][] = [];
+    visibleMessages.forEach((m) => {
+      const last = out[out.length - 1];
+      const prev = last?.[last.length - 1];
       const sameAuthor =
         prev &&
         prev.is_bot === m.is_bot &&
         ((m.user_id && prev.user_id === m.user_id) || (m.is_bot && prev.is_bot)) &&
         new Date(m.created_at).getTime() - new Date(prev.created_at).getTime() < GROUP_WINDOW_MS;
-      return { m, grouped: !!sameAuthor };
+      if (sameAuthor) last.push(m);
+      else out.push([m]);
     });
+    return out;
   }, [visibleMessages]);
 
   const typingList = Object.values(typingUsers);
