@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Copy, QrCode } from "lucide-react";
 
 const UPI_ID = "kiratornado@ptyes";
-const QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&bgcolor=0a0f1c&color=a855f7&qzone=2&data=${encodeURIComponent(`upi://pay?pa=${UPI_ID}&pn=KIRA%20TORNADO&cu=INR`)}`;
+const QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&bgcolor=0a0f1c&color=00e5ff&qzone=2&data=${encodeURIComponent(`upi://pay?pa=${UPI_ID}&pn=KIRA%20TORNADO&cu=INR`)}`;
 
 const AMOUNTS = [10, 20, 50, 100];
 
