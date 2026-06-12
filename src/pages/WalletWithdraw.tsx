@@ -20,7 +20,7 @@ const WalletWithdraw = () => {
   const go = (path: string) => { playSound("tick"); navigate(path); };
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-24">
+    <div className="wallet-theme relative min-h-screen bg-[#050505] pb-24">
       <Particles />
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-2.5">
@@ -31,7 +31,7 @@ const WalletWithdraw = () => {
       </header>
 
       <main className="mx-auto max-w-md space-y-8 px-4 pt-8">
-        <section className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(260,40%,6%)]/70 p-6 text-center animate-float-up backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
+        <section className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(210,45%,7%)]/70 p-6 text-center animate-float-up backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.12),transparent_70%)]" />
           <div className="relative">
             <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Available</p>
@@ -45,7 +45,7 @@ const WalletWithdraw = () => {
         <section className="space-y-3">
           <button
             onClick={() => go("/wallet/redeem")}
-            className="flex w-full items-center gap-4 rounded-xl border border-primary/30 bg-[hsl(260,40%,7%)]/60 p-4 text-left backdrop-blur-sm transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.15)] active:scale-[0.99]"
+            className="flex w-full items-center gap-4 rounded-xl border border-primary/30 bg-[hsl(210,45%,8%)]/60 p-4 text-left backdrop-blur-sm transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.15)] active:scale-[0.99]"
           >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 text-primary" style={{ boxShadow: "0 0 12px hsl(var(--primary) / 0.2)" }}>
               <Gift className="h-5 w-5" />
@@ -59,7 +59,7 @@ const WalletWithdraw = () => {
 
           <button
             onClick={() => go("/wallet/upi")}
-            className="flex w-full items-center gap-4 rounded-xl border border-primary/30 bg-[hsl(260,40%,7%)]/60 p-4 text-left backdrop-blur-sm transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.15)] active:scale-[0.99]"
+            className="flex w-full items-center gap-4 rounded-xl border border-primary/30 bg-[hsl(210,45%,8%)]/60 p-4 text-left backdrop-blur-sm transition hover:border-primary/60 hover:shadow-[0_0_20px_hsl(var(--primary)/0.15)] active:scale-[0.99]"
           >
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-primary/40 bg-primary/10 text-primary" style={{ boxShadow: "0 0 12px hsl(var(--primary) / 0.2)" }}>
               <Send className="h-5 w-5" />

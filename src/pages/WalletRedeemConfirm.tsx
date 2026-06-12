@@ -53,7 +53,7 @@ const WalletRedeemConfirm = () => {
   };
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-24">
+    <div className="wallet-theme relative min-h-screen bg-[#050505] pb-24">
       <Particles />
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-2.5">
@@ -64,7 +64,7 @@ const WalletRedeemConfirm = () => {
       </header>
 
       <main className="mx-auto max-w-md space-y-6 px-4 pt-10">
-        <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-[hsl(260,40%,7%)]/60 p-5 text-center backdrop-blur-md space-y-3" style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.15)" }}>
+        <div className="relative overflow-hidden rounded-xl border border-primary/30 bg-[hsl(210,45%,8%)]/60 p-5 text-center backdrop-blur-md space-y-3" style={{ boxShadow: "0 0 20px hsl(var(--primary) / 0.15)" }}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.08),transparent_70%)]" />
           <div className="relative">
             <p className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">Coins Selected</p>
@@ -94,7 +94,7 @@ const WalletRedeemConfirm = () => {
       {/* Success overlay */}
       {success && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-float-up">
-          <div className="mx-6 max-w-sm rounded-xl border border-primary/60 bg-[hsl(260,40%,7%)]/90 p-6 text-center backdrop-blur-md" style={{ boxShadow: "0 0 40px hsl(var(--primary) / 0.45), inset 0 0 20px hsl(var(--primary) / 0.05)" }}>
+          <div className="mx-6 max-w-sm rounded-xl border border-primary/60 bg-[hsl(210,45%,8%)]/90 p-6 text-center backdrop-blur-md" style={{ boxShadow: "0 0 40px hsl(var(--primary) / 0.45), inset 0 0 20px hsl(var(--primary) / 0.05)" }}>
             <CheckCircle2 className="mx-auto h-14 w-14 text-primary" style={{ filter: "drop-shadow(0 0 14px hsl(var(--primary) / 0.7))" }} />
             <h2 className="mt-4 font-display text-lg font-bold uppercase tracking-widest text-primary text-glow-soft">Request Submitted</h2>
             <p className="mt-2 text-sm text-muted-foreground">

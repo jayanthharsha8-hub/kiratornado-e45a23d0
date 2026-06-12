@@ -45,7 +45,7 @@ const WalletPage = () => {
   };
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-20 scanline">
+    <div className="wallet-theme relative min-h-screen bg-[#050505] pb-20 scanline">
       <Particles />
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2.5">
@@ -57,7 +57,7 @@ const WalletPage = () => {
 
       <main className="mx-auto max-w-md space-y-5 px-3 pt-5">
         {/* Balance */}
-        <section className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(260,40%,6%)]/70 p-6 text-center animate-float-up backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
+        <section className="relative overflow-hidden rounded-xl border border-primary/25 bg-[hsl(210,45%,7%)]/70 p-6 text-center animate-float-up backdrop-blur-md" style={{ boxShadow: "0 0 30px hsl(var(--primary) / 0.18), inset 0 0 24px hsl(var(--primary) / 0.04)" }}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.12),transparent_70%)]" />
           <div className="relative">
             <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">Total Coins</p>
@@ -81,7 +81,7 @@ const WalletPage = () => {
             <h2 className="text-xs font-semibold uppercase tracking-[0.25em] text-foreground/80">History</h2>
             <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 text-xs text-primary transition hover:text-primary-glow">View All <ChevronRight className="h-3 w-3" /></button>
           </div>
-          <div className="rounded-lg border border-primary/15 bg-[hsl(260,40%,5%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
+          <div className="rounded-lg border border-primary/15 bg-[hsl(210,40%,6%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
             <TransactionList items={transactions} />
           </div>
         </section>

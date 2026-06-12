@@ -22,7 +22,7 @@ const TransactionHistory = () => {
   }, [user]);
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#030007] pb-8 scanline">
+    <div className="wallet-theme relative min-h-screen bg-[#050505] pb-8 scanline">
       <Particles />
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2.5">
@@ -32,7 +32,7 @@ const TransactionHistory = () => {
         </div>
       </header>
       <main className="mx-auto max-w-md px-3 pt-4">
-        <div className="rounded-lg border border-primary/15 bg-[hsl(260,40%,5%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
+        <div className="rounded-lg border border-primary/15 bg-[hsl(210,40%,6%)]/60 backdrop-blur-sm" style={{ boxShadow: "inset 0 0 12px hsl(var(--primary) / 0.03)" }}>
           <TransactionList items={items} />
         </div>
       </main>
