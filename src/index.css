@@ -126,15 +126,15 @@
   }
 }
 
-/* Wallet Theme — Premium Purple + Black Solo Leveling */
+/* Wallet Theme — Premium Neon Cyan + Black Solo Leveling Hunter System */
 .wallet-theme {
-  --primary: 265 90% 65%;
-  --primary-glow: 265 100% 75%;
-  --secondary: 270 60% 55%;
-  --accent: 270 100% 70%;
-  --border: 265 60% 35%;
-  --ring: 265 90% 65%;
+  --primary: 190 100% 50%;
+  --primary-glow: 195 100% 60%;
+  --secondary: 205 100% 50%;
+  --accent: 195 100% 65%;
+  --border: 200 80% 35%;
+  --ring: 190 100% 50%;
 
-  --gradient-glow: radial-gradient(circle at 50% 50%, hsl(265 90% 60% / 0.35), transparent 70%);
-  --gradient-panel: linear-gradient(180deg, hsl(260 50% 8% / 0.95), hsl(260 40% 4% / 0.95));
+  --gradient-glow: radial-gradient(circle at 50% 50%, hsl(190 100% 50% / 0.35), transparent 70%);
+  --gradient-panel: linear-gradient(180deg, hsl(210 50% 8% / 0.95), hsl(220 40% 3% / 0.95));
 }
