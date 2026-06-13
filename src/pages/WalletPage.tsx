@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, PlayCircle, ChevronRight, Share2, Check, Users, Sparkles, Coins } from "lucide-react";
+import { ArrowLeft, Plus, RefreshCw, ChevronRight, Share2, Check, Users, Sparkles, ScrollText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Particles } from "@/components/Particles";
@@ -9,6 +9,18 @@ import { TransactionList, type WalletTransaction } from "@/components/Transactio
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
 import heroBanner from "@/assets/wallet-hero.jpg.asset.json";
+
+/* Corner HUD bracket */
+const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
+  const base = "pointer-events-none absolute h-4 w-4 border-primary";
+  const map = {
+    tl: "top-0 left-0 border-t-2 border-l-2 rounded-tl-xl",
+    tr: "top-0 right-0 border-t-2 border-r-2 rounded-tr-xl",
+    bl: "bottom-0 left-0 border-b-2 border-l-2 rounded-bl-xl",
+    br: "bottom-0 right-0 border-b-2 border-r-2 rounded-br-xl",
+  } as const;
+  return <span className={`${base} ${map[pos]}`} style={{ boxShadow: "0 0 10px hsl(var(--primary) / 0.7)" }} />;
+};
 
 const WalletPage = () => {
   const navigate = useNavigate();
@@ -67,182 +79,214 @@ const WalletPage = () => {
     } catch { /* user cancelled */ }
   };
 
+  const formattedCoins = coins.toLocaleString();
+
   return (
     <div className="wallet-theme relative min-h-screen bg-[#03060d] pb-24 overflow-hidden">
       <Particles />
 
-      {/* Integrated Hero Header — full bleed, no card chrome */}
-      <section className="relative w-full -mt-px">
-        <div className="relative h-[320px] w-full overflow-hidden">
-          {/* Artwork */}
+      {/* HERO HEADER — full bleed, integrated */}
+      <section className="relative w-full">
+        <div className="relative h-[360px] w-full overflow-hidden">
           <img
             src={heroBanner.url}
-            alt="Hunt Play Dominate hunter"
-            className="absolute inset-0 h-full w-full object-cover object-[center_18%] select-none"
+            alt="Hunt Play Dominate"
+            className="absolute inset-0 h-full w-full object-cover object-[60%_15%] select-none"
             draggable={false}
           />
-          {/* Atmospheric overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-[#03060d]/60 to-[#03060d]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_100%_50%/0.28),transparent_65%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,hsl(210_100%_50%/0.25),transparent_55%)]" />
-          <div className="absolute inset-0 mix-blend-overlay opacity-40 bg-[linear-gradient(180deg,transparent,hsl(190_100%_50%/0.15))]" />
+          {/* Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#03060d]/55 to-[#03060d]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_100%_50%/0.25),transparent_60%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,hsl(200_100%_55%/0.35),transparent_45%)]" />
 
-          {/* Sticky-looking top bar floating over hero */}
+          {/* Top bar */}
           <div className="absolute inset-x-0 top-0 z-20">
-            <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-3">
-              <button onClick={() => { playSound("tick"); navigate(-1); }} className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-black/50 text-primary backdrop-blur-md transition hover:bg-primary/15">
+            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-4">
+              <button onClick={() => { playSound("tick"); navigate(-1); }} className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/50 bg-black/55 text-primary backdrop-blur-md transition hover:bg-primary/15">
                 <ArrowLeft className="h-4 w-4" />
               </button>
-              <h1 className="mx-auto font-display text-xs font-bold uppercase tracking-[0.5em] text-primary text-glow-soft">Wallet</h1>
-              <span className="w-9" />
+              <h1 className="font-display text-sm font-bold uppercase tracking-[0.55em] text-primary" style={{ textShadow: "0 0 12px hsl(var(--primary) / 0.8)" }}>Wallet</h1>
+              <button onClick={() => go("/wallet/history")} className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/50 bg-black/55 text-primary backdrop-blur-md transition hover:bg-primary/15">
+                <ScrollText className="h-4 w-4" />
+              </button>
             </div>
           </div>
 
-          {/* Hero copy */}
-          <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-7">
+          {/* HUNT PLAY DOMINATE */}
+          <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-8">
             <div className="mx-auto max-w-md">
-              <div className="font-display font-black leading-[0.95] tracking-[0.05em]">
-                <div className="text-3xl text-foreground/95" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>HUNT.</div>
-                <div className="text-3xl text-foreground/95" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>PLAY.</div>
-                <div className="text-4xl text-primary" style={{ textShadow: "0 0 22px hsl(var(--primary) / 0.85), 0 0 48px hsl(var(--primary) / 0.4)" }}>DOMINATE.</div>
+              <div className="font-display font-black leading-[0.95] tracking-[0.04em]">
+                <div className="text-4xl text-foreground" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>HUNT.</div>
+                <div className="mt-1 text-4xl text-foreground" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>PLAY.</div>
+                <div className="mt-1 text-5xl text-primary" style={{ textShadow: "0 0 22px hsl(var(--primary) / 0.9), 0 0 50px hsl(var(--primary) / 0.45)" }}>DOMINATE.</div>
               </div>
-              <p className="mt-2 text-[10px] uppercase tracking-[0.4em] text-primary/80">Every match · Every coin counts</p>
+              <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-black/60 px-3 py-1.5 backdrop-blur-md">
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/85">Every Match,</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Every Coin</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/65">Counts</span>
+              </div>
             </div>
           </div>
 
-          {/* Bottom blend edge */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-[#03060d]" />
+          {/* Bottom blend */}
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#03060d]" />
         </div>
       </section>
 
-      <main className="relative z-10 mx-auto -mt-10 max-w-md space-y-4 px-3">
+      <main className="relative z-10 mx-auto max-w-md space-y-4 px-4 -mt-2">
 
-        {/* Total Coins — premium glass focal card */}
+        {/* TOTAL KIRA COINS — HUD card */}
         <section
-          className="relative overflow-hidden rounded-3xl border border-primary/30 p-6 text-center backdrop-blur-2xl animate-float-up"
+          className="relative overflow-hidden rounded-2xl border border-primary/40 px-6 py-7 text-center backdrop-blur-2xl animate-float-up"
           style={{
-            background: "linear-gradient(160deg, hsl(210 60% 12% / 0.65), hsl(220 50% 4% / 0.85))",
-            boxShadow: "0 20px 60px -10px hsl(var(--primary) / 0.35), 0 0 0 1px hsl(var(--primary) / 0.15) inset, 0 0 40px hsl(var(--primary) / 0.18) inset",
+            background: "linear-gradient(160deg, hsl(210 60% 11% / 0.7), hsl(220 55% 4% / 0.9))",
+            boxShadow: "0 18px 50px -12px hsl(var(--primary) / 0.4), inset 0 0 30px hsl(var(--primary) / 0.12), 0 0 0 1px hsl(var(--primary) / 0.15) inset",
           }}
         >
-          {/* Glass reflections */}
-          <div className="pointer-events-none absolute -top-20 -left-10 h-40 w-60 rotate-12 rounded-full bg-white/[0.04] blur-2xl" />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.22),transparent_60%)]" />
+          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,hsl(var(--primary)/0.18),transparent_60%)]" />
 
           <div className="relative">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-black/40 px-3 py-1 backdrop-blur-md">
-              <Coins className="h-3 w-3 text-primary" />
-              <p className="text-[9px] uppercase tracking-[0.4em] text-primary/90">Total Kira Coins</p>
+            {/* Title with diamonds */}
+            <div className="flex items-center justify-center gap-2">
+              <span className="h-px w-6 bg-primary/60" />
+              <span className="text-primary text-[10px]">◆</span>
+              <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-primary/95">Total Kira Coins</p>
+              <span className="text-primary text-[10px]">◆</span>
+              <span className="h-px w-6 bg-primary/60" />
             </div>
-            <p
-              className="mt-3 font-display text-[64px] font-black leading-none text-primary"
-              style={{ textShadow: "0 0 26px hsl(var(--primary) / 0.85), 0 0 60px hsl(var(--primary) / 0.45)" }}
-            >
-              {coins}
-            </p>
-            <p className="mt-1 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Main Balance</p>
 
-            <div className="mt-4 mx-auto inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-3 py-1 backdrop-blur-sm">
-              <Sparkles className="h-3 w-3 text-primary/80" />
-              <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/75">
-                Bonus <span className="font-bold text-primary">{bonusCoins}</span>
+            <p
+              className="mt-4 font-display text-[58px] font-black leading-none text-foreground"
+              style={{ textShadow: "0 0 28px hsl(var(--primary) / 0.9), 0 0 60px hsl(var(--primary) / 0.5)" }}
+            >
+              {formattedCoins}
+            </p>
+            <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.45em] text-primary/80">Coins</p>
+
+            <div className="mt-5 mx-auto inline-flex items-center gap-2 rounded-full border border-primary/40 bg-black/40 px-4 py-1.5 backdrop-blur-sm">
+              <Sparkles className="h-3 w-3 text-primary" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-foreground/80">
+                Bonus Coins: <span className="font-bold text-primary">{bonusCoins}</span>
               </span>
             </div>
           </div>
         </section>
 
-        {/* Actions */}
+        {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => addCoins(30)}
-            className="group relative flex h-14 items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary/45 font-display text-xs font-bold uppercase tracking-[0.25em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(140deg, hsl(210 60% 14% / 0.55), hsl(220 50% 5% / 0.7))",
-              boxShadow: "0 8px 24px -8px hsl(var(--primary) / 0.4), inset 0 0 14px hsl(var(--primary) / 0.08)",
-            }}
-          >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
-            <Plus className="h-4 w-4 transition group-hover:rotate-90" /> Add Coins
-          </button>
-          <button
-            onClick={() => go("/wallet/withdraw")}
-            className="relative flex h-14 items-center justify-center gap-2 overflow-hidden rounded-2xl border border-primary/45 font-display text-xs font-bold uppercase tracking-[0.25em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
-            style={{
-              background: "linear-gradient(140deg, hsl(210 60% 14% / 0.55), hsl(220 50% 5% / 0.7))",
-              boxShadow: "0 8px 24px -8px hsl(var(--primary) / 0.4), inset 0 0 14px hsl(var(--primary) / 0.08)",
-            }}
-          >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
-            <PlayCircle className="h-4 w-4" /> Withdraw
-          </button>
+          {[
+            { label: "Add Coins", icon: Plus, onClick: () => addCoins(30) },
+            { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
+          ].map(({ label, icon: Icon, onClick }) => (
+            <button
+              key={label}
+              onClick={onClick}
+              className="group relative flex h-14 items-center justify-center gap-2.5 overflow-hidden rounded-xl border border-primary/45 font-display text-xs font-bold uppercase tracking-[0.25em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
+              style={{
+                background: "linear-gradient(140deg, hsl(210 60% 13% / 0.6), hsl(220 50% 5% / 0.75))",
+                boxShadow: "0 8px 22px -8px hsl(var(--primary) / 0.45), inset 0 0 14px hsl(var(--primary) / 0.1)",
+              }}
+            >
+              <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+              <span className="flex h-6 w-6 items-center justify-center rounded-full border border-primary/60 text-primary">
+                <Icon className="h-3 w-3" />
+              </span>
+              {label}
+            </button>
+          ))}
         </section>
 
-        {/* Referral — compact secondary card */}
+        {/* INVITE HUNTERS */}
         <section
-          className="relative overflow-hidden rounded-2xl border border-primary/20 p-4 backdrop-blur-xl"
+          className="relative overflow-hidden rounded-2xl border border-primary/35 p-4 backdrop-blur-xl"
           style={{
-            background: "linear-gradient(150deg, hsl(210 50% 10% / 0.55), hsl(220 50% 4% / 0.75))",
-            boxShadow: "0 8px 28px -10px hsl(var(--primary) / 0.25), inset 0 0 18px hsl(var(--primary) / 0.04)",
+            background: "linear-gradient(150deg, hsl(210 55% 11% / 0.6), hsl(220 50% 4% / 0.8))",
+            boxShadow: "0 10px 30px -10px hsl(var(--primary) / 0.3), inset 0 0 18px hsl(var(--primary) / 0.06)",
           }}
         >
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
 
           <div className="flex items-center gap-3">
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/45 bg-primary/10 text-primary"
-              style={{ boxShadow: "0 0 14px hsl(var(--primary) / 0.35)" }}
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/55 bg-primary/15 text-primary"
+              style={{ boxShadow: "0 0 16px hsl(var(--primary) / 0.4), inset 0 0 10px hsl(var(--primary) / 0.2)" }}
             >
-              <Users className="h-4 w-4" />
+              <Users className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-display text-sm font-bold uppercase tracking-[0.18em] text-foreground">Invite Hunters</h3>
-              <p className="text-[10px] text-muted-foreground">Reward: <span className="text-primary font-bold">+5 Bonus Coins</span></p>
+              <h3 className="font-display text-base font-bold uppercase tracking-[0.18em] text-foreground" style={{ textShadow: "0 0 8px hsl(var(--primary) / 0.4)" }}>Invite Hunters</h3>
+              <p className="text-[11px] text-muted-foreground">Invite a friend & earn <span className="text-primary font-bold">+5 Bonus Coins</span></p>
             </div>
             <button
               onClick={inviteFriend}
-              className="flex items-center gap-1.5 rounded-lg border border-primary/50 bg-primary/15 px-3 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-primary transition hover:bg-primary/25 active:scale-95"
-              style={{ boxShadow: "0 0 16px hsl(var(--primary) / 0.35)" }}
+              className="flex items-center gap-1.5 rounded-lg border border-primary/55 bg-primary/10 px-3.5 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-primary transition hover:bg-primary/20 active:scale-95"
+              style={{ boxShadow: "0 0 14px hsl(var(--primary) / 0.4), inset 0 0 8px hsl(var(--primary) / 0.15)" }}
             >
-              <Share2 className="h-3 w-3" /> Invite
+              <Share2 className="h-3.5 w-3.5" /> Invite
             </button>
           </div>
 
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {["Friend Registers", "Joins 3 Tournaments", "Completes 5 Matches"].map((step, i) => (
-              <span key={i} className="inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-black/30 px-2.5 py-1 text-[9px] uppercase tracking-[0.15em] text-foreground/75 backdrop-blur-sm">
-                <Check className="h-2.5 w-2.5 text-primary" /> {step}
-              </span>
-            ))}
+          {/* Progress steps */}
+          <div
+            className="mt-4 rounded-xl border border-primary/25 px-3 py-3"
+            style={{ background: "hsl(220 55% 4% / 0.55)" }}
+          >
+            <div className="flex items-center justify-between gap-1">
+              {[
+                { n: 1, label: ["Friend", "Registers"], done: true },
+                { n: 2, label: ["Joins", "3 Tournaments"], done: true },
+                { n: 3, label: ["Completes", "5 Matches"], done: false },
+              ].map((step, i, arr) => (
+                <div key={step.n} className="flex flex-1 items-center">
+                  <div className="flex flex-1 flex-col items-center gap-1.5">
+                    <div
+                      className={`flex h-7 w-7 items-center justify-center rounded-full border ${step.done ? "border-primary bg-primary/15 text-primary" : "border-primary/50 bg-black/40 text-primary/70"}`}
+                      style={{ boxShadow: step.done ? "0 0 10px hsl(var(--primary) / 0.5)" : undefined }}
+                    >
+                      {step.done ? <Check className="h-3.5 w-3.5" /> : <span className="text-[10px] font-bold">{step.n}</span>}
+                    </div>
+                    <div className="text-center leading-tight">
+                      <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/85">{step.label[0]}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/85">{step.label[1]}</p>
+                    </div>
+                  </div>
+                  {i < arr.length - 1 && (
+                    <ChevronRight className="mx-0.5 h-3 w-3 shrink-0 text-primary/60" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          <p className="mt-3 text-[9px] uppercase tracking-[0.2em] text-muted-foreground/70 leading-relaxed">
-            Bonus Coins cannot be withdrawn · Tournament entries only
+          <p className="mt-3 text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/80 leading-relaxed">
+            Bonus Coins cannot be withdrawn.<br />Usable only for selected tournament entries.
           </p>
         </section>
 
-        {/* History */}
-        <section className="space-y-2">
+        {/* TRANSACTIONS */}
+        <section className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
-            <h2 className="text-[10px] font-semibold uppercase tracking-[0.35em] text-foreground/80">Transactions</h2>
-            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 text-[10px] uppercase tracking-[0.2em] text-primary transition hover:text-primary-glow">
+            <h2 className="font-display text-sm font-bold uppercase tracking-[0.35em] text-foreground" style={{ textShadow: "0 0 8px hsl(var(--primary) / 0.4)" }}>Transactions</h2>
+            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 font-display text-[11px] font-bold uppercase tracking-[0.25em] text-primary transition hover:text-primary-glow">
               View All <ChevronRight className="h-3 w-3" />
             </button>
           </div>
           <div
-            className="overflow-hidden rounded-2xl border border-primary/20 backdrop-blur-xl"
+            className="relative overflow-hidden rounded-2xl border border-primary/30 backdrop-blur-xl"
             style={{
-              background: "linear-gradient(160deg, hsl(210 50% 10% / 0.55), hsl(220 50% 4% / 0.75))",
-              boxShadow: "0 8px 24px -10px hsl(var(--primary) / 0.2), inset 0 0 14px hsl(var(--primary) / 0.04)",
+              background: "linear-gradient(160deg, hsl(210 55% 10% / 0.55), hsl(220 50% 4% / 0.8))",
+              boxShadow: "0 10px 26px -12px hsl(var(--primary) / 0.3), inset 0 0 16px hsl(var(--primary) / 0.06)",
             }}
           >
-            <div className="px-3">
+            <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+            <div className="px-4 py-1">
               <TransactionList items={transactions} />
             </div>
           </div>
         </section>
 
-        <p className="pt-1 text-center text-[9px] uppercase tracking-[0.35em] text-muted-foreground">
+        <p className="pt-2 text-center text-[9px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
           All withdrawals reviewed by Admin
         </p>
       </main>
