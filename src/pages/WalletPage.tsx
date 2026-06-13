@@ -8,19 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TransactionList, type WalletTransaction } from "@/components/TransactionList";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
-import heroBanner from "@/assets/wallet-hero.jpg.asset.json";
-
-/* Corner HUD bracket */
-const Corner = ({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) => {
-  const base = "pointer-events-none absolute h-4 w-4 border-primary";
-  const map = {
-    tl: "top-0 left-0 border-t-2 border-l-2 rounded-tl-xl",
-    tr: "top-0 right-0 border-t-2 border-r-2 rounded-tr-xl",
-    bl: "bottom-0 left-0 border-b-2 border-l-2 rounded-bl-xl",
-    br: "bottom-0 right-0 border-b-2 border-r-2 rounded-br-xl",
-  } as const;
-  return <span className={`${base} ${map[pos]}`} style={{ boxShadow: "0 0 10px hsl(var(--primary) / 0.7)" }} />;
-};
+import heroBanner from "@/assets/wallet-hero-banner.jpg";
 
 const WalletPage = () => {
   const navigate = useNavigate();
@@ -79,95 +67,77 @@ const WalletPage = () => {
     } catch { /* user cancelled */ }
   };
 
+  // Soft frosted glass card — no brackets, no HUD chrome
+  const glassCard =
+    "relative overflow-hidden rounded-3xl border border-primary/20 backdrop-blur-2xl";
+  const glassStyle = {
+    background: "linear-gradient(160deg, hsl(210 50% 12% / 0.55), hsl(220 45% 5% / 0.75))",
+    boxShadow:
+      "0 20px 50px -20px hsl(var(--primary) / 0.35), 0 0 0 1px hsl(var(--primary) / 0.08) inset, 0 0 40px -10px hsl(var(--primary) / 0.15)",
+  } as const;
+
   const formattedCoins = coins.toLocaleString();
 
   return (
     <div className="wallet-theme relative min-h-screen bg-[#03060d] pb-24 overflow-hidden">
       <Particles />
 
-      {/* HERO HEADER — full bleed, integrated */}
+      {/* Top bar */}
+      <header className="absolute inset-x-0 top-0 z-30">
+        <div className="mx-auto flex max-w-md items-center justify-between px-4 py-4">
+          <button
+            onClick={() => { playSound("tick"); navigate(-1); }}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 text-foreground backdrop-blur-md transition hover:bg-white/10"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <h1 className="font-display text-sm font-bold uppercase tracking-[0.45em] text-foreground/95" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.7)" }}>
+            Wallet
+          </h1>
+          <button
+            onClick={() => go("/wallet/history")}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 text-foreground backdrop-blur-md transition hover:bg-white/10"
+          >
+            <ScrollText className="h-4 w-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* HERO BANNER — full width, full artwork visible */}
       <section className="relative w-full">
-        <div className="relative h-[360px] w-full overflow-hidden">
+        <div className="relative h-[300px] w-full overflow-hidden">
           <img
-            src={heroBanner.url}
-            alt="Hunt Play Dominate"
-            className="absolute inset-0 h-full w-full object-cover object-[60%_15%] select-none"
+            src={heroBanner}
+            alt="Hunt. Play. Dominate."
+            className="absolute inset-0 h-full w-full object-cover object-center select-none"
             draggable={false}
           />
-          {/* Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#03060d]/55 to-[#03060d]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_100%_50%/0.25),transparent_60%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,hsl(200_100%_55%/0.35),transparent_45%)]" />
-
-          {/* Top bar */}
-          <div className="absolute inset-x-0 top-0 z-20">
-            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-4">
-              <button onClick={() => { playSound("tick"); navigate(-1); }} className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/50 bg-black/55 text-primary backdrop-blur-md transition hover:bg-primary/15">
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-              <h1 className="font-display text-sm font-bold uppercase tracking-[0.55em] text-primary" style={{ textShadow: "0 0 12px hsl(var(--primary) / 0.8)" }}>Wallet</h1>
-              <button onClick={() => go("/wallet/history")} className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/50 bg-black/55 text-primary backdrop-blur-md transition hover:bg-primary/15">
-                <ScrollText className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* HUNT PLAY DOMINATE */}
-          <div className="absolute inset-x-0 bottom-0 z-10 px-5 pb-8">
-            <div className="mx-auto max-w-md">
-              <div className="font-display font-black leading-[0.95] tracking-[0.04em]">
-                <div className="text-4xl text-foreground" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>HUNT.</div>
-                <div className="mt-1 text-4xl text-foreground" style={{ textShadow: "0 0 18px hsl(190 100% 50% / 0.55)" }}>PLAY.</div>
-                <div className="mt-1 text-5xl text-primary" style={{ textShadow: "0 0 22px hsl(var(--primary) / 0.9), 0 0 50px hsl(var(--primary) / 0.45)" }}>DOMINATE.</div>
-              </div>
-              <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-black/60 px-3 py-1.5 backdrop-blur-md">
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/85">Every Match,</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">Every Coin</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/65">Counts</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom blend */}
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#03060d]" />
+          {/* Soft bottom blend only */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#03060d]" />
         </div>
       </section>
 
-      <main className="relative z-10 mx-auto max-w-md space-y-4 px-4 -mt-2">
+      <main className="relative z-10 mx-auto max-w-md space-y-4 px-4 -mt-6">
 
-        {/* TOTAL KIRA COINS — HUD card */}
-        <section
-          className="relative overflow-hidden rounded-2xl border border-primary/40 px-6 py-7 text-center backdrop-blur-2xl animate-float-up"
-          style={{
-            background: "linear-gradient(160deg, hsl(210 60% 11% / 0.7), hsl(220 55% 4% / 0.9))",
-            boxShadow: "0 18px 50px -12px hsl(var(--primary) / 0.4), inset 0 0 30px hsl(var(--primary) / 0.12), 0 0 0 1px hsl(var(--primary) / 0.15) inset",
-          }}
-        >
-          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,hsl(var(--primary)/0.18),transparent_60%)]" />
-
+        {/* TOTAL KIRA COINS */}
+        <section className={`${glassCard} px-6 py-7 text-center animate-float-up`} style={glassStyle}>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,hsl(var(--primary)/0.18),transparent_65%)]" />
           <div className="relative">
-            {/* Title with diamonds */}
-            <div className="flex items-center justify-center gap-2">
-              <span className="h-px w-6 bg-primary/60" />
-              <span className="text-primary text-[10px]">◆</span>
-              <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-primary/95">Total Kira Coins</p>
-              <span className="text-primary text-[10px]">◆</span>
-              <span className="h-px w-6 bg-primary/60" />
-            </div>
-
+            <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-primary/90">
+              Total Kira Coins
+            </p>
             <p
-              className="mt-4 font-display text-[58px] font-black leading-none text-foreground"
-              style={{ textShadow: "0 0 28px hsl(var(--primary) / 0.9), 0 0 60px hsl(var(--primary) / 0.5)" }}
+              className="mt-4 font-display text-[60px] font-black leading-none text-foreground"
+              style={{ textShadow: "0 0 26px hsl(var(--primary) / 0.85), 0 0 60px hsl(var(--primary) / 0.4)" }}
             >
               {formattedCoins}
             </p>
-            <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.45em] text-primary/80">Coins</p>
+            <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.4em] text-foreground/55">Coins</p>
 
-            <div className="mt-5 mx-auto inline-flex items-center gap-2 rounded-full border border-primary/40 bg-black/40 px-4 py-1.5 backdrop-blur-sm">
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-white/[0.03] px-4 py-1.5 backdrop-blur-sm">
               <Sparkles className="h-3 w-3 text-primary" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-foreground/80">
-                Bonus Coins: <span className="font-bold text-primary">{bonusCoins}</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-foreground/75">
+                Bonus: <span className="font-bold text-primary">{bonusCoins}</span>
               </span>
             </div>
           </div>
@@ -182,15 +152,14 @@ const WalletPage = () => {
             <button
               key={label}
               onClick={onClick}
-              className="group relative flex h-14 items-center justify-center gap-2.5 overflow-hidden rounded-xl border border-primary/45 font-display text-xs font-bold uppercase tracking-[0.25em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
+              className="group relative flex h-14 items-center justify-center gap-2.5 overflow-hidden rounded-2xl border border-primary/25 font-display text-xs font-bold uppercase tracking-[0.25em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
               style={{
-                background: "linear-gradient(140deg, hsl(210 60% 13% / 0.6), hsl(220 50% 5% / 0.75))",
-                boxShadow: "0 8px 22px -8px hsl(var(--primary) / 0.45), inset 0 0 14px hsl(var(--primary) / 0.1)",
+                background: "linear-gradient(140deg, hsl(210 55% 13% / 0.55), hsl(220 45% 5% / 0.75))",
+                boxShadow: "0 10px 28px -12px hsl(var(--primary) / 0.45), 0 0 0 1px hsl(var(--primary) / 0.08) inset",
               }}
             >
-              <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-              <span className="flex h-6 w-6 items-center justify-center rounded-full border border-primary/60 text-primary">
-                <Icon className="h-3 w-3" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/15 text-primary">
+                <Icon className="h-3.5 w-3.5" />
               </span>
               {label}
             </button>
@@ -198,40 +167,29 @@ const WalletPage = () => {
         </section>
 
         {/* INVITE HUNTERS */}
-        <section
-          className="relative overflow-hidden rounded-2xl border border-primary/35 p-4 backdrop-blur-xl"
-          style={{
-            background: "linear-gradient(150deg, hsl(210 55% 11% / 0.6), hsl(220 50% 4% / 0.8))",
-            boxShadow: "0 10px 30px -10px hsl(var(--primary) / 0.3), inset 0 0 18px hsl(var(--primary) / 0.06)",
-          }}
-        >
-          <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
-
+        <section className={`${glassCard} p-4`} style={glassStyle}>
           <div className="flex items-center gap-3">
             <div
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/55 bg-primary/15 text-primary"
-              style={{ boxShadow: "0 0 16px hsl(var(--primary) / 0.4), inset 0 0 10px hsl(var(--primary) / 0.2)" }}
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/12 text-primary"
+              style={{ boxShadow: "0 0 18px hsl(var(--primary) / 0.35)" }}
             >
               <Users className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-display text-base font-bold uppercase tracking-[0.18em] text-foreground" style={{ textShadow: "0 0 8px hsl(var(--primary) / 0.4)" }}>Invite Hunters</h3>
-              <p className="text-[11px] text-muted-foreground">Invite a friend & earn <span className="text-primary font-bold">+5 Bonus Coins</span></p>
+              <h3 className="font-display text-base font-bold tracking-[0.04em] text-foreground">Invite Hunters</h3>
+              <p className="text-[11px] text-muted-foreground">Earn <span className="text-primary font-semibold">+5 Bonus Coins</span> per friend</p>
             </div>
             <button
               onClick={inviteFriend}
-              className="flex items-center gap-1.5 rounded-lg border border-primary/55 bg-primary/10 px-3.5 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.2em] text-primary transition hover:bg-primary/20 active:scale-95"
-              style={{ boxShadow: "0 0 14px hsl(var(--primary) / 0.4), inset 0 0 8px hsl(var(--primary) / 0.15)" }}
+              className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2.5 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-primary-foreground transition hover:opacity-90 active:scale-95"
+              style={{ boxShadow: "0 0 18px hsl(var(--primary) / 0.55)" }}
             >
               <Share2 className="h-3.5 w-3.5" /> Invite
             </button>
           </div>
 
           {/* Progress steps */}
-          <div
-            className="mt-4 rounded-xl border border-primary/25 px-3 py-3"
-            style={{ background: "hsl(220 55% 4% / 0.55)" }}
-          >
+          <div className="mt-4 rounded-2xl border border-white/5 bg-black/30 px-3 py-3 backdrop-blur-sm">
             <div className="flex items-center justify-between gap-1">
               {[
                 { n: 1, label: ["Friend", "Registers"], done: true },
@@ -241,52 +199,45 @@ const WalletPage = () => {
                 <div key={step.n} className="flex flex-1 items-center">
                   <div className="flex flex-1 flex-col items-center gap-1.5">
                     <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full border ${step.done ? "border-primary bg-primary/15 text-primary" : "border-primary/50 bg-black/40 text-primary/70"}`}
-                      style={{ boxShadow: step.done ? "0 0 10px hsl(var(--primary) / 0.5)" : undefined }}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full ${step.done ? "bg-primary/20 text-primary border border-primary/50" : "bg-white/[0.04] text-foreground/55 border border-white/10"}`}
+                      style={step.done ? { boxShadow: "0 0 12px hsl(var(--primary) / 0.5)" } : undefined}
                     >
                       {step.done ? <Check className="h-3.5 w-3.5" /> : <span className="text-[10px] font-bold">{step.n}</span>}
                     </div>
                     <div className="text-center leading-tight">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/85">{step.label[0]}</p>
-                      <p className="text-[9px] font-bold uppercase tracking-[0.1em] text-foreground/85">{step.label[1]}</p>
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-foreground/80">{step.label[0]}</p>
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-foreground/80">{step.label[1]}</p>
                     </div>
                   </div>
                   {i < arr.length - 1 && (
-                    <ChevronRight className="mx-0.5 h-3 w-3 shrink-0 text-primary/60" />
+                    <ChevronRight className="mx-0.5 h-3 w-3 shrink-0 text-foreground/30" />
                   )}
                 </div>
               ))}
             </div>
           </div>
 
-          <p className="mt-3 text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/80 leading-relaxed">
-            Bonus Coins cannot be withdrawn.<br />Usable only for selected tournament entries.
+          <p className="mt-3 text-center text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground/70">
+            Bonus Coins are non-withdrawable · Use in select tournaments
           </p>
         </section>
 
         {/* TRANSACTIONS */}
         <section className="space-y-3 pt-2">
           <div className="flex items-center justify-between px-1">
-            <h2 className="font-display text-sm font-bold uppercase tracking-[0.35em] text-foreground" style={{ textShadow: "0 0 8px hsl(var(--primary) / 0.4)" }}>Transactions</h2>
-            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 font-display text-[11px] font-bold uppercase tracking-[0.25em] text-primary transition hover:text-primary-glow">
+            <h2 className="font-display text-sm font-bold uppercase tracking-[0.3em] text-foreground">Transactions</h2>
+            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 font-display text-[11px] font-semibold uppercase tracking-[0.22em] text-primary transition hover:text-primary-glow">
               View All <ChevronRight className="h-3 w-3" />
             </button>
           </div>
-          <div
-            className="relative overflow-hidden rounded-2xl border border-primary/30 backdrop-blur-xl"
-            style={{
-              background: "linear-gradient(160deg, hsl(210 55% 10% / 0.55), hsl(220 50% 4% / 0.8))",
-              boxShadow: "0 10px 26px -12px hsl(var(--primary) / 0.3), inset 0 0 16px hsl(var(--primary) / 0.06)",
-            }}
-          >
-            <Corner pos="tl" /><Corner pos="tr" /><Corner pos="bl" /><Corner pos="br" />
+          <div className={`${glassCard}`} style={glassStyle}>
             <div className="px-4 py-1">
               <TransactionList items={transactions} />
             </div>
           </div>
         </section>
 
-        <p className="pt-2 text-center text-[9px] font-semibold uppercase tracking-[0.35em] text-muted-foreground">
+        <p className="pt-2 text-center text-[9px] font-medium uppercase tracking-[0.3em] text-muted-foreground/70">
           All withdrawals reviewed by Admin
         </p>
       </main>
