@@ -8,7 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TransactionList, type WalletTransaction } from "@/components/TransactionList";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
-import heroBanner from "@/assets/wallet-hero-banner-v2.jpg.asset.json";
+import heroBanner from "@/assets/wallet-hero-v3.jpg.asset.json";
 
 const WalletPage = () => {
   const navigate = useNavigate();
@@ -102,16 +102,16 @@ const WalletPage = () => {
         </div>
       </header>
 
-      {/* HERO BANNER — ~30% of screen, text embedded in artwork */}
+      {/* HERO BANNER — ~35% of viewport, full artwork visible */}
       <section className="relative w-full pt-12">
-        <div className="relative h-[28vh] min-h-[200px] max-h-[240px] w-full overflow-hidden">
+        <div className="relative h-[35vh] min-h-[240px] max-h-[320px] w-full overflow-hidden bg-[#03060d]">
           <img
             src={heroBanner.url}
             alt="Hunt. Play. Dominate."
-            className="absolute inset-0 h-full w-full object-cover object-center select-none"
+            className="absolute inset-0 h-full w-full object-contain object-center select-none"
             draggable={false}
           />
-          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#03060d]" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-[#03060d]" />
         </div>
       </section>
 
