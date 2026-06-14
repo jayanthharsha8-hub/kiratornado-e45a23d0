@@ -8,7 +8,36 @@ import { BottomNav } from "@/components/BottomNav";
 import { TransactionList, type WalletTransaction } from "@/components/TransactionList";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
-import heroBanner from "@/assets/wallet-hero-v3.jpg.asset.json";
+import heroBanner from "@/assets/wallet-hero-master.jpg.asset.json";
+
+/* Cyber frame with neon corner brackets — used for wallet card, buttons, invite & transactions */
+const CyberFrame = ({ children, className = "", padded = true }: { children: React.ReactNode; className?: string; padded?: boolean }) => (
+  <div
+    className={`relative ${className}`}
+    style={{
+      background: "linear-gradient(160deg, rgba(7,18,42,0.85), rgba(2,6,23,0.92))",
+      border: "1px solid rgba(0,217,255,0.35)",
+      borderRadius: 14,
+      boxShadow:
+        "0 0 0 1px rgba(110,91,255,0.12) inset, 0 0 28px -8px rgba(0,217,255,0.35), 0 0 60px -20px rgba(110,91,255,0.4) inset",
+    }}
+  >
+    {/* Neon corner brackets */}
+    {[
+      "top-0 left-0 border-l-2 border-t-2 rounded-tl-[14px]",
+      "top-0 right-0 border-r-2 border-t-2 rounded-tr-[14px]",
+      "bottom-0 left-0 border-l-2 border-b-2 rounded-bl-[14px]",
+      "bottom-0 right-0 border-r-2 border-b-2 rounded-br-[14px]",
+    ].map((pos, i) => (
+      <span
+        key={i}
+        className={`pointer-events-none absolute ${pos} h-4 w-4`}
+        style={{ borderColor: "#00D9FF", filter: "drop-shadow(0 0 4px #00D9FF)" }}
+      />
+    ))}
+    <div className={padded ? "p-4" : ""}>{children}</div>
+  </div>
+);
 
 const WalletPage = () => {
   const navigate = useNavigate();
@@ -67,77 +96,83 @@ const WalletPage = () => {
     } catch { /* user cancelled */ }
   };
 
-  const glassCard =
-    "relative overflow-hidden rounded-2xl border border-primary/25 backdrop-blur-2xl";
-  const glassStyle = {
-    background: "linear-gradient(160deg, hsl(210 55% 11% / 0.6), hsl(220 50% 5% / 0.8))",
-    boxShadow:
-      "0 16px 40px -18px hsl(var(--primary) / 0.4), 0 0 0 1px hsl(var(--primary) / 0.08) inset, 0 0 32px -10px hsl(var(--primary) / 0.18)",
-  } as const;
-
   const formattedCoins = coins.toLocaleString();
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#03060d] pb-20 overflow-hidden">
+    <div className="wallet-theme relative min-h-screen bg-[#020617] pb-24 overflow-hidden">
       <Particles />
 
-      {/* Top bar */}
-      <header className="absolute inset-x-0 top-0 z-30">
-        <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
-          <button
-            onClick={() => { playSound("tick"); navigate(-1); }}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/40 text-foreground backdrop-blur-md transition hover:bg-white/10"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <h1 className="font-display text-sm font-bold uppercase tracking-[0.45em] text-primary" style={{ textShadow: "0 2px 12px rgba(0,0,0,0.8)" }}>
-            Wallet
-          </h1>
-          <button
-            onClick={() => go("/wallet/history")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/40 text-foreground backdrop-blur-md transition hover:bg-white/10"
-          >
-            <ScrollText className="h-4 w-4" />
-          </button>
-        </div>
-      </header>
-
-      {/* HERO BANNER — ~35% of viewport, full artwork visible */}
-      <section className="relative w-full pt-12">
-        <div className="relative h-[35vh] min-h-[240px] max-h-[320px] w-full overflow-hidden bg-[#03060d]">
+      {/* HERO BANNER — 35vh, full image visible, top bar overlaid */}
+      <section className="relative w-full">
+        <div className="relative h-[35vh] min-h-[260px] max-h-[340px] w-full overflow-hidden bg-[#020617]">
           <img
             src={heroBanner.url}
-            alt="Hunt. Play. Dominate."
-            className="absolute inset-0 h-full w-full object-contain object-center select-none"
+            alt="Hunt. Play. Dominate. — Every match, every coin counts."
+            className="absolute inset-0 h-full w-full object-cover object-center select-none"
             draggable={false}
           />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-[#03060d]" />
+          {/* Top fade for status bar legibility, bottom fade into page */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#020617]/85 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#020617]" />
+
+          {/* Top bar overlay */}
+          <header className="absolute inset-x-0 top-0 z-30">
+            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+              <button
+                onClick={() => { playSound("tick"); navigate(-1); }}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <h1
+                className="font-display text-sm font-bold uppercase tracking-[0.5em]"
+                style={{ color: "#00D9FF", textShadow: "0 2px 14px rgba(0,0,0,0.9), 0 0 12px rgba(0,217,255,0.6)" }}
+              >
+                Wallet
+              </h1>
+              <button
+                onClick={() => go("/wallet/history")}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
+              >
+                <ScrollText className="h-4 w-4" />
+              </button>
+            </div>
+          </header>
         </div>
       </section>
 
-      <main className="relative z-10 mx-auto max-w-md space-y-3 px-4 -mt-4">
+      <main className="relative z-10 mx-auto max-w-md space-y-3 px-4 -mt-8">
 
-        {/* TOTAL COINS */}
-        <section className={`${glassCard} px-5 py-5 text-center`} style={glassStyle}>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_25%,hsl(var(--primary)/0.18),transparent_65%)]" />
-          <div className="relative">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-primary/90">
+        {/* TOTAL COINS — cyber frame */}
+        <CyberFrame>
+          <div className="text-center py-1">
+            <div className="flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-[0.4em]" style={{ color: "#00D9FF" }}>
+              <span style={{ background: "linear-gradient(90deg, transparent, #00D9FF)", height: 1, width: 24 }} />
               Total Coins
-            </p>
+              <span style={{ background: "linear-gradient(90deg, #00D9FF, transparent)", height: 1, width: 24 }} />
+            </div>
             <p
-              className="mt-2 font-display text-[48px] font-black leading-none text-foreground"
-              style={{ textShadow: "0 0 22px hsl(var(--primary) / 0.85), 0 0 50px hsl(var(--primary) / 0.4)" }}
+              className="mt-2 font-display text-[44px] font-black leading-none tracking-wider text-white"
+              style={{ textShadow: "0 0 20px rgba(0,217,255,0.9), 0 0 50px rgba(110,91,255,0.5)" }}
             >
               {formattedCoins}
             </p>
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-white/[0.03] px-3.5 py-1 backdrop-blur-sm">
-              <Sparkles className="h-3 w-3 text-primary" />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-foreground/80">
-                Bonus Coins: <span className="font-bold text-primary">{bonusCoins}</span>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.45em]" style={{ color: "#00BFFF" }}>Coins</p>
+            <div
+              className="mt-3 inline-flex items-center gap-2 rounded-full px-3.5 py-1"
+              style={{
+                border: "1px solid rgba(0,217,255,0.45)",
+                background: "rgba(0,217,255,0.06)",
+                boxShadow: "0 0 14px -4px rgba(0,217,255,0.55) inset",
+              }}
+            >
+              <Sparkles className="h-3 w-3" style={{ color: "#00D9FF" }} />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/85">
+                Bonus Coins: <span className="font-bold" style={{ color: "#00D9FF" }}>{bonusCoins}</span>
               </span>
             </div>
           </div>
-        </section>
+        </CyberFrame>
 
         {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">
@@ -145,47 +180,59 @@ const WalletPage = () => {
             { label: "Add Coins", icon: Plus, onClick: () => addCoins(30) },
             { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
           ].map(({ label, icon: Icon, onClick }) => (
-            <button
-              key={label}
-              onClick={onClick}
-              className="group relative flex h-12 items-center justify-center gap-2 overflow-hidden rounded-xl border border-primary/30 font-display text-xs font-bold uppercase tracking-[0.22em] text-primary backdrop-blur-xl transition active:scale-[0.97]"
-              style={{
-                background: "linear-gradient(140deg, hsl(210 55% 13% / 0.6), hsl(220 50% 5% / 0.8))",
-                boxShadow: "0 8px 22px -10px hsl(var(--primary) / 0.5), 0 0 0 1px hsl(var(--primary) / 0.08) inset",
-              }}
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/15 text-primary">
-                <Icon className="h-3.5 w-3.5" />
-              </span>
-              {label}
+            <button key={label} onClick={onClick} className="active:scale-[0.97] transition">
+              <CyberFrame padded={false} className="h-14">
+                <div className="flex h-full items-center justify-center gap-2">
+                  <Icon className="h-4 w-4" style={{ color: "#00D9FF", filter: "drop-shadow(0 0 6px #00D9FF)" }} />
+                  <span
+                    className="font-display text-xs font-bold uppercase tracking-[0.25em] text-white"
+                    style={{ textShadow: "0 0 10px rgba(0,217,255,0.6)" }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              </CyberFrame>
             </button>
           ))}
         </section>
 
-        {/* INVITE HUNTERS — premium */}
-        <section className={`${glassCard} p-4`} style={glassStyle}>
-          <div className="pointer-events-none absolute -top-12 -right-10 h-32 w-32 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative flex items-center gap-3">
+        {/* INVITE HUNTERS */}
+        <CyberFrame>
+          <div className="flex items-center gap-3">
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary"
-              style={{ boxShadow: "0 0 18px hsl(var(--primary) / 0.4)" }}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,217,255,0.18), rgba(110,91,255,0.18))",
+                border: "1px solid rgba(0,217,255,0.5)",
+                boxShadow: "0 0 16px rgba(0,217,255,0.45)",
+                color: "#00D9FF",
+              }}
             >
               <Users className="h-5 w-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-display text-sm font-bold tracking-wider uppercase text-foreground">Invite Hunters</h3>
-              <p className="text-[10px] text-muted-foreground">Earn <span className="text-primary font-semibold">+5 Bonus Coins</span> per friend</p>
+              <h3 className="font-display text-sm font-bold uppercase tracking-widest text-white">Invite Hunters</h3>
+              <p className="text-[10px] text-white/65">
+                Invite a friend & earn <span className="font-semibold" style={{ color: "#00D9FF" }}>+5 Bonus Coins</span>
+              </p>
             </div>
             <button
               onClick={inviteFriend}
-              className="flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 font-display text-[10px] font-bold uppercase tracking-[0.18em] text-primary-foreground transition hover:opacity-90 active:scale-95"
-              style={{ boxShadow: "0 0 16px hsl(var(--primary) / 0.55)" }}
+              className="flex items-center gap-1.5 rounded-md px-3.5 py-2 font-display text-[10px] font-bold uppercase tracking-[0.2em] text-white active:scale-95 transition"
+              style={{
+                background: "linear-gradient(135deg, rgba(0,217,255,0.15), rgba(110,91,255,0.18))",
+                border: "1px solid rgba(0,217,255,0.55)",
+                boxShadow: "0 0 14px rgba(0,217,255,0.5)",
+              }}
             >
               <Share2 className="h-3 w-3" /> Invite
             </button>
           </div>
 
-          <div className="relative mt-3 rounded-xl border border-white/5 bg-black/30 px-3 py-2.5 backdrop-blur-sm">
+          <div
+            className="mt-3 rounded-lg px-3 py-2.5"
+            style={{ border: "1px solid rgba(0,217,255,0.18)", background: "rgba(2,6,23,0.55)" }}
+          >
             <div className="flex items-center justify-between gap-1">
               {[
                 { n: 1, label: ["Friend", "Registers"], done: true },
@@ -195,38 +242,52 @@ const WalletPage = () => {
                 <div key={step.n} className="flex flex-1 items-center">
                   <div className="flex flex-1 flex-col items-center gap-1">
                     <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-full ${step.done ? "bg-primary/20 text-primary border border-primary/50" : "bg-white/[0.04] text-foreground/55 border border-white/10"}`}
-                      style={step.done ? { boxShadow: "0 0 10px hsl(var(--primary) / 0.5)" } : undefined}
+                      className="flex h-7 w-7 items-center justify-center rounded-full"
+                      style={
+                        step.done
+                          ? {
+                              background: "rgba(0,217,255,0.18)",
+                              border: "1.5px solid #00D9FF",
+                              boxShadow: "0 0 10px rgba(0,217,255,0.7)",
+                              color: "#00D9FF",
+                            }
+                          : { background: "rgba(255,255,255,0.04)", border: "1.5px solid rgba(0,191,255,0.45)", color: "#7DD3FC" }
+                      }
                     >
                       {step.done ? <Check className="h-3 w-3" /> : <span className="text-[10px] font-bold">{step.n}</span>}
                     </div>
                     <div className="text-center leading-tight">
-                      <p className="text-[8px] font-semibold uppercase tracking-wider text-foreground/80">{step.label[0]}</p>
-                      <p className="text-[8px] font-semibold uppercase tracking-wider text-foreground/80">{step.label[1]}</p>
+                      <p className="text-[8px] font-semibold uppercase tracking-wider text-white/85">{step.label[0]}</p>
+                      <p className="text-[8px] font-semibold uppercase tracking-wider text-white/85">{step.label[1]}</p>
                     </div>
                   </div>
-                  {i < arr.length - 1 && (
-                    <ChevronRight className="mx-0.5 h-3 w-3 shrink-0 text-foreground/30" />
-                  )}
+                  {i < arr.length - 1 && <ChevronRight className="mx-0.5 h-3 w-3 shrink-0 text-white/30" />}
                 </div>
               ))}
             </div>
+            <p className="mt-2 text-center text-[8.5px] uppercase tracking-[0.18em] text-white/45 leading-tight">
+              Bonus coins cannot be withdrawn.<br/>Usable only for selected tournament entries.
+            </p>
           </div>
-        </section>
+        </CyberFrame>
 
         {/* TRANSACTIONS */}
         <section className="space-y-2 pt-1">
           <div className="flex items-center justify-between px-1">
-            <h2 className="font-display text-xs font-bold uppercase tracking-[0.3em] text-foreground">Transactions</h2>
-            <button onClick={() => go("/wallet/history")} className="flex items-center gap-1 font-display text-[10px] font-semibold uppercase tracking-[0.22em] text-primary transition hover:text-primary-glow">
+            <h2 className="font-display text-xs font-bold uppercase tracking-[0.35em] text-white">Transactions</h2>
+            <button
+              onClick={() => go("/wallet/history")}
+              className="flex items-center gap-1 font-display text-[10px] font-semibold uppercase tracking-[0.22em]"
+              style={{ color: "#00D9FF" }}
+            >
               View All <ChevronRight className="h-3 w-3" />
             </button>
           </div>
-          <div className={`${glassCard}`} style={glassStyle}>
+          <CyberFrame padded={false}>
             <div className="px-3 py-1">
               <TransactionList items={transactions} />
             </div>
-          </div>
+          </CyberFrame>
         </section>
       </main>
 
