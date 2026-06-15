@@ -35,7 +35,7 @@ const CyberFrame = ({ children, className = "", padded = true }: { children: Rea
         style={{ borderColor: "#00D9FF", filter: "drop-shadow(0 0 4px #00D9FF)" }}
       />
     ))}
-    <div className={padded ? "p-4" : ""}>{children}</div>
+    <div className={`${padded ? "p-4" : ""} h-full w-full`}>{children}</div>
   </div>
 );
 
