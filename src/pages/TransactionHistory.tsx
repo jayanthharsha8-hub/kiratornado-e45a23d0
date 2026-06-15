@@ -22,7 +22,7 @@ const TransactionHistory = () => {
   }, [user]);
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#050505] pb-8 scanline">
+    <div className="wallet-theme relative min-h-screen bg-[#020617] pb-8 scanline">
       <Particles />
       <header className="sticky top-0 z-30 border-b border-primary/30 bg-black/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-md items-center gap-3 px-3 py-2.5">
