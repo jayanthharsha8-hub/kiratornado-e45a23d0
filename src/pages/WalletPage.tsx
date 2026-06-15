@@ -182,10 +182,10 @@ const WalletPage = () => {
             { label: "Add Coins", icon: Plus, onClick: () => addCoins(30) },
             { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
           ].map(({ label, icon: Icon, onClick }) => (
-            <button key={label} onClick={onClick} className="active:scale-[0.97] transition">
-              <CyberFrame padded={false} className="h-14">
+            <button key={label} onClick={onClick} className="active:scale-[0.97] transition w-full">
+              <CyberFrame padded={false} className="h-14 w-full">
                 <div className="flex h-full items-center justify-center gap-2">
-                  <Icon className="h-4 w-4" style={{ color: "#00D9FF", filter: "drop-shadow(0 0 6px #00D9FF)" }} />
+                  <Icon className="h-4 w-4 shrink-0" style={{ color: "#00D9FF", filter: "drop-shadow(0 0 6px #00D9FF)" }} />
                   <span
                     className="font-display text-xs font-bold uppercase tracking-[0.25em] text-white"
                     style={{ textShadow: "0 0 10px rgba(0,217,255,0.6)" }}
