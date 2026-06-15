@@ -102,15 +102,17 @@ const WalletPage = () => {
     <div className="wallet-theme relative min-h-screen bg-[#020617] pb-24 overflow-hidden">
       <Particles />
 
-      {/* HERO BANNER — full artwork visible (object-contain, natural aspect) */}
-      <section className="relative w-full pt-12">
-        <div className="relative mx-auto w-full bg-[#020617]">
+      {/* HERO BANNER — edge-to-edge, header overlays artwork */}
+      <section className="relative w-full">
+        <div className="relative w-full" style={{ background: "linear-gradient(180deg, #03102a 0%, #020617 100%)" }}>
           <img
             src={heroBanner.url}
             alt="Hunt. Play. Dominate. — Every match, every coin counts."
-            className="block w-full h-auto object-contain select-none"
+            className="block w-full h-auto select-none"
             draggable={false}
           />
+          {/* Top gradient so header is legible without a black strip */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#03102a]/85 via-[#03102a]/30 to-transparent" />
           {/* Bottom fade into page */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-[#020617]" />
         </div>
@@ -120,7 +122,7 @@ const WalletPage = () => {
           <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
             <button
               onClick={() => { playSound("tick"); navigate(-1); }}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-md transition hover:bg-white/10"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
