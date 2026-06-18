@@ -272,6 +272,7 @@ export type Database = {
           matches_played: number
           player_level: number
           player_name: string
+          profile_completed: boolean
           referral_code: string | null
           total_kills: number
           updated_at: string
@@ -289,6 +290,7 @@ export type Database = {
           matches_played?: number
           player_level?: number
           player_name: string
+          profile_completed?: boolean
           referral_code?: string | null
           total_kills?: number
           updated_at?: string
@@ -306,6 +308,7 @@ export type Database = {
           matches_played?: number
           player_level?: number
           player_name?: string
+          profile_completed?: boolean
           referral_code?: string | null
           total_kills?: number
           updated_at?: string
