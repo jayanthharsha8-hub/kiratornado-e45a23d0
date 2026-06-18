@@ -9,6 +9,7 @@ import { AdminRoute } from "@/components/AdminRoute";
 import { AdminLayout } from "@/components/AdminLayout";
 import { WalletNotifier } from "@/components/WalletNotifier";
 import Splash from "./pages/Splash";
+import Onboarding from "./pages/Onboarding";
 import Register from "./pages/Register";
 import RegisterEmail from "./pages/RegisterEmail";
 import Login from "./pages/Login";
