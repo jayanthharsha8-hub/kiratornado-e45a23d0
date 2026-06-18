@@ -1,0 +1,2 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS profile_completed boolean NOT NULL DEFAULT false;
+UPDATE public.profiles SET profile_completed = true WHERE ff_uid IS NOT NULL AND length(trim(ff_uid)) > 0 AND player_name IS NOT NULL AND player_name <> 'New Hunter' AND player_name <> 'Player';
