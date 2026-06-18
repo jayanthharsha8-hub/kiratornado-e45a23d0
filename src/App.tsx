@@ -58,6 +58,8 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/battle-royale" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
             <Route path="/category/:category" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />
