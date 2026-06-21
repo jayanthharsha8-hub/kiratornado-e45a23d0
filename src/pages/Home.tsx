@@ -8,7 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Wallet, Menu } from "lucide-react";
+import { Wallet, Menu, Trophy, ChevronRight } from "lucide-react";
 import { Particles } from "@/components/Particles";
 import { playSound } from "@/hooks/useSound";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
