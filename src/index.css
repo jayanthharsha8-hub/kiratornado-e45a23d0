@@ -124,6 +124,23 @@
     from { width: 0; }
     to   { width: 100%; }
   }
+
+  .category-card {
+    --category-color: hsl(185 100% 50%);
+    --category-dim: hsl(185 100% 50% / 0.45);
+    --category-faint: hsl(185 100% 50% / 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow:
+      0 0 0 1px var(--category-dim),
+      0 0 18px var(--category-faint);
+  }
+  .category-card:hover {
+    box-shadow:
+      0 0 0 1px var(--category-color),
+      0 0 28px var(--category-dim),
+      0 0 48px var(--category-faint);
+  }
+  .category-card:active { transform: scale(0.97); }
 }
 
 /* Wallet Theme — Premium Neon Cyan + Black Solo Leveling Hunter System */
