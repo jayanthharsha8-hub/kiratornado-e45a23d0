@@ -8,7 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Wallet, Menu } from "lucide-react";
+import { Wallet, Menu, Trophy, ChevronRight } from "lucide-react";
 import { Particles } from "@/components/Particles";
 import { playSound } from "@/hooks/useSound";
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel";
@@ -133,41 +133,75 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Tournament image cards */}
-         <SystemPanel title="Tournaments">
-           <div className="grid grid-cols-2 gap-2">
+        {/* Tournament category cards */}
+        <SystemPanel title="Tournaments">
+          <div className="grid grid-cols-3 gap-2">
             {(Object.keys(CATEGORY_META) as Category[]).map((c, idx) => {
               const meta = CATEGORY_META[c];
               const imgUrl = categoryImages[c];
+              const [firstWord, ...restWords] = meta.title.split(" ");
+              const accentWords = restWords.join(" ");
               return (
                 <button
                   key={c}
                   onClick={() => openTournamentPage(c)}
-                  className="group relative aspect-square overflow-hidden rounded-sm border bg-card text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.98] animate-float-up"
+                  className="group relative aspect-[4/5] overflow-hidden rounded-xl border-2 bg-card text-left transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] animate-float-up"
                   style={{
                     borderColor: meta.color,
-                    boxShadow: `0 0 8px ${meta.colorSoft}`,
+                    boxShadow: `0 0 0 1px ${meta.color.replace(")", " / 0.6)")}, 0 0 16px ${meta.color.replace(")", " / 0.4)")}`,
                     animationDelay: `${idx * 0.05}s`,
                   }}
                 >
                   {imgUrl ? (
-                    <img
-                      src={imgUrl}
-                      alt={meta.title}
-                      loading="lazy"
-                      decoding="async"
-                      width={512}
-                      height={512}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                    />
+                    <>
+                      <img
+                        src={imgUrl}
+                        alt={meta.title}
+                        loading="lazy"
+                        decoding="async"
+                        width={512}
+                        height={512}
+                        className="absolute inset-0 h-full w-full object-cover object-right transition duration-500 group-hover:scale-[1.05]"
+                      />
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-transparent"
+                        style={{ backgroundImage: `linear-gradient(90deg, hsl(var(--background) / 0.98) 0%, hsl(var(--background) / 0.85) 45%, transparent 85%)` }}
+                      />
+                    </>
                   ) : (
-                    <div
-                      className="flex h-full w-full items-center justify-center px-2 text-center font-display text-xs uppercase tracking-[0.2em]"
-                      style={{ color: meta.color }}
-                    >
-                      {meta.title}
-                    </div>
+                    <div className="absolute inset-0 bg-card" />
                   )}
+
+                  <div className="relative z-10 flex h-full flex-col justify-between p-2">
+                    <div>
+                      <h3 className="font-display text-xs font-bold uppercase leading-tight">
+                        <span className="text-foreground">{firstWord}</span>
+                        <span style={{ color: meta.color }}> {accentWords}</span>
+                      </h3>
+                      <p className="mt-0.5 text-[8px] uppercase tracking-wider text-foreground/70">
+                        {meta.subtitle}
+                      </p>
+                    </div>
+
+                    <div
+                      className="flex items-center justify-between rounded-lg border bg-background/70 px-1.5 py-1 backdrop-blur-sm"
+                      style={{ borderColor: `${meta.color.replace(")", " / 0.5)")}` }}
+                    >
+                      <div className="flex items-center gap-1">
+                        <Trophy className="h-2.5 w-2.5" style={{ color: meta.color }} />
+                        <div>
+                          <p className="text-[6px] uppercase tracking-wider text-foreground/60">Prize</p>
+                          <p className="text-[9px] font-bold leading-none" style={{ color: meta.color }}>₹{meta.prize.toLocaleString()}</p>
+                        </div>
+                      </div>
+                      <div
+                        className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border"
+                        style={{ borderColor: meta.color, color: meta.color }}
+                      >
+                        <ChevronRight className="h-2.5 w-2.5" />
+                      </div>
+                    </div>
+                  </div>
                 </button>
               );
             })}
