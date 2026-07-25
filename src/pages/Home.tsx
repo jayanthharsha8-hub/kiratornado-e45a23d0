@@ -135,7 +135,7 @@ const Home = () => {
 
         {/* Tournament category cards */}
         <SystemPanel title="Tournaments">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             {(Object.keys(CATEGORY_META) as Category[]).map((c, idx) => {
               const meta = CATEGORY_META[c];
               const imgUrl = categoryImages[c];
@@ -144,7 +144,7 @@ const Home = () => {
                   key={c}
                   onClick={() => openTournamentPage(c)}
                   aria-label={meta.title}
-                  className="group category-card relative flex aspect-square overflow-hidden rounded-2xl border-2 bg-card text-left animate-float-up"
+                  className="group category-card relative flex aspect-[4/3] w-full overflow-hidden rounded-[18px] border-2 bg-card text-left animate-float-up"
                   style={{
                     borderColor: meta.color,
                     ["--category-color" as any]: meta.color,
@@ -160,12 +160,17 @@ const Home = () => {
                       loading="lazy"
                       decoding="async"
                       width={512}
-                      height={512}
+                      height={384}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
                     />
                   ) : (
                     <div className="h-full w-full bg-card" />
                   )}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-2 pt-6">
+                    <span className="font-display text-xs font-semibold uppercase tracking-wide text-white drop-shadow-md">
+                      {meta.title}
+                    </span>
+                  </div>
                 </button>
               );
             })}
