@@ -19,7 +19,7 @@ import {
   MessageSquare,
   ArrowRight,
   Flame,
-  Parachute,
+  Rocket,
   Swords,
   Crown,
   DoorOpen,
