@@ -143,7 +143,8 @@ const Home = () => {
                 <button
                   key={c}
                   onClick={() => openTournamentPage(c)}
-                  className="group category-card relative flex aspect-square flex-col overflow-hidden rounded-2xl border-2 bg-card text-left animate-float-up"
+                  aria-label={meta.title}
+                  className="group category-card relative flex aspect-square overflow-hidden rounded-2xl border-2 bg-card text-left animate-float-up"
                   style={{
                     borderColor: meta.color,
                     ["--category-color" as any]: meta.color,
@@ -152,30 +153,19 @@ const Home = () => {
                     animationDelay: `${idx * 0.05}s`,
                   }}
                 >
-                  <div className="relative flex-1 overflow-hidden">
-                    {imgUrl ? (
-                      <img
-                        src={imgUrl}
-                        alt={meta.title}
-                        loading="lazy"
-                        decoding="async"
-                        width={512}
-                        height={512}
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-card" />
-                    )}
-                  </div>
-
-                  <div
-                    className="flex h-8 shrink-0 items-center justify-center border-t bg-background/80 backdrop-blur-sm transition-colors"
-                    style={{ borderColor: meta.color.replace(")", " / 0.35)") }}
-                  >
-                    <span className="font-display text-[10px] uppercase tracking-[0.18em] text-foreground/90 transition-colors group-hover:text-[var(--category-color)]">
-                      {meta.title}
-                    </span>
-                  </div>
+                  {imgUrl ? (
+                    <img
+                      src={imgUrl}
+                      alt={meta.title}
+                      loading="lazy"
+                      decoding="async"
+                      width={512}
+                      height={512}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="h-full w-full bg-card" />
+                  )}
                 </button>
               );
             })}
