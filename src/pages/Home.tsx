@@ -601,8 +601,8 @@ type CatCfg = {
 };
 
 const CATEGORY_CFG: CatCfg[] = [
-  { key: "free_match", title: "Free Matches", subtitle: "Daily • Free Entry", icon: Parachute, glow: "blue", color: "#00e5ff" },
-  { key: "battle_royale", title: "Battle Royale", subtitle: "Classic Battle", icon: Parachute, glow: "purple", color: "#a855f7" },
+  { key: "free_match", title: "Free Matches", subtitle: "Daily • Free Entry", icon: Rocket, glow: "blue", color: "#00e5ff" },
+  { key: "battle_royale", title: "Battle Royale", subtitle: "Classic Battle", icon: Rocket, glow: "purple", color: "#a855f7" },
   { key: "classic_squad", title: "Clash Squad", subtitle: "4v4 • Intense Fight", icon: Swords, glow: "purple", color: "#c084fc" },
   { key: "lone_wolf", title: "Lone Wolf", subtitle: "Solo • Survival Mode", icon: Dog, glow: "green", color: "#4ade80" },
   { key: "custom_rooms", title: "Custom Rooms", subtitle: "Create & Play", icon: DoorOpen, glow: "yellow", color: "#ffd24d" },
