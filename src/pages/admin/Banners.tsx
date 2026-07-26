@@ -227,10 +227,11 @@ export default function AdminBanners() {
       </div>
 
       <SystemPanel title="Manage Home Banners">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-6">
           <Input placeholder="Title" value={homeForm.title} onChange={(e) => setHomeForm((p) => ({ ...p, title: e.target.value }))} className="border-primary/30 bg-card" />
           <Input placeholder="Subtitle" value={homeForm.subtitle} onChange={(e) => setHomeForm((p) => ({ ...p, subtitle: e.target.value }))} className="border-primary/30 bg-card" />
           <Input placeholder="Button text optional" value={homeForm.button_text} onChange={(e) => setHomeForm((p) => ({ ...p, button_text: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Button link e.g. /tournaments" value={homeForm.button_link} onChange={(e) => setHomeForm((p) => ({ ...p, button_link: e.target.value }))} className="border-primary/30 bg-card" />
           <Input type="number" value={homeForm.sort_order} onChange={(e) => setHomeForm((p) => ({ ...p, sort_order: Number(e.target.value) }))} className="border-primary/30 bg-card" />
           <label className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-sm border border-primary/50 bg-primary text-xs font-display font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary-glow">
             <ImagePlus className="h-4 w-4" /> Upload
@@ -239,7 +240,7 @@ export default function AdminBanners() {
         </div>
         <div className="mt-4 overflow-x-auto">
           <Table>
-            <TableHeader><TableRow><TableHead>Preview</TableHead><TableHead>Title</TableHead><TableHead>Subtitle</TableHead><TableHead>Button</TableHead><TableHead>Order</TableHead><TableHead>Active</TableHead><TableHead /></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Preview</TableHead><TableHead>Title</TableHead><TableHead>Subtitle</TableHead><TableHead>Button</TableHead><TableHead>Link</TableHead><TableHead>Order</TableHead><TableHead>Active</TableHead><TableHead /></TableRow></TableHeader>
             <TableBody>
               {homeBanners.map((banner, index) => (
                 <TableRow key={banner.id}>
@@ -247,12 +248,13 @@ export default function AdminBanners() {
                   <TableCell><Input value={banner.title} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, title: e.target.value } : r))} /></TableCell>
                   <TableCell><Input value={banner.subtitle} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, subtitle: e.target.value } : r))} /></TableCell>
                   <TableCell><Input value={banner.button_text ?? ""} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, button_text: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={banner.button_link ?? ""} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, button_link: e.target.value } : r))} /></TableCell>
                   <TableCell><Input type="number" value={banner.sort_order} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, sort_order: Number(e.target.value) } : r))} className="w-20" /></TableCell>
                   <TableCell><input type="checkbox" checked={banner.active} onChange={(e) => setHomeBanners((rows) => rows.map((r, i) => i === index ? { ...r, active: e.target.checked } : r))} /></TableCell>
                   <TableCell><div className="flex gap-1"><Button size="icon" variant="outline" onClick={() => updateHomeBanner(banner)}><Save /></Button><Button size="icon" variant="destructive" onClick={() => deleteHomeBanner(banner.id)}><Trash2 /></Button></div></TableCell>
                 </TableRow>
               ))}
-              {homeBanners.length === 0 && <TableRow><TableCell colSpan={7} className="py-8 text-center text-sm text-muted-foreground">No Banner</TableCell></TableRow>}
+              {homeBanners.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center text-sm text-muted-foreground">No Banner</TableCell></TableRow>}
             </TableBody>
           </Table>
         </div>
@@ -264,13 +266,88 @@ export default function AdminBanners() {
             <div key={category} className="rounded border border-primary/25 bg-card/40 p-3">
               <div className="mb-3 flex items-center gap-3">
                 {categoryImages[category] ? <img src={categoryImages[category]!} alt={CATEGORY_META[category].title} className="h-16 w-16 object-cover" /> : <div className="flex h-16 w-16 items-center justify-center border border-primary/25 text-[10px] text-muted-foreground">No Banner</div>}
-                <div><h3 className="font-display text-sm uppercase tracking-widest text-primary">{CATEGORY_META[category].title}</h3><p className="text-[10px] text-muted-foreground">Square card image only</p></div>
+                <div><h3 className="font-display text-sm uppercase tracking-widest text-primary">{CATEGORY_META[category].title}</h3><p className="text-[10px] text-muted-foreground">Card image, title, subtitle & event label</p></div>
               </div>
               <Input type="file" accept="image/*" disabled={saving} onChange={(e) => saveCategoryImage(category, e.target.files?.[0])} className="border-primary/30 bg-card" />
+              <div className="mt-2 grid gap-2 md:grid-cols-3">
+                <Input placeholder="Title" value={categoryText[category].title} onChange={(e) => setCategoryText((p) => ({ ...p, [category]: { ...p[category], title: e.target.value } }))} className="border-primary/30 bg-card" />
+                <Input placeholder="Subtitle" value={categoryText[category].subtitle} onChange={(e) => setCategoryText((p) => ({ ...p, [category]: { ...p[category], subtitle: e.target.value } }))} className="border-primary/30 bg-card" />
+                <Input placeholder="Event label" value={categoryText[category].event_label} onChange={(e) => setCategoryText((p) => ({ ...p, [category]: { ...p[category], event_label: e.target.value } }))} className="border-primary/30 bg-card" />
+              </div>
+              <Button className="mt-2" size="sm" variant="outline" onClick={() => saveCategoryText(category)}><Save className="mr-1 h-4 w-4" /> Save Text</Button>
             </div>
           ))}
         </div>
       </SystemPanel>
+
+      <SystemPanel title="Manage Offer Cards">
+        <div className="grid gap-3 md:grid-cols-6">
+          <Input placeholder="Title" value={offerForm.title} onChange={(e) => setOfferForm((p) => ({ ...p, title: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Subtitle" value={offerForm.subtitle} onChange={(e) => setOfferForm((p) => ({ ...p, subtitle: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Badge label" value={offerForm.badge_label} onChange={(e) => setOfferForm((p) => ({ ...p, badge_label: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Link" value={offerForm.link} onChange={(e) => setOfferForm((p) => ({ ...p, link: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input type="number" value={offerForm.sort_order} onChange={(e) => setOfferForm((p) => ({ ...p, sort_order: Number(e.target.value) }))} className="border-primary/30 bg-card" />
+          <label className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-sm border border-primary/50 bg-primary text-xs font-display font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary-glow">
+            <ImagePlus className="h-4 w-4" /> Add Offer
+            <input type="file" accept="image/*" className="hidden" disabled={saving} onChange={(e) => createOffer(e.target.files?.[0])} />
+          </label>
+        </div>
+        <div className="mt-4 overflow-x-auto">
+          <Table>
+            <TableHeader><TableRow><TableHead>Preview</TableHead><TableHead>Title</TableHead><TableHead>Subtitle</TableHead><TableHead>Badge</TableHead><TableHead>Link</TableHead><TableHead>Order</TableHead><TableHead>Active</TableHead><TableHead /></TableRow></TableHeader>
+            <TableBody>
+              {offers.map((offer, index) => (
+                <TableRow key={offer.id}>
+                  <TableCell>{offer.image_url ? <img src={offer.image_url} alt={offer.title} className="h-12 w-24 object-cover" /> : <span className="text-xs text-muted-foreground">No Image</span>}</TableCell>
+                  <TableCell><Input value={offer.title} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, title: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={offer.subtitle} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, subtitle: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={offer.badge_label ?? ""} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, badge_label: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={offer.link ?? ""} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, link: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input type="number" value={offer.sort_order} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, sort_order: Number(e.target.value) } : r))} className="w-20" /></TableCell>
+                  <TableCell><input type="checkbox" checked={offer.active} onChange={(e) => setOffers((rows) => rows.map((r, i) => i === index ? { ...r, active: e.target.checked } : r))} /></TableCell>
+                  <TableCell><div className="flex gap-1"><Button size="icon" variant="outline" onClick={() => updateOffer(offer)}><Save /></Button><Button size="icon" variant="destructive" onClick={() => deleteOffer(offer.id)}><Trash2 /></Button></div></TableCell>
+                </TableRow>
+              ))}
+              {offers.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center text-sm text-muted-foreground">No Offers</TableCell></TableRow>}
+            </TableBody>
+          </Table>
+        </div>
+      </SystemPanel>
+
+      <SystemPanel title="Manage Popup Banners">
+        <div className="grid gap-3 md:grid-cols-6">
+          <Input placeholder="Title" value={popupForm.title} onChange={(e) => setPopupForm((p) => ({ ...p, title: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Subtitle" value={popupForm.subtitle} onChange={(e) => setPopupForm((p) => ({ ...p, subtitle: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Button text" value={popupForm.button_text} onChange={(e) => setPopupForm((p) => ({ ...p, button_text: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input placeholder="Link" value={popupForm.link} onChange={(e) => setPopupForm((p) => ({ ...p, link: e.target.value }))} className="border-primary/30 bg-card" />
+          <Input type="number" value={popupForm.sort_order} onChange={(e) => setPopupForm((p) => ({ ...p, sort_order: Number(e.target.value) }))} className="border-primary/30 bg-card" />
+          <label className="inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-sm border border-primary/50 bg-primary text-xs font-display font-bold uppercase tracking-widest text-primary-foreground hover:bg-primary-glow">
+            <ImagePlus className="h-4 w-4" /> Add Popup
+            <input type="file" accept="image/*" className="hidden" disabled={saving} onChange={(e) => createPopup(e.target.files?.[0])} />
+          </label>
+        </div>
+        <div className="mt-4 overflow-x-auto">
+          <Table>
+            <TableHeader><TableRow><TableHead>Preview</TableHead><TableHead>Title</TableHead><TableHead>Subtitle</TableHead><TableHead>Button</TableHead><TableHead>Link</TableHead><TableHead>Order</TableHead><TableHead>Active</TableHead><TableHead /></TableRow></TableHeader>
+            <TableBody>
+              {popups.map((popup, index) => (
+                <TableRow key={popup.id}>
+                  <TableCell>{popup.image_url ? <img src={popup.image_url} alt={popup.title} className="h-12 w-24 object-cover" /> : <span className="text-xs text-muted-foreground">No Image</span>}</TableCell>
+                  <TableCell><Input value={popup.title} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, title: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={popup.subtitle} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, subtitle: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={popup.button_text ?? ""} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, button_text: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input value={popup.link ?? ""} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, link: e.target.value } : r))} /></TableCell>
+                  <TableCell><Input type="number" value={popup.sort_order} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, sort_order: Number(e.target.value) } : r))} className="w-20" /></TableCell>
+                  <TableCell><input type="checkbox" checked={popup.active} onChange={(e) => setPopups((rows) => rows.map((r, i) => i === index ? { ...r, active: e.target.checked } : r))} /></TableCell>
+                  <TableCell><div className="flex gap-1"><Button size="icon" variant="outline" onClick={() => updatePopup(popup)}><Save /></Button><Button size="icon" variant="destructive" onClick={() => deletePopup(popup.id)}><Trash2 /></Button></div></TableCell>
+                </TableRow>
+              ))}
+              {popups.length === 0 && <TableRow><TableCell colSpan={8} className="py-8 text-center text-sm text-muted-foreground">No Popups</TableCell></TableRow>}
+            </TableBody>
+          </Table>
+        </div>
+      </SystemPanel>
+
 
       <SystemPanel title="Tournament Page Banners">
         <div className="grid gap-3 md:grid-cols-2">
