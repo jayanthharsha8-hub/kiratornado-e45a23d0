@@ -10,14 +10,17 @@ import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { ImagePlus, Save, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-type HomeBanner = { id: string; image_url: string | null; title: string; subtitle: string; button_text: string | null; sort_order: number; active: boolean };
-type CategoryCardImage = { id: string; category: Category; card_image_url: string | null };
+type HomeBanner = { id: string; image_url: string | null; title: string; subtitle: string; button_text: string | null; button_link: string | null; sort_order: number; active: boolean };
+type CategoryCardImage = { id: string; category: Category; card_image_url: string | null; title: string | null; subtitle: string | null; event_label: string | null };
 type TournamentBanner = { id: string; tournament_id: string; banner_image_url: string | null };
 type TournamentPageBanner = { id: string; category: Category; banner_image_url: string | null };
 type TournamentRow = { id: string; title: string; category: Category; scheduled_at: string };
+type HomeOffer = { id: string; title: string; subtitle: string; badge_label: string | null; image_url: string | null; link: string | null; sort_order: number; active: boolean };
+type HomePopup = { id: string; title: string; subtitle: string; image_url: string | null; button_text: string | null; link: string | null; sort_order: number; active: boolean };
 
 const CATEGORIES: Category[] = Object.keys(CATEGORY_META) as Category[];
 const db = supabase as any;
+
 
 const uploadBannerImage = async (file: File, folder: string) => {
   const ext = file.name.split(".").pop() || "jpg";
