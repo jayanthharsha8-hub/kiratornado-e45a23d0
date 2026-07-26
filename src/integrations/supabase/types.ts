@@ -43,21 +43,30 @@ export type Database = {
           card_image_url: string | null
           category: Database["public"]["Enums"]["tournament_category"]
           created_at: string
+          event_label: string | null
           id: string
+          subtitle: string | null
+          title: string | null
           updated_at: string
         }
         Insert: {
           card_image_url?: string | null
           category: Database["public"]["Enums"]["tournament_category"]
           created_at?: string
+          event_label?: string | null
           id?: string
+          subtitle?: string | null
+          title?: string | null
           updated_at?: string
         }
         Update: {
           card_image_url?: string | null
           category?: Database["public"]["Enums"]["tournament_category"]
           created_at?: string
+          event_label?: string | null
           id?: string
+          subtitle?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -122,6 +131,7 @@ export type Database = {
       home_banners: {
         Row: {
           active: boolean
+          button_link: string | null
           button_text: string | null
           created_at: string
           id: string
@@ -133,6 +143,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          button_link?: string | null
           button_text?: string | null
           created_at?: string
           id?: string
@@ -144,10 +155,89 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          button_link?: string | null
           button_text?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          sort_order?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      home_offers: {
+        Row: {
+          active: boolean
+          badge_label: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          link: string | null
+          sort_order: number
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          badge_label?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          sort_order?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          badge_label?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          sort_order?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      home_popups: {
+        Row: {
+          active: boolean
+          button_text: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          link: string | null
+          sort_order: number
+          subtitle: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          button_text?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          sort_order?: number
+          subtitle?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          button_text?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
           sort_order?: number
           subtitle?: string
           title?: string
