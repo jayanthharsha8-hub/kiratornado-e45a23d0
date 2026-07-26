@@ -33,27 +33,46 @@ const uploadBannerImage = async (file: File, folder: string) => {
 export default function AdminBanners() {
   const [homeBanners, setHomeBanners] = useState<HomeBanner[]>([]);
   const [categoryImages, setCategoryImages] = useState<Record<Category, string | null>>({ free_match: null, battle_royale: null, classic_squad: null, lone_wolf: null, custom_rooms: null, weekly_rankings: null });
+  const [categoryText, setCategoryText] = useState<Record<Category, { title: string; subtitle: string; event_label: string }>>({
+    free_match: { title: "", subtitle: "", event_label: "" },
+    battle_royale: { title: "", subtitle: "", event_label: "" },
+    classic_squad: { title: "", subtitle: "", event_label: "" },
+    lone_wolf: { title: "", subtitle: "", event_label: "" },
+    custom_rooms: { title: "", subtitle: "", event_label: "" },
+    weekly_rankings: { title: "", subtitle: "", event_label: "" },
+  });
   const [tournamentBanners, setTournamentBanners] = useState<Record<string, string | null>>({});
   const [pageBanners, setPageBanners] = useState<Record<Category, string | null>>({ free_match: null, battle_royale: null, classic_squad: null, lone_wolf: null, custom_rooms: null, weekly_rankings: null });
   const [tournaments, setTournaments] = useState<TournamentRow[]>([]);
-  const [homeForm, setHomeForm] = useState({ title: "", subtitle: "", button_text: "", sort_order: 0 });
+  const [homeForm, setHomeForm] = useState({ title: "", subtitle: "", button_text: "", button_link: "", sort_order: 0 });
+  const [offers, setOffers] = useState<HomeOffer[]>([]);
+  const [popups, setPopups] = useState<HomePopup[]>([]);
+  const [offerForm, setOfferForm] = useState({ title: "", subtitle: "", badge_label: "", link: "", sort_order: 0 });
+  const [popupForm, setPopupForm] = useState({ title: "", subtitle: "", button_text: "", link: "", sort_order: 0 });
   const [selectedTournament, setSelectedTournament] = useState("");
   const [saving, setSaving] = useState(false);
 
   const selectedTournamentName = useMemo(() => tournaments.find((t) => t.id === selectedTournament)?.title ?? "Select Tournament", [selectedTournament, tournaments]);
 
   const load = async () => {
-    const [home, cards, banners, pageBannerRows, tours] = await Promise.all([
+    const [home, cards, banners, pageBannerRows, tours, offerRows, popupRows] = await Promise.all([
       db.from("home_banners").select("*").order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
       db.from("category_card_images").select("*"),
       db.from("tournament_banners").select("*"),
       db.from("tournament_page_banners").select("*"),
       supabase.from("tournaments").select("id,title,category,scheduled_at").order("scheduled_at", { ascending: false }),
+      db.from("home_offers").select("*").order("sort_order", { ascending: true }),
+      db.from("home_popups").select("*").order("sort_order", { ascending: true }),
     ]);
     setHomeBanners((home.data ?? []) as HomeBanner[]);
     const cardMap = CATEGORIES.reduce((acc, c) => { acc[c] = null; return acc; }, {} as Record<Category, string | null>);
-    ((cards.data ?? []) as CategoryCardImage[]).forEach((row) => { cardMap[row.category] = row.card_image_url; });
+    const textMap = CATEGORIES.reduce((acc, c) => { acc[c] = { title: "", subtitle: "", event_label: "" }; return acc; }, {} as Record<Category, { title: string; subtitle: string; event_label: string }>);
+    ((cards.data ?? []) as CategoryCardImage[]).forEach((row) => {
+      cardMap[row.category] = row.card_image_url;
+      textMap[row.category] = { title: row.title ?? "", subtitle: row.subtitle ?? "", event_label: row.event_label ?? "" };
+    });
     setCategoryImages(cardMap);
+    setCategoryText(textMap);
     const tournamentMap: Record<string, string | null> = {};
     ((banners.data ?? []) as TournamentBanner[]).forEach((row) => { tournamentMap[row.tournament_id] = row.banner_image_url; });
     setTournamentBanners(tournamentMap);
@@ -61,7 +80,10 @@ export default function AdminBanners() {
     ((pageBannerRows.data ?? []) as TournamentPageBanner[]).forEach((row) => { pageMap[row.category] = row.banner_image_url; });
     setPageBanners(pageMap);
     setTournaments(((tours.data ?? []) as TournamentRow[]));
+    setOffers((offerRows.data ?? []) as HomeOffer[]);
+    setPopups((popupRows.data ?? []) as HomePopup[]);
   };
+
 
   useEffect(() => { load(); }, []);
 
