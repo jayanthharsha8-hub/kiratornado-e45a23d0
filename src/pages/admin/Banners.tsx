@@ -93,18 +93,18 @@ export default function AdminBanners() {
     try {
       for (const file of Array.from(files)) {
         const image_url = await uploadBannerImage(file, "home");
-        const { error } = await db.from("home_banners").insert({ image_url, ...homeForm, button_text: homeForm.button_text || null });
+        const { error } = await db.from("home_banners").insert({ image_url, ...homeForm, button_text: homeForm.button_text || null, button_link: homeForm.button_link || null });
         if (error) throw error;
       }
       toast.success("Home banners added");
-      setHomeForm({ title: "", subtitle: "", button_text: "", sort_order: 0 });
+      setHomeForm({ title: "", subtitle: "", button_text: "", button_link: "", sort_order: 0 });
       await load();
     } catch (error: any) { toast.error(error.message || "Upload failed"); }
     setSaving(false);
   };
 
   const updateHomeBanner = async (banner: HomeBanner) => {
-    const { error } = await db.from("home_banners").update({ title: banner.title, subtitle: banner.subtitle, button_text: banner.button_text || null, sort_order: banner.sort_order, active: banner.active }).eq("id", banner.id);
+    const { error } = await db.from("home_banners").update({ title: banner.title, subtitle: banner.subtitle, button_text: banner.button_text || null, button_link: banner.button_link || null, sort_order: banner.sort_order, active: banner.active }).eq("id", banner.id);
     if (error) { toast.error(error.message); return; }
     toast.success("Home banner saved"); load();
   };
@@ -128,6 +128,69 @@ export default function AdminBanners() {
     } catch (error: any) { toast.error(error.message || "Upload failed"); }
     setSaving(false);
   };
+
+  const saveCategoryText = async (category: Category) => {
+    const t = categoryText[category];
+    const { error } = await db.from("category_card_images").upsert(
+      { category, title: t.title || null, subtitle: t.subtitle || null, event_label: t.event_label || null },
+      { onConflict: "category" }
+    );
+    if (error) { toast.error(error.message); return; }
+    toast.success("Category text saved"); load();
+  };
+
+  const createOffer = async (file: File | undefined) => {
+    setSaving(true);
+    try {
+      const image_url = file ? await uploadBannerImage(file, "offers") : null;
+      const { error } = await db.from("home_offers").insert({ ...offerForm, badge_label: offerForm.badge_label || null, link: offerForm.link || null, image_url });
+      if (error) throw error;
+      toast.success("Offer added");
+      setOfferForm({ title: "", subtitle: "", badge_label: "", link: "", sort_order: 0 });
+      await load();
+    } catch (error: any) { toast.error(error.message || "Upload failed"); }
+    setSaving(false);
+  };
+
+  const updateOffer = async (offer: HomeOffer) => {
+    const { error } = await db.from("home_offers").update({ title: offer.title, subtitle: offer.subtitle, badge_label: offer.badge_label || null, link: offer.link || null, sort_order: offer.sort_order, active: offer.active }).eq("id", offer.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Offer saved"); load();
+  };
+
+  const deleteOffer = async (id: string) => {
+    if (!confirm("Delete this offer?")) return;
+    const { error } = await db.from("home_offers").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Offer deleted"); load();
+  };
+
+  const createPopup = async (file: File | undefined) => {
+    setSaving(true);
+    try {
+      const image_url = file ? await uploadBannerImage(file, "popups") : null;
+      const { error } = await db.from("home_popups").insert({ ...popupForm, button_text: popupForm.button_text || null, link: popupForm.link || null, image_url });
+      if (error) throw error;
+      toast.success("Popup added");
+      setPopupForm({ title: "", subtitle: "", button_text: "", link: "", sort_order: 0 });
+      await load();
+    } catch (error: any) { toast.error(error.message || "Upload failed"); }
+    setSaving(false);
+  };
+
+  const updatePopup = async (popup: HomePopup) => {
+    const { error } = await db.from("home_popups").update({ title: popup.title, subtitle: popup.subtitle, button_text: popup.button_text || null, link: popup.link || null, sort_order: popup.sort_order, active: popup.active }).eq("id", popup.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Popup saved"); load();
+  };
+
+  const deletePopup = async (id: string) => {
+    if (!confirm("Delete this popup?")) return;
+    const { error } = await db.from("home_popups").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Popup deleted"); load();
+  };
+
 
   const saveTournamentBanner = async (file: File | undefined) => {
     if (!selectedTournament) { toast.error("Select a tournament"); return; }
