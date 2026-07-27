@@ -277,7 +277,21 @@ const TournamentSlots = () => {
         slotNumber={selectedSlot}
         onClick={confirmJoin}
       />
+
+      <CouponPrompt
+        open={promptOpen}
+        onOpenChange={setPromptOpen}
+        discountPercent={couponEligible ? coupon!.discount_percent : null}
+        entryFee={tournament.entry_fee}
+        brTokens={profile?.br_tokens ?? 0}
+        tokenEligible={tokenEligible}
+        accent={accent}
+        onApplyCoupon={() => doJoin({ couponId: coupon?.id })}
+        onUseToken={() => doJoin({ useToken: true })}
+        onSkip={() => doJoin({})}
+      />
     </div>
+
   );
 };
 
