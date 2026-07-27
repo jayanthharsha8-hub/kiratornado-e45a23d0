@@ -80,7 +80,11 @@ const App = () => (
             <Route path="/wallet/history" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
             <Route path="/hunter-chat" element={<ProtectedRoute><HunterChat /></ProtectedRoute>} />
             {/* Admin routes */}
+            <Route path="/daily-streak" element={<ProtectedRoute><DailyStreak /></ProtectedRoute>} />
+            {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/streak" element={<AdminRoute><AdminLayout><AdminStreak /></AdminLayout></AdminRoute>} />
+
             <Route path="/admin/tournaments" element={<AdminRoute><AdminLayout><AdminTournaments /></AdminLayout></AdminRoute>} />
             <Route path="/admin/banners" element={<AdminRoute><AdminLayout><AdminBanners /></AdminLayout></AdminRoute>} />
             <Route path="/admin/players" element={<AdminRoute><AdminLayout><AdminPlayers /></AdminLayout></AdminRoute>} />
