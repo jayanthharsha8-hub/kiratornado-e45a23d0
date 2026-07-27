@@ -188,6 +188,42 @@ const WalletPage = () => {
           </div>
         </CyberFrame>
 
+        {/* BR TOKENS & COUPONS */}
+        <section className="grid grid-cols-2 gap-3">
+          <CyberFrame>
+            <div className="text-center">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">BR Tokens</p>
+              <p className="mt-1 font-display text-2xl font-black text-white" style={{ textShadow: "0 0 16px rgba(0,217,255,0.8)" }}>
+                {brTokens}
+              </p>
+              <p className="mt-0.5 text-[8px] uppercase tracking-[0.16em] text-white/40">Battle Royale only • Max 2/day</p>
+            </div>
+          </CyberFrame>
+          <CyberFrame>
+            <div className="text-center">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">Coupons</p>
+              {coupons.length === 0 ? (
+                <p className="mt-2 text-[10px] text-white/45">No coupons yet</p>
+              ) : (
+                <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+                  {coupons.slice(0, 4).map((c) => (
+                    <span
+                      key={c.id}
+                      className="rounded-full px-2 py-0.5 text-[9px] font-bold"
+                      style={{ border: "1px solid rgba(0,217,255,0.5)", color: "#00D9FF", background: "rgba(0,217,255,0.08)" }}
+                    >
+                      {c.discount_percent}% OFF
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-white/40">One-time use</p>
+            </div>
+          </CyberFrame>
+        </section>
+
+
+
         {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">
           {[
