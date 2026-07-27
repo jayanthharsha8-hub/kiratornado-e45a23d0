@@ -74,9 +74,11 @@ const WalletPage = () => {
     const channel = supabase
       .channel(`wallet-balance-${user.id}`)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${user.id}` }, (payload) => {
-        const n = payload.new as { coins: number; bonus_coins?: number };
+        const n = payload.new as { coins: number; bonus_coins?: number; br_tokens?: number };
         setCoins(n.coins);
         if (typeof n.bonus_coins === "number") setBonusCoins(n.bonus_coins);
+        if (typeof n.br_tokens === "number") setBrTokens(n.br_tokens);
+
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
