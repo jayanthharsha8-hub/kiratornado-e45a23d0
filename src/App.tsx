@@ -29,7 +29,10 @@ import WalletRedeemConfirm from "./pages/WalletRedeemConfirm";
 import WalletUpi from "./pages/WalletUpi";
 import TransactionHistory from "./pages/TransactionHistory";
 import HunterChat from "./pages/HunterChat";
+import DailyStreak from "./pages/DailyStreak";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminStreak from "./pages/admin/StreakAdmin";
+
 import AdminTournaments from "./pages/admin/Tournaments";
 import AdminBanners from "./pages/admin/Banners";
 import AdminPlayers from "./pages/admin/Players";
