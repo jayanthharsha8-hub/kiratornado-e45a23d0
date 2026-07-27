@@ -44,23 +44,33 @@ const WalletPage = () => {
   const { user } = useAuth();
   const [coins, setCoins] = useState(0);
   const [bonusCoins, setBonusCoins] = useState(0);
+  const [brTokens, setBrTokens] = useState(0);
+  const [coupons, setCoupons] = useState<{ id: string; discount_percent: number }[]>([]);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("coins,bonus_coins" as any).eq("id", user.id).maybeSingle()
+    supabase.from("profiles").select("coins,bonus_coins,br_tokens" as any).eq("id", user.id).maybeSingle()
       .then(({ data }: any) => {
         if (data) {
           setCoins(data.coins ?? 0);
           setBonusCoins(data.bonus_coins ?? 0);
+          setBrTokens(data.br_tokens ?? 0);
         }
       });
+    (supabase.from("user_coupons" as any) as any)
+      .select("id,discount_percent")
+      .eq("user_id", user.id)
+      .is("used_at", null)
+      .order("created_at", { ascending: false })
+      .then(({ data }: any) => setCoupons(data ?? []));
     (supabase.from("transactions" as any) as any)
       .select("id,type,amount,message,status,created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(4)
       .then(({ data }: { data: WalletTransaction[] | null }) => setTransactions(data ?? []));
+
     const channel = supabase
       .channel(`wallet-balance-${user.id}`)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${user.id}` }, (payload) => {
