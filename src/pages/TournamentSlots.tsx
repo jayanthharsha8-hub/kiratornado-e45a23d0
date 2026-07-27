@@ -7,6 +7,7 @@ import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { toast } from "sonner";
 import { playSound } from "@/hooks/useSound";
 import SlotActionButton from "@/components/SlotActionButton";
+import { CouponPrompt } from "@/components/CouponPrompt";
 
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number;
@@ -15,6 +16,8 @@ interface Tournament {
   level_requirement: number;
 }
 
+interface Coupon { id: string; discount_percent: number }
+
 const TournamentSlots = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -22,10 +25,13 @@ const TournamentSlots = () => {
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [joining, setJoining] = useState(false);
-  const [profile, setProfile] = useState<{ coins: number; player_level: number } | null>(null);
+  const [profile, setProfile] = useState<{ coins: number; player_level: number; br_tokens?: number } | null>(null);
   const [joined, setJoined] = useState(false);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [promptOpen, setPromptOpen] = useState(false);
 
   useEffect(() => { if (id && user) loadData(); /* eslint-disable-next-line */ }, [id, user]);
+
 
   // Real-time shared slot count sync
   useEffect(() => {
