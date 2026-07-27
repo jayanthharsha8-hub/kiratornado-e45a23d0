@@ -79,8 +79,8 @@ const App = () => (
             <Route path="/wallet/upi" element={<ProtectedRoute><WalletUpi /></ProtectedRoute>} />
             <Route path="/wallet/history" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
             <Route path="/hunter-chat" element={<ProtectedRoute><HunterChat /></ProtectedRoute>} />
-            {/* Admin routes */}
             <Route path="/daily-streak" element={<ProtectedRoute><DailyStreak /></ProtectedRoute>} />
+
             {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
             <Route path="/admin/streak" element={<AdminRoute><AdminLayout><AdminStreak /></AdminLayout></AdminRoute>} />
