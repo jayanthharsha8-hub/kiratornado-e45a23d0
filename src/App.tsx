@@ -29,7 +29,10 @@ import WalletRedeemConfirm from "./pages/WalletRedeemConfirm";
 import WalletUpi from "./pages/WalletUpi";
 import TransactionHistory from "./pages/TransactionHistory";
 import HunterChat from "./pages/HunterChat";
+import DailyStreak from "./pages/DailyStreak";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminStreak from "./pages/admin/StreakAdmin";
+
 import AdminTournaments from "./pages/admin/Tournaments";
 import AdminBanners from "./pages/admin/Banners";
 import AdminPlayers from "./pages/admin/Players";
@@ -76,8 +79,12 @@ const App = () => (
             <Route path="/wallet/upi" element={<ProtectedRoute><WalletUpi /></ProtectedRoute>} />
             <Route path="/wallet/history" element={<ProtectedRoute><TransactionHistory /></ProtectedRoute>} />
             <Route path="/hunter-chat" element={<ProtectedRoute><HunterChat /></ProtectedRoute>} />
+            <Route path="/daily-streak" element={<ProtectedRoute><DailyStreak /></ProtectedRoute>} />
+
             {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/streak" element={<AdminRoute><AdminLayout><AdminStreak /></AdminLayout></AdminRoute>} />
+
             <Route path="/admin/tournaments" element={<AdminRoute><AdminLayout><AdminTournaments /></AdminLayout></AdminRoute>} />
             <Route path="/admin/banners" element={<AdminRoute><AdminLayout><AdminBanners /></AdminLayout></AdminRoute>} />
             <Route path="/admin/players" element={<AdminRoute><AdminLayout><AdminPlayers /></AdminLayout></AdminRoute>} />

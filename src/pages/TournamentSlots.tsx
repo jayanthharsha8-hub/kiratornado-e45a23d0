@@ -7,6 +7,7 @@ import { CATEGORY_META, Category } from "@/lib/tournaments";
 import { toast } from "sonner";
 import { playSound } from "@/hooks/useSound";
 import SlotActionButton from "@/components/SlotActionButton";
+import { CouponPrompt } from "@/components/CouponPrompt";
 
 interface Tournament {
   id: string; title: string; category: Category; entry_fee: number;
@@ -15,6 +16,8 @@ interface Tournament {
   level_requirement: number;
 }
 
+interface Coupon { id: string; discount_percent: number }
+
 const TournamentSlots = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -22,10 +25,13 @@ const TournamentSlots = () => {
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [joining, setJoining] = useState(false);
-  const [profile, setProfile] = useState<{ coins: number; player_level: number } | null>(null);
+  const [profile, setProfile] = useState<{ coins: number; player_level: number; br_tokens?: number } | null>(null);
   const [joined, setJoined] = useState(false);
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [promptOpen, setPromptOpen] = useState(false);
 
   useEffect(() => { if (id && user) loadData(); /* eslint-disable-next-line */ }, [id, user]);
+
 
   // Real-time shared slot count sync
   useEffect(() => {
@@ -65,8 +71,41 @@ const TournamentSlots = () => {
       return;
     }
 
-    const { data: prof } = await supabase.from("profiles").select("coins,player_level").eq("id", user.id).maybeSingle();
+    const { data: prof } = await supabase.from("profiles").select("coins,player_level,br_tokens" as any).eq("id", user.id).maybeSingle();
     if (prof) setProfile(prof as any);
+
+    const { data: cp } = await (supabase.from("user_coupons" as any) as any)
+      .select("id,discount_percent")
+      .eq("user_id", user.id)
+      .is("used_at", null)
+      .order("discount_percent", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    setCoupon((cp as Coupon) ?? null);
+  };
+
+  const couponEligible =
+    !!coupon && !!tournament && tournament.entry_fee > 0 &&
+    (tournament.category === "battle_royale" || tournament.category === "classic_squad");
+  const tokenEligible =
+    !!tournament && tournament.entry_fee > 0 && tournament.category === "battle_royale" &&
+    (profile?.br_tokens ?? 0) > 0;
+
+  const doJoin = async (opts: { couponId?: string | null; useToken?: boolean }) => {
+    if (!tournament) return;
+    setPromptOpen(false);
+    playSound("pulse");
+    setJoining(true);
+    const { error } = await (supabase.rpc as any)("join_tournament", {
+      _tournament_id: tournament.id,
+      _coupon_id: opts.couponId ?? null,
+      _use_br_token: !!opts.useToken,
+    });
+    setJoining(false);
+    if (error) { toast.error(error.message || "Unable to join"); return; }
+    toast.success("Slot secured!");
+    setJoined(true);
+    setTimeout(() => navigate(`/tournament/${tournament.id}`, { replace: true }), 500);
   };
 
   const confirmJoin = async () => {
@@ -86,15 +125,10 @@ const TournamentSlots = () => {
       setTournament((t) => t ? { ...t, joined_players_count: current?.joined_players_count ?? t.joined_players_count } : t);
       return;
     }
-    playSound("pulse");
-    setJoining(true);
-    const { error } = await (supabase.rpc as any)("join_tournament", { _tournament_id: tournament.id });
-    setJoining(false);
-    if (error) { toast.error(error.message || "Unable to join"); return; }
-    toast.success("Slot secured!");
-    setJoined(true);
-    setTimeout(() => navigate(`/tournament/${tournament.id}`, { replace: true }), 500);
+    if (couponEligible || tokenEligible) { setPromptOpen(true); return; }
+    doJoin({});
   };
+
 
   if (!tournament) {
     return (
@@ -243,7 +277,21 @@ const TournamentSlots = () => {
         slotNumber={selectedSlot}
         onClick={confirmJoin}
       />
+
+      <CouponPrompt
+        open={promptOpen}
+        onOpenChange={setPromptOpen}
+        discountPercent={couponEligible ? coupon!.discount_percent : null}
+        entryFee={tournament.entry_fee}
+        brTokens={profile?.br_tokens ?? 0}
+        tokenEligible={tokenEligible}
+        accent={accent}
+        onApplyCoupon={() => doJoin({ couponId: coupon?.id })}
+        onUseToken={() => doJoin({ useToken: true })}
+        onSkip={() => doJoin({})}
+      />
     </div>
+
   );
 };
 

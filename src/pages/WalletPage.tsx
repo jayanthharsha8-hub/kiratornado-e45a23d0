@@ -44,29 +44,41 @@ const WalletPage = () => {
   const { user } = useAuth();
   const [coins, setCoins] = useState(0);
   const [bonusCoins, setBonusCoins] = useState(0);
+  const [brTokens, setBrTokens] = useState(0);
+  const [coupons, setCoupons] = useState<{ id: string; discount_percent: number }[]>([]);
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("coins,bonus_coins" as any).eq("id", user.id).maybeSingle()
+    supabase.from("profiles").select("coins,bonus_coins,br_tokens" as any).eq("id", user.id).maybeSingle()
       .then(({ data }: any) => {
         if (data) {
           setCoins(data.coins ?? 0);
           setBonusCoins(data.bonus_coins ?? 0);
+          setBrTokens(data.br_tokens ?? 0);
         }
       });
+    (supabase.from("user_coupons" as any) as any)
+      .select("id,discount_percent")
+      .eq("user_id", user.id)
+      .is("used_at", null)
+      .order("created_at", { ascending: false })
+      .then(({ data }: any) => setCoupons(data ?? []));
     (supabase.from("transactions" as any) as any)
       .select("id,type,amount,message,status,created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(4)
       .then(({ data }: { data: WalletTransaction[] | null }) => setTransactions(data ?? []));
+
     const channel = supabase
       .channel(`wallet-balance-${user.id}`)
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles", filter: `id=eq.${user.id}` }, (payload) => {
-        const n = payload.new as { coins: number; bonus_coins?: number };
+        const n = payload.new as { coins: number; bonus_coins?: number; br_tokens?: number };
         setCoins(n.coins);
         if (typeof n.bonus_coins === "number") setBonusCoins(n.bonus_coins);
+        if (typeof n.br_tokens === "number") setBrTokens(n.br_tokens);
+
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -175,6 +187,42 @@ const WalletPage = () => {
             </div>
           </div>
         </CyberFrame>
+
+        {/* BR TOKENS & COUPONS */}
+        <section className="grid grid-cols-2 gap-3">
+          <CyberFrame>
+            <div className="text-center">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">BR Tokens</p>
+              <p className="mt-1 font-display text-2xl font-black text-white" style={{ textShadow: "0 0 16px rgba(0,217,255,0.8)" }}>
+                {brTokens}
+              </p>
+              <p className="mt-0.5 text-[8px] uppercase tracking-[0.16em] text-white/40">Battle Royale only • Max 2/day</p>
+            </div>
+          </CyberFrame>
+          <CyberFrame>
+            <div className="text-center">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">Coupons</p>
+              {coupons.length === 0 ? (
+                <p className="mt-2 text-[10px] text-white/45">No coupons yet</p>
+              ) : (
+                <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+                  {coupons.slice(0, 4).map((c) => (
+                    <span
+                      key={c.id}
+                      className="rounded-full px-2 py-0.5 text-[9px] font-bold"
+                      style={{ border: "1px solid rgba(0,217,255,0.5)", color: "#00D9FF", background: "rgba(0,217,255,0.08)" }}
+                    >
+                      {c.discount_percent}% OFF
+                    </span>
+                  ))}
+                </div>
+              )}
+              <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-white/40">One-time use</p>
+            </div>
+          </CyberFrame>
+        </section>
+
+
 
         {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">

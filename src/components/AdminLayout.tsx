@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, Trophy, Users, Wallet, Bell, LogOut, ChevronLeft, ChevronRight, Home, Award, Shield, Images, UserCircle2,
+  LayoutDashboard, Trophy, Users, Wallet, Bell, LogOut, ChevronLeft, ChevronRight, Home, Award, Shield, Images, UserCircle2, Flame,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,7 @@ const NAV = [
   { to: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/admin/tournaments", icon: Trophy, label: "Tournaments" },
   { to: "/admin/banners", icon: Images, label: "Banners" },
+  { to: "/admin/streak", icon: Flame, label: "Daily Streak" },
   { to: "/admin/avatars", icon: UserCircle2, label: "Profile Pics" },
   { to: "/admin/players", icon: Users, label: "Players" },
   { to: "/admin/wallet", icon: Wallet, label: "Wallet" },
@@ -18,6 +19,7 @@ const NAV = [
   { to: "/admin/reports", icon: Shield, label: "Reports" },
   { to: "/admin/notifications", icon: Bell, label: "Notifications" },
 ];
+
 
 export const AdminLayout = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
