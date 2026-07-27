@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      br_token_uses: {
+        Row: {
+          created_at: string
+          id: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       category_card_images: {
         Row: {
           card_image_url: string | null
@@ -354,6 +375,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bonus_coins: number
+          br_tokens: number
           coins: number
           created_at: string
           ff_uid: string
@@ -372,6 +394,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bonus_coins?: number
+          br_tokens?: number
           coins?: number
           created_at?: string
           ff_uid: string
@@ -390,6 +413,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bonus_coins?: number
+          br_tokens?: number
           coins?: number
           created_at?: string
           ff_uid?: string
@@ -463,6 +487,54 @@ export type Database = {
           reported_user_id?: string
           reporter_id?: string
           status?: Database["public"]["Enums"]["report_status"]
+        }
+        Relationships: []
+      }
+      streak_rewards: {
+        Row: {
+          bonus_coins: number
+          br_tokens: number
+          created_at: string
+          day: number
+          description: string
+          discount_percent: number
+          enabled: boolean
+          id: string
+          image_url: string | null
+          title: string
+          unlock_days: number | null
+          unlock_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          bonus_coins?: number
+          br_tokens?: number
+          created_at?: string
+          day: number
+          description?: string
+          discount_percent?: number
+          enabled?: boolean
+          id?: string
+          image_url?: string | null
+          title: string
+          unlock_days?: number | null
+          unlock_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bonus_coins?: number
+          br_tokens?: number
+          created_at?: string
+          day?: number
+          description?: string
+          discount_percent?: number
+          enabled?: boolean
+          id?: string
+          image_url?: string | null
+          title?: string
+          unlock_days?: number | null
+          unlock_key?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -633,6 +705,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_coupons: {
+        Row: {
+          created_at: string
+          discount_percent: number
+          id: string
+          source: string
+          used_at: string | null
+          used_on_tournament: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          discount_percent: number
+          id?: string
+          source?: string
+          used_at?: string | null
+          used_on_tournament?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          discount_percent?: number
+          id?: string
+          source?: string
+          used_at?: string | null
+          used_on_tournament?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -650,6 +752,63 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_streaks: {
+        Row: {
+          created_at: string
+          current_day: number
+          cycles_completed: number
+          last_claim_at: string | null
+          longest_streak: number
+          prestige_unlocked: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_day?: number
+          cycles_completed?: number
+          last_claim_at?: string | null
+          longest_streak?: number
+          prestige_unlocked?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_day?: number
+          cycles_completed?: number
+          last_claim_at?: string | null
+          longest_streak?: number
+          prestige_unlocked?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_unlocks: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          unlock_key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          unlock_key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          unlock_key?: string
           user_id?: string
         }
         Relationships: []
@@ -709,6 +868,7 @@ export type Database = {
         }
         Returns: Json
       }
+      claim_daily_streak: { Args: never; Returns: Json }
       ensure_player_account: { Args: never; Returns: Json }
       has_role: {
         Args: {
@@ -717,7 +877,16 @@ export type Database = {
         }
         Returns: boolean
       }
-      join_tournament: { Args: { _tournament_id: string }; Returns: Json }
+      join_tournament:
+        | { Args: { _tournament_id: string }; Returns: Json }
+        | {
+            Args: {
+              _coupon_id?: string
+              _tournament_id: string
+              _use_br_token?: boolean
+            }
+            Returns: Json
+          }
       request_withdrawal: {
         Args: {
           _amount: number
