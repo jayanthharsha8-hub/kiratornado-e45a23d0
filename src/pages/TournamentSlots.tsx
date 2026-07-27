@@ -71,8 +71,41 @@ const TournamentSlots = () => {
       return;
     }
 
-    const { data: prof } = await supabase.from("profiles").select("coins,player_level").eq("id", user.id).maybeSingle();
+    const { data: prof } = await supabase.from("profiles").select("coins,player_level,br_tokens" as any).eq("id", user.id).maybeSingle();
     if (prof) setProfile(prof as any);
+
+    const { data: cp } = await (supabase.from("user_coupons" as any) as any)
+      .select("id,discount_percent")
+      .eq("user_id", user.id)
+      .is("used_at", null)
+      .order("discount_percent", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    setCoupon((cp as Coupon) ?? null);
+  };
+
+  const couponEligible =
+    !!coupon && !!tournament && tournament.entry_fee > 0 &&
+    (tournament.category === "battle_royale" || tournament.category === "classic_squad");
+  const tokenEligible =
+    !!tournament && tournament.entry_fee > 0 && tournament.category === "battle_royale" &&
+    (profile?.br_tokens ?? 0) > 0;
+
+  const doJoin = async (opts: { couponId?: string | null; useToken?: boolean }) => {
+    if (!tournament) return;
+    setPromptOpen(false);
+    playSound("pulse");
+    setJoining(true);
+    const { error } = await (supabase.rpc as any)("join_tournament", {
+      _tournament_id: tournament.id,
+      _coupon_id: opts.couponId ?? null,
+      _use_br_token: !!opts.useToken,
+    });
+    setJoining(false);
+    if (error) { toast.error(error.message || "Unable to join"); return; }
+    toast.success("Slot secured!");
+    setJoined(true);
+    setTimeout(() => navigate(`/tournament/${tournament.id}`, { replace: true }), 500);
   };
 
   const confirmJoin = async () => {
@@ -92,15 +125,10 @@ const TournamentSlots = () => {
       setTournament((t) => t ? { ...t, joined_players_count: current?.joined_players_count ?? t.joined_players_count } : t);
       return;
     }
-    playSound("pulse");
-    setJoining(true);
-    const { error } = await (supabase.rpc as any)("join_tournament", { _tournament_id: tournament.id });
-    setJoining(false);
-    if (error) { toast.error(error.message || "Unable to join"); return; }
-    toast.success("Slot secured!");
-    setJoined(true);
-    setTimeout(() => navigate(`/tournament/${tournament.id}`, { replace: true }), 500);
+    if (couponEligible || tokenEligible) { setPromptOpen(true); return; }
+    doJoin({});
   };
+
 
   if (!tournament) {
     return (
