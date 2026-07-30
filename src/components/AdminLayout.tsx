@@ -12,6 +12,7 @@ const NAV = [
   { to: "/admin/tournaments", icon: Trophy, label: "Tournaments" },
   { to: "/admin/banners", icon: Images, label: "Banners" },
   { to: "/admin/streak", icon: Flame, label: "Daily Streak" },
+  { to: "/admin/coin-store", icon: Coins, label: "Coin Store" },
   { to: "/admin/avatars", icon: UserCircle2, label: "Profile Pics" },
   { to: "/admin/players", icon: Users, label: "Players" },
   { to: "/admin/wallet", icon: Wallet, label: "Wallet" },
