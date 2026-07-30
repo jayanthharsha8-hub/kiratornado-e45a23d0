@@ -86,13 +86,6 @@ const WalletPage = () => {
 
   const go = (path: string) => { playSound("tick"); navigate(path); };
 
-  const addCoins = async (amount: number) => {
-    if (!user) return;
-    playSound("tick");
-    const { error } = await supabase.from("wallet_requests").insert({ user_id: user.id, type: "add", amount });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Coin request sent to admin");
-  };
 
   const inviteFriend = async () => {
     playSound("tick");
@@ -227,7 +220,7 @@ const WalletPage = () => {
         {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">
           {[
-            { label: "Add Coins", icon: Plus, onClick: () => addCoins(30) },
+            { label: "Add Coins", icon: Plus, onClick: () => go("/coin-store") },
             { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
           ].map(({ label, icon: Icon, onClick }) => (
             <button key={label} onClick={onClick} className="active:scale-[0.97] transition w-full">

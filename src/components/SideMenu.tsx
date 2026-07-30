@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { LogOut, MessageSquare, User, LifeBuoy, Send, Bell, Flame } from "lucide-react";
+import { LogOut, MessageSquare, User, LifeBuoy, Send, Bell, Flame, Coins } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
@@ -53,6 +53,8 @@ export const SideMenu = ({ children }: { children: React.ReactNode }) => {
             <nav className="space-y-2">
               <MenuBtn icon={<User className="h-4 w-4" />} label="My Profile" onClick={() => { setOpen(false); navigate("/profile"); }} />
               <MenuBtn icon={<Flame className="h-4 w-4" />} label="Daily Streak" onClick={() => { setOpen(false); navigate("/daily-streak"); }} />
+              <MenuBtn icon={<Coins className="h-4 w-4" />} label="Coin Store" onClick={() => { setOpen(false); navigate("/coin-store"); }} />
+
 
               <MenuBtn icon={<Bell className="h-4 w-4" />} label="Notifications" onClick={() => setView("notifications")} badge={notifs.length > 0 ? notifs.length : undefined} />
               <MenuBtn icon={<LifeBuoy className="h-4 w-4" />} label="Customer Support" onClick={() => setView("support")} />

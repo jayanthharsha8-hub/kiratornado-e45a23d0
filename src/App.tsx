@@ -30,8 +30,10 @@ import WalletUpi from "./pages/WalletUpi";
 import TransactionHistory from "./pages/TransactionHistory";
 import HunterChat from "./pages/HunterChat";
 import DailyStreak from "./pages/DailyStreak";
+import CoinStore from "./pages/CoinStore";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminStreak from "./pages/admin/StreakAdmin";
+import AdminCoinStore from "./pages/admin/CoinStoreAdmin";
 
 import AdminTournaments from "./pages/admin/Tournaments";
 import AdminBanners from "./pages/admin/Banners";
@@ -81,9 +83,13 @@ const App = () => (
             <Route path="/hunter-chat" element={<ProtectedRoute><HunterChat /></ProtectedRoute>} />
             <Route path="/daily-streak" element={<ProtectedRoute><DailyStreak /></ProtectedRoute>} />
 
+            <Route path="/coin-store" element={<ProtectedRoute><CoinStore /></ProtectedRoute>} />
+
             {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
             <Route path="/admin/streak" element={<AdminRoute><AdminLayout><AdminStreak /></AdminLayout></AdminRoute>} />
+            <Route path="/admin/coin-store" element={<AdminRoute><AdminLayout><AdminCoinStore /></AdminLayout></AdminRoute>} />
+
 
             <Route path="/admin/tournaments" element={<AdminRoute><AdminLayout><AdminTournaments /></AdminLayout></AdminRoute>} />
             <Route path="/admin/banners" element={<AdminRoute><AdminLayout><AdminBanners /></AdminLayout></AdminRoute>} />
