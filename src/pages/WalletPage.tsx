@@ -227,7 +227,7 @@ const WalletPage = () => {
         {/* ACTIONS */}
         <section className="grid grid-cols-2 gap-3">
           {[
-            { label: "Add Coins", icon: Plus, onClick: () => addCoins(30) },
+            { label: "Add Coins", icon: Plus, onClick: () => go("/coin-store") },
             { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
           ].map(({ label, icon: Icon, onClick }) => (
             <button key={label} onClick={onClick} className="active:scale-[0.97] transition w-full">
