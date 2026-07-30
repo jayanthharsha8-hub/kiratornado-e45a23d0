@@ -86,13 +86,6 @@ const WalletPage = () => {
 
   const go = (path: string) => { playSound("tick"); navigate(path); };
 
-  const addCoins = async (amount: number) => {
-    if (!user) return;
-    playSound("tick");
-    const { error } = await supabase.from("wallet_requests").insert({ user_id: user.id, type: "add", amount });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Coin request sent to admin");
-  };
 
   const inviteFriend = async () => {
     playSound("tick");
