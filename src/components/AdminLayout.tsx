@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, Trophy, Users, Wallet, Bell, LogOut, ChevronLeft, ChevronRight, Home, Award, Shield, Images, UserCircle2, Flame,
+  LayoutDashboard, Trophy, Users, Wallet, Bell, LogOut, ChevronLeft, ChevronRight, Home, Award, Shield, Images, UserCircle2, Flame, Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
