@@ -30,8 +30,10 @@ import WalletUpi from "./pages/WalletUpi";
 import TransactionHistory from "./pages/TransactionHistory";
 import HunterChat from "./pages/HunterChat";
 import DailyStreak from "./pages/DailyStreak";
+import CoinStore from "./pages/CoinStore";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminStreak from "./pages/admin/StreakAdmin";
+import AdminCoinStore from "./pages/admin/CoinStoreAdmin";
 
 import AdminTournaments from "./pages/admin/Tournaments";
 import AdminBanners from "./pages/admin/Banners";
