@@ -128,6 +128,171 @@ export type Database = {
         }
         Relationships: []
       }
+      coin_offers: {
+        Row: {
+          active: boolean
+          banner_url: string | null
+          bonus_coins: number
+          coins: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          metadata: Json
+          offer_type: string
+          price: number
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          banner_url?: string | null
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          offer_type?: string
+          price?: number
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          banner_url?: string | null
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          metadata?: Json
+          offer_type?: string
+          price?: number
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coin_orders: {
+        Row: {
+          bonus_coins: number
+          coins: number
+          created_at: string
+          id: string
+          item_name: string
+          offer_id: string | null
+          pack_id: string | null
+          price: number
+          status: Database["public"]["Enums"]["wallet_request_status"]
+          updated_at: string
+          upi_ref: string | null
+          user_id: string
+        }
+        Insert: {
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          id?: string
+          item_name: string
+          offer_id?: string | null
+          pack_id?: string | null
+          price?: number
+          status?: Database["public"]["Enums"]["wallet_request_status"]
+          updated_at?: string
+          upi_ref?: string | null
+          user_id: string
+        }
+        Update: {
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          id?: string
+          item_name?: string
+          offer_id?: string | null
+          pack_id?: string | null
+          price?: number
+          status?: Database["public"]["Enums"]["wallet_request_status"]
+          updated_at?: string
+          upi_ref?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coin_orders_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "coin_offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coin_orders_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "coin_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coin_packs: {
+        Row: {
+          accent: string | null
+          active: boolean
+          badge: string | null
+          banner_url: string | null
+          bonus_coins: number
+          coins: number
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json
+          name: string
+          pack_type: string
+          price: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          accent?: string | null
+          active?: boolean
+          badge?: string | null
+          banner_url?: string | null
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          name: string
+          pack_type?: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          accent?: string | null
+          active?: boolean
+          badge?: string | null
+          banner_url?: string | null
+          bonus_coins?: number
+          coins?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json
+          name?: string
+          pack_type?: string
+          price?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feedback: {
         Row: {
           created_at: string
@@ -861,6 +1026,13 @@ export type Database = {
         Args: { _amount: number; _direction: number; _user_id: string }
         Returns: Json
       }
+      admin_handle_coin_order: {
+        Args: {
+          _order_id: string
+          _status: Database["public"]["Enums"]["wallet_request_status"]
+        }
+        Returns: Json
+      }
       admin_handle_wallet_request: {
         Args: {
           _request_id: string
@@ -869,6 +1041,10 @@ export type Database = {
         Returns: Json
       }
       claim_daily_streak: { Args: never; Returns: Json }
+      create_coin_order: {
+        Args: { _offer_id?: string; _pack_id?: string; _upi_ref?: string }
+        Returns: Json
+      }
       ensure_player_account: { Args: never; Returns: Json }
       has_role: {
         Args: {
