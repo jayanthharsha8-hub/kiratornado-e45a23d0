@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, RefreshCw, ChevronRight, Share2, Check, Users, Sparkles, ScrollText } from "lucide-react";
+import { ArrowLeft, Plus, RefreshCw, ChevronRight, Share2, Check, Users, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Particles } from "@/components/Particles";
@@ -35,7 +35,7 @@ const CyberFrame = ({ children, className = "", padded = true }: { children: Rea
         style={{ borderColor: "#00D9FF", filter: "drop-shadow(0 0 4px #00D9FF)" }}
       />
     ))}
-    <div className={`${padded ? "p-4" : ""} h-full w-full`}>{children}</div>
+    <div className={`${padded ? "p-3" : ""} h-full w-full`}>{children}</div>
   </div>
 );
 
@@ -104,7 +104,7 @@ const WalletPage = () => {
   const formattedCoins = coins.toLocaleString();
 
   return (
-    <div className="wallet-theme relative min-h-screen bg-[#020617] pb-24 overflow-hidden">
+    <div className="wallet-theme relative min-h-screen bg-[#020617] pb-20 overflow-hidden">
       <Particles />
 
       {/* HERO BANNER — edge-to-edge, header overlays artwork */}
@@ -137,17 +137,12 @@ const WalletPage = () => {
             >
               Wallet
             </h1>
-            <button
-              onClick={() => go("/wallet/history")}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur-md transition hover:bg-white/10"
-            >
-              <ScrollText className="h-4 w-4" />
-            </button>
+            <span className="h-9 w-9" aria-hidden />
           </div>
         </header>
       </section>
 
-      <main className="relative z-10 mx-auto max-w-md space-y-2.5 px-4 pt-3">
+      <main className="relative z-10 mx-auto max-w-md space-y-2 px-4 pt-2">
 
 
         {/* TOTAL COINS — cyber frame */}
@@ -159,7 +154,7 @@ const WalletPage = () => {
               <span style={{ background: "linear-gradient(90deg, #00D9FF, transparent)", height: 1, width: 24 }} />
             </div>
             <p
-              className="mt-2 font-display text-[44px] font-black leading-none tracking-wider text-white"
+              className="mt-2 font-display text-[38px] font-black leading-none tracking-wider text-white"
               style={{ textShadow: "0 0 20px rgba(0,217,255,0.9), 0 0 50px rgba(110,91,255,0.5)" }}
             >
               {formattedCoins}
@@ -182,7 +177,7 @@ const WalletPage = () => {
         </CyberFrame>
 
         {/* BR TOKENS & COUPONS */}
-        <section className="grid grid-cols-2 gap-3">
+        <section className="grid grid-cols-2 gap-2.5">
           <CyberFrame>
             <div className="text-center">
               <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/55">BR Tokens</p>
@@ -218,13 +213,13 @@ const WalletPage = () => {
 
 
         {/* ACTIONS */}
-        <section className="grid grid-cols-2 gap-3">
+        <section className="grid grid-cols-2 gap-2.5">
           {[
             { label: "Add Coins", icon: Plus, onClick: () => go("/coin-store") },
             { label: "Withdraw", icon: RefreshCw, onClick: () => go("/wallet/withdraw") },
           ].map(({ label, icon: Icon, onClick }) => (
             <button key={label} onClick={onClick} className="active:scale-[0.97] transition w-full">
-              <CyberFrame padded={false} className="h-14 w-full">
+              <CyberFrame padded={false} className="h-12 w-full">
                 <div className="flex h-full items-center justify-center gap-2">
                   <Icon className="h-4 w-4 shrink-0" style={{ color: "#00D9FF", filter: "drop-shadow(0 0 6px #00D9FF)" }} />
                   <span
@@ -273,7 +268,7 @@ const WalletPage = () => {
           </div>
 
           <div
-            className="mt-3 rounded-lg px-3 py-2.5"
+            className="mt-2 rounded-lg px-3 py-2"
             style={{ border: "1px solid rgba(0,217,255,0.18)", background: "rgba(2,6,23,0.55)" }}
           >
             <div className="flex items-center justify-between gap-1">
@@ -315,7 +310,7 @@ const WalletPage = () => {
         </CyberFrame>
 
         {/* TRANSACTIONS */}
-        <section className="space-y-2 pt-1">
+        <section className="space-y-1.5">
           <div className="flex items-center justify-between px-1">
             <h2 className="font-display text-xs font-bold uppercase tracking-[0.35em] text-white">Transactions</h2>
             <button

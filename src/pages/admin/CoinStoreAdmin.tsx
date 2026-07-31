@@ -20,6 +20,10 @@ type Offer = {
   id: string; title: string; subtitle: string | null; coins: number; bonus_coins: number; price: number;
   banner_url: string | null; offer_type: string; expires_at: string | null; sort_order: number; active: boolean;
 };
+type Settings = {
+  id: string; upi_id: string; qr_image_url: string | null; manual_entry_enabled: boolean;
+  min_deposit_coins: number; coin_rate: number;
+};
 type Order = {
   id: string; user_id: string; item_name: string; coins: number; bonus_coins: number;
   price: number; upi_ref: string | null; status: string; created_at: string;
@@ -39,18 +43,31 @@ export default function CoinStoreAdmin() {
   const [packs, setPacks] = useState<Pack[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const [{ data: p }, { data: o }, { data: r }] = await Promise.all([
+    const [{ data: p }, { data: o }, { data: r }, { data: st }] = await Promise.all([
       db.from("coin_packs").select("*").order("sort_order", { ascending: true }),
       db.from("coin_offers").select("*").order("sort_order", { ascending: true }),
       db.from("coin_orders").select("*").order("created_at", { ascending: false }).limit(50),
+      db.from("store_settings").select("*").limit(1).maybeSingle(),
     ]);
-    setPacks(p ?? []); setOffers(o ?? []); setOrders(r ?? []);
+    setPacks(p ?? []); setOffers(o ?? []); setOrders(r ?? []); setSettings(st ?? null);
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  /* ---------- settings ---------- */
+  const patchSettings = (patch: Partial<Settings>) =>
+    setSettings((prev) => (prev ? { ...prev, ...patch } : prev));
+
+  const saveSettings = async () => {
+    if (!settings) return;
+    const { id, ...rest } = settings;
+    const { error } = await db.from("store_settings").update(rest).eq("id", id);
+    error ? toast.error(error.message) : toast.success("Store settings saved");
+  };
 
   /* ---------- packs ---------- */
   const patchPack = (id: string, patch: Partial<Pack>) =>
@@ -147,6 +164,46 @@ export default function CoinStoreAdmin() {
 
   return (
     <div className="space-y-6">
+      <SystemPanel title="Store Settings" right={<Button size="sm" onClick={saveSettings}><Save className="mr-1 h-3 w-3" /> Save</Button>}>
+        {!settings ? (
+          <p className="text-xs text-muted-foreground">Loading settings…</p>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-4">
+            <div className="md:col-span-2">
+              <Label className="text-[10px] uppercase tracking-widest">UPI ID</Label>
+              <Input value={settings.upi_id} onChange={(e) => patchSettings({ upi_id: e.target.value })} />
+            </div>
+            <div>
+              <Label className="text-[10px] uppercase tracking-widest">Min Deposit (coins)</Label>
+              <Input type="number" value={settings.min_deposit_coins} onChange={(e) => patchSettings({ min_deposit_coins: Number(e.target.value) })} />
+            </div>
+            <div>
+              <Label className="text-[10px] uppercase tracking-widest">Rate (₹ per coin)</Label>
+              <Input type="number" step="0.1" value={settings.coin_rate} onChange={(e) => patchSettings({ coin_rate: Number(e.target.value) })} />
+            </div>
+            <div className="md:col-span-2">
+              <Label className="text-[10px] uppercase tracking-widest">Payment QR Image (optional)</Label>
+              <div className="flex items-center gap-2">
+                {settings.qr_image_url && <img src={settings.qr_image_url} alt="Payment QR" className="h-12 w-12 rounded object-cover" />}
+                <Button size="sm" variant="outline" onClick={() => pickImage((url) => patchSettings({ qr_image_url: url }), "store-qr")}>
+                  <ImagePlus className="mr-1 h-3 w-3" /> Upload
+                </Button>
+                {settings.qr_image_url && (
+                  <Button size="sm" variant="ghost" onClick={() => patchSettings({ qr_image_url: null })}><X className="h-3 w-3" /></Button>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 md:col-span-2">
+              <Switch
+                checked={settings.manual_entry_enabled}
+                onCheckedChange={(v) => { patchSettings({ manual_entry_enabled: v }); db.from("store_settings").update({ manual_entry_enabled: v }).eq("id", settings.id); }}
+              />
+              <span className="text-xs text-muted-foreground">Manual coin entry {settings.manual_entry_enabled ? "enabled" : "disabled"}</span>
+            </div>
+          </div>
+        )}
+      </SystemPanel>
+
       <SystemPanel title="Coin Packs" right={<Button size="sm" onClick={addPack}><Plus className="mr-1 h-3 w-3" /> New Pack</Button>}>
         <p className="mb-3 text-xs text-muted-foreground">Drag cards to reorder — the store updates instantly for players.</p>
         <div className="space-y-3">

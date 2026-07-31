@@ -655,6 +655,36 @@ export type Database = {
         }
         Relationships: []
       }
+      store_settings: {
+        Row: {
+          coin_rate: number
+          id: string
+          manual_entry_enabled: boolean
+          min_deposit_coins: number
+          qr_image_url: string | null
+          updated_at: string
+          upi_id: string
+        }
+        Insert: {
+          coin_rate?: number
+          id?: string
+          manual_entry_enabled?: boolean
+          min_deposit_coins?: number
+          qr_image_url?: string | null
+          updated_at?: string
+          upi_id?: string
+        }
+        Update: {
+          coin_rate?: number
+          id?: string
+          manual_entry_enabled?: boolean
+          min_deposit_coins?: number
+          qr_image_url?: string | null
+          updated_at?: string
+          upi_id?: string
+        }
+        Relationships: []
+      }
       streak_rewards: {
         Row: {
           bonus_coins: number
@@ -1041,10 +1071,20 @@ export type Database = {
         Returns: Json
       }
       claim_daily_streak: { Args: never; Returns: Json }
-      create_coin_order: {
-        Args: { _offer_id?: string; _pack_id?: string; _upi_ref?: string }
-        Returns: Json
-      }
+      create_coin_order:
+        | {
+            Args: { _offer_id?: string; _pack_id?: string; _upi_ref?: string }
+            Returns: Json
+          }
+        | {
+            Args: {
+              _manual_coins?: number
+              _offer_id?: string
+              _pack_id?: string
+              _upi_ref?: string
+            }
+            Returns: Json
+          }
       ensure_player_account: { Args: never; Returns: Json }
       has_role: {
         Args: {

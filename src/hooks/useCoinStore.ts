@@ -32,6 +32,15 @@ export interface CoinOffer {
   active: boolean;
 }
 
+export interface StoreSettings {
+  id: string;
+  upi_id: string;
+  qr_image_url: string | null;
+  manual_entry_enabled: boolean;
+  min_deposit_coins: number;
+  coin_rate: number;
+}
+
 export interface WalletSnapshot {
   coins: number;
   bonus_coins: number;
@@ -44,16 +53,19 @@ export const useCoinStore = () => {
   const { user } = useAuth();
   const [packs, setPacks] = useState<CoinPack[]>([]);
   const [offers, setOffers] = useState<CoinOffer[]>([]);
+  const [settings, setSettings] = useState<StoreSettings | null>(null);
   const [wallet, setWallet] = useState<WalletSnapshot>({ coins: 0, bonus_coins: 0, br_tokens: 0, coupons: [] });
   const [loading, setLoading] = useState(true);
 
   const loadCatalog = useCallback(async () => {
-    const [{ data: p }, { data: o }] = await Promise.all([
+    const [{ data: p }, { data: o }, { data: s }] = await Promise.all([
       db.from("coin_packs").select("*").eq("active", true).order("sort_order", { ascending: true }),
       db.from("coin_offers").select("*").eq("active", true).order("sort_order", { ascending: true }),
+      db.from("store_settings").select("*").limit(1).maybeSingle(),
     ]);
     setPacks((p as CoinPack[]) ?? []);
     setOffers(((o as CoinOffer[]) ?? []).filter((x) => !x.expires_at || new Date(x.expires_at).getTime() > Date.now()));
+    setSettings((s as StoreSettings) ?? null);
     setLoading(false);
   }, []);
 
@@ -77,6 +89,7 @@ export const useCoinStore = () => {
       .channel("coin-store-catalog")
       .on("postgres_changes", { event: "*", schema: "public", table: "coin_packs" }, () => loadCatalog())
       .on("postgres_changes", { event: "*", schema: "public", table: "coin_offers" }, () => loadCatalog())
+      .on("postgres_changes", { event: "*", schema: "public", table: "store_settings" }, () => loadCatalog())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [loadCatalog]);
@@ -93,11 +106,12 @@ export const useCoinStore = () => {
   }, [user, loadWallet]);
 
   const purchase = useCallback(
-    async (args: { packId?: string; offerId?: string; upiRef?: string }) => {
+    async (args: { packId?: string; offerId?: string; manualCoins?: number; upiRef?: string }) => {
       const { data, error } = await db.rpc("create_coin_order", {
         _pack_id: args.packId ?? null,
         _offer_id: args.offerId ?? null,
         _upi_ref: args.upiRef ?? null,
+        _manual_coins: args.manualCoins ?? null,
       });
       if (error) throw error;
       await loadWallet();
@@ -106,7 +120,7 @@ export const useCoinStore = () => {
     [loadWallet]
   );
 
-  return { packs, offers, wallet, loading, purchase, refreshWallet: loadWallet };
+  return { packs, offers, settings, wallet, loading, purchase, refreshWallet: loadWallet };
 };
 
 /** Formats remaining ms as HH:MM:SS. */
