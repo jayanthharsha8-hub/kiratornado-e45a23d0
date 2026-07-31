@@ -89,6 +89,7 @@ export const useCoinStore = () => {
       .channel("coin-store-catalog")
       .on("postgres_changes", { event: "*", schema: "public", table: "coin_packs" }, () => loadCatalog())
       .on("postgres_changes", { event: "*", schema: "public", table: "coin_offers" }, () => loadCatalog())
+      .on("postgres_changes", { event: "*", schema: "public", table: "store_settings" }, () => loadCatalog())
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [loadCatalog]);
