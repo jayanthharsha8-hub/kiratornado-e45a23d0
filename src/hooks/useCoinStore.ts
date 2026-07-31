@@ -106,11 +106,12 @@ export const useCoinStore = () => {
   }, [user, loadWallet]);
 
   const purchase = useCallback(
-    async (args: { packId?: string; offerId?: string; upiRef?: string }) => {
+    async (args: { packId?: string; offerId?: string; manualCoins?: number; upiRef?: string }) => {
       const { data, error } = await db.rpc("create_coin_order", {
         _pack_id: args.packId ?? null,
         _offer_id: args.offerId ?? null,
         _upi_ref: args.upiRef ?? null,
+        _manual_coins: args.manualCoins ?? null,
       });
       if (error) throw error;
       await loadWallet();
@@ -119,7 +120,7 @@ export const useCoinStore = () => {
     [loadWallet]
   );
 
-  return { packs, offers, wallet, loading, purchase, refreshWallet: loadWallet };
+  return { packs, offers, settings, wallet, loading, purchase, refreshWallet: loadWallet };
 };
 
 /** Formats remaining ms as HH:MM:SS. */
