@@ -32,6 +32,15 @@ export interface CoinOffer {
   active: boolean;
 }
 
+export interface StoreSettings {
+  id: string;
+  upi_id: string;
+  qr_image_url: string | null;
+  manual_entry_enabled: boolean;
+  min_deposit_coins: number;
+  coin_rate: number;
+}
+
 export interface WalletSnapshot {
   coins: number;
   bonus_coins: number;
