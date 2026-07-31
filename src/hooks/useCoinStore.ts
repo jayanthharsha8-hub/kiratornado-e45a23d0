@@ -53,16 +53,19 @@ export const useCoinStore = () => {
   const { user } = useAuth();
   const [packs, setPacks] = useState<CoinPack[]>([]);
   const [offers, setOffers] = useState<CoinOffer[]>([]);
+  const [settings, setSettings] = useState<StoreSettings | null>(null);
   const [wallet, setWallet] = useState<WalletSnapshot>({ coins: 0, bonus_coins: 0, br_tokens: 0, coupons: [] });
   const [loading, setLoading] = useState(true);
 
   const loadCatalog = useCallback(async () => {
-    const [{ data: p }, { data: o }] = await Promise.all([
+    const [{ data: p }, { data: o }, { data: s }] = await Promise.all([
       db.from("coin_packs").select("*").eq("active", true).order("sort_order", { ascending: true }),
       db.from("coin_offers").select("*").eq("active", true).order("sort_order", { ascending: true }),
+      db.from("store_settings").select("*").limit(1).maybeSingle(),
     ]);
     setPacks((p as CoinPack[]) ?? []);
     setOffers(((o as CoinOffer[]) ?? []).filter((x) => !x.expires_at || new Date(x.expires_at).getTime() > Date.now()));
+    setSettings((s as StoreSettings) ?? null);
     setLoading(false);
   }, []);
 
