@@ -33,7 +33,7 @@ const CoinStore = () => {
   const payable = Math.ceil(coinsTyped * rate);
   const valid = coinsTyped >= min;
 
-  useEffect(() => { document.title = "Add Coins | Kira Tornado"; }, []);
+  useEffect(() => { document.title = "Add Coins | ZEOX"; }, []);
 
   const liveOffers = useMemo(
     () => offers.filter((o) => !o.expires_at || new Date(o.expires_at).getTime() > Date.now()),

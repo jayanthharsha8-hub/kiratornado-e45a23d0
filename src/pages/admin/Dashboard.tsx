@@ -46,7 +46,7 @@ export default function AdminDashboard() {
         <h1 className="font-display text-2xl font-bold uppercase tracking-widest text-primary text-glow">
           Admin Dashboard
         </h1>
-        <p className="text-xs text-muted-foreground">System overview -- KIRA TORNADO</p>
+        <p className="text-xs text-muted-foreground">System overview -- ZEOX</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">

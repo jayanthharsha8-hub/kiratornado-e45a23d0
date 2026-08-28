@@ -46,7 +46,7 @@ const Onboarding = () => {
     if (!trimmedName) { toast.error("Enter your name"); return; }
     if (!trimmedUid || !/^\d{5,15}$/.test(trimmedUid)) { toast.error("Enter a valid Free Fire UID"); return; }
     if (!Number.isFinite(lvl) || lvl < 1) { toast.error("Enter your current level"); return; }
-    if (lvl < 25) { toast.error("Minimum Level 25 required to join KIRA TORNADO"); return; }
+    if (lvl < 25) { toast.error("Minimum Level 25 required to join ZEOX"); return; }
 
     setSubmitting(true);
     const { error } = await supabase

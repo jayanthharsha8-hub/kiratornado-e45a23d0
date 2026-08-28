@@ -1,3 +1,4 @@
+import zeoxLogo from "@/assets/zeox-logo.png";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,7 +20,6 @@ import {
   MessageSquare,
   ArrowRight,
   Swords,
-  Crown,
   X,
   Sparkles,
 } from "lucide-react";
@@ -44,7 +44,7 @@ const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) =>
     <SideMenu>
       <button aria-label="Open menu" className="flex items-center gap-2" onClick={() => playSound("tick")}>
         <div
-          className="grid place-items-center rounded-full border"
+          className="grid place-items-center rounded-full border overflow-hidden"
           style={{
             width: 38,
             height: 38,
@@ -53,18 +53,19 @@ const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) =>
             boxShadow: "0 0 7px rgba(0,229,255,0.28)",
           }}
         >
-          <Crown className="h-4 w-4 text-cyan-300" strokeWidth={2} />
+          <img src={zeoxLogo} alt="ZEOX" className="h-[30px] w-[30px] object-contain" />
         </div>
         <div className="leading-none">
           <div
             className="font-display font-black uppercase text-white"
-            style={{ fontSize: 14, letterSpacing: "0.06em", textShadow: "0 0 6px rgba(0,229,255,0.35)" }}
+            style={{ fontSize: 14, letterSpacing: "0.22em", textShadow: "0 0 6px rgba(0,229,255,0.35)" }}
           >
-            KIRA
+            ZEOX
           </div>
           <div className="font-display font-bold uppercase text-white/60" style={{ fontSize: 8, letterSpacing: "0.26em" }}>
-            TORNADO
+            ESPORTS
           </div>
+
         </div>
       </button>
     </SideMenu>

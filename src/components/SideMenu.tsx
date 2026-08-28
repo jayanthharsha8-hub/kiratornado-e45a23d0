@@ -91,7 +91,7 @@ export const SideMenu = ({ children }: { children: React.ReactNode }) => {
           {view === "support" && (
             <div className="panel rounded-sm p-4 space-y-2 text-sm">
               <p className="text-foreground/90">Need help? Reach our support team:</p>
-              <p className="text-primary text-glow-soft">support@kiratornado.app</p>
+              <p className="text-primary text-glow-soft">support@zeox.gg</p>
               <p className="text-xs text-muted-foreground">We reply within 24 hours.</p>
               <Button variant="ghost" onClick={() => setView("menu")} className="mt-3 w-full text-primary">Back</Button>
             </div>

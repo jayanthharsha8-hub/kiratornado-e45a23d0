@@ -1,6 +1,6 @@
-# KIRA TORNADO V3
+# ZEOX V3
 
-Create a mobile-first web application called "KIRA TORNADO" for Free Fire tournaments with a Solo Leveling inspired UI/UX.
+Create a mobile-first web application called "ZEOX" for Free Fire tournaments with a Solo Leveling inspired UI/UX.
 
 
 
@@ -22,7 +22,7 @@ APP FLOW:
 
 1. SPLASH SCREEN:
 
-- Show app logo "KIRA TORNADO"
+- Show app logo "ZEOX"
 
 - Black background with blue glow animation
 
@@ -72,7 +72,7 @@ WELCOME BANNER:
 
 - Free Fire banner image
 
-- Text: "Welcome to KIRA TORNADO" (white text with blue glow)
+- Text: "Welcome to ZEOX" (white text with blue glow)
 
 
 

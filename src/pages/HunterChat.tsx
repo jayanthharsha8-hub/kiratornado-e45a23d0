@@ -289,7 +289,7 @@ const HunterChat = () => {
         id: `bot-${Date.now()}`,
         user_id: null,
         username: "kira_system",
-        player_name: "KIRA SYSTEM",
+        player_name: "ZEOX SYSTEM",
         player_level: 0,
         avatar_url: null,
         content: violation,
@@ -466,7 +466,7 @@ const HunterChat = () => {
           <Shield className="h-3 w-3 shrink-0" style={{ color: PURPLE }} />
           <p className="flex-1 text-[10.5px] text-white/70">Be respectful, Hunters. Messages auto-delete after 30 min.</p>
           <span className="font-display text-[8.5px] font-black uppercase tracking-[0.18em]" style={{ color: PURPLE }}>
-            KIRA
+            ZEOX
           </span>
         </div>
       </div>
@@ -618,7 +618,7 @@ const MessageGroup = ({ messages }: { messages: ChatMessage[] }) => {
                 className="font-display text-[11.5px] font-black uppercase tracking-[0.08em]"
                 style={{ color: "#f3e8ff", textShadow: "0 0 10px rgba(168,85,247,0.8)" }}
               >
-                KIRA SYSTEM
+                ZEOX SYSTEM
               </span>
               <span
                 className="inline-flex items-center gap-0.5 rounded-md px-1.5 py-px font-display text-[8px] font-black uppercase tracking-[0.18em] text-white"

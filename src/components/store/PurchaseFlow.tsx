@@ -16,7 +16,7 @@ export interface StoreItem {
 
 const qrFor = (upiId: string, amount: number) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=220x220&bgcolor=020617&color=00D9FF&qzone=2&data=${encodeURIComponent(
-    `upi://pay?pa=${upiId}&pn=KIRA%20TORNADO&cu=INR&am=${amount}`
+    `upi://pay?pa=${upiId}&pn=ZEOX&cu=INR&am=${amount}`
   )}`;
 
 type Step = "summary" | "payment" | "utr" | "success";
