@@ -12,11 +12,7 @@ import {
   Tag,
   Gift,
   Headphones,
-  Trophy,
   ChevronRight,
-  Users,
-  Gem,
-  Clock,
   MessageSquare,
   ArrowRight,
   Swords,
@@ -28,7 +24,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { Particles } from "@/components/Particles";
 import { NeonCard, SmartImage, SectionHeader, GlowTone } from "@/components/home/primitives";
 import { CATEGORY_META, Category } from "@/lib/tournaments";
-import { useHomeContent, HomeTournament, HomePopup } from "@/hooks/useHomeContent";
+import { useHomeContent, HomePopup } from "@/hooks/useHomeContent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { playSound } from "@/hooks/useSound";
@@ -319,7 +315,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [coins, setCoins] = useState(0);
   const [unread, setUnread] = useState(0);
-  const { banners, tournaments, categories, offers, popups } = useHomeContent();
+  const { banners, categories, offers, popups } = useHomeContent();
   const [dismissedPopup, setDismissedPopup] = useState(false);
 
   const popup = useMemo(() => popups[0], [popups]);
