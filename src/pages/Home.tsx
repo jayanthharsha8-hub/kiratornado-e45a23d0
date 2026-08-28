@@ -1,3 +1,4 @@
+import zeoxLogo from "@/assets/zeox-logo.png.asset.json";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,7 +20,6 @@ import {
   MessageSquare,
   ArrowRight,
   Swords,
-  Crown,
   X,
   Sparkles,
 } from "lucide-react";
