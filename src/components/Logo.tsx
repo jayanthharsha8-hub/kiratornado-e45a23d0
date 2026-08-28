@@ -1,10 +1,10 @@
-import zeoxLogo from "@/assets/zeox-logo.png.asset.json";
+import zeoxLogo from "@/assets/zeox-logo.png";
 import { cn } from "@/lib/utils";
 
 export const Logo = ({ size = 36, withText = false, className }: { size?: number; withText?: boolean; className?: string }) => (
   <div className={cn("flex items-center gap-2", className)}>
     <img
-      src={zeoxLogo.url}
+      src={zeoxLogo}
       alt="ZEOX logo"
       width={size}
       height={size}

@@ -1,4 +1,4 @@
-import zeoxLogo from "@/assets/zeox-logo.png.asset.json";
+import zeoxLogo from "@/assets/zeox-logo.png";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -53,7 +53,7 @@ const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) =>
             boxShadow: "0 0 7px rgba(0,229,255,0.28)",
           }}
         >
-          <img src={zeoxLogo.url} alt="ZEOX" className="h-[30px] w-[30px] object-contain" />
+          <img src={zeoxLogo} alt="ZEOX" className="h-[30px] w-[30px] object-contain" />
         </div>
         <div className="leading-none">
           <div
