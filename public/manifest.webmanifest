@@ -1,7 +1,7 @@
 {
   "name": "ZEOX",
   "short_name": "ZEOX",
-  "description": "Free Fire tournaments — Solo Leveling system UI.",
+  "description": "ZEOX — premium Free Fire tournament platform.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
