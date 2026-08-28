@@ -59,7 +59,7 @@ const ResetPassword = () => {
       <div className="mx-auto flex max-w-md flex-col gap-6">
         <div className="flex flex-col items-center gap-2 pt-6">
           <Logo size={64} />
-          <h1 className="font-display text-xl font-black uppercase tracking-[0.25em] text-primary text-glow">KIRA TORNADO</h1>
+          <h1 className="font-display text-xl font-black uppercase tracking-[0.25em] text-primary text-glow">ZEOX</h1>
           <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">[ SET NEW PASSWORD ]</p>
         </div>
 

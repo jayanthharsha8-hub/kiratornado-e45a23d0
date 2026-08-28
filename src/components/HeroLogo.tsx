@@ -1,7 +1,7 @@
 import wordmark from "@/assets/kira-tornado-wordmark.png";
 import { cn } from "@/lib/utils";
 
-/** Transparent KIRA TORNADO emblem with soft cyan aura. */
+/** Transparent ZEOX emblem with soft cyan aura. */
 export const HeroLogo = ({ className, size = 280 }: { className?: string; size?: number }) => (
   <div className={cn("relative mx-auto flex items-center justify-center", className)} style={{ width: size }}>
     <div
@@ -11,7 +11,7 @@ export const HeroLogo = ({ className, size = 280 }: { className?: string; size?:
     />
     <img
       src={wordmark}
-      alt="KIRA TORNADO — Esports Platform"
+      alt="ZEOX — Esports Platform"
       className="w-full h-auto select-none mix-blend-screen"
       draggable={false}
       style={{ background: "transparent" }}

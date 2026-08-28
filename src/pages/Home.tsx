@@ -60,7 +60,7 @@ const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) =>
             className="font-display font-black uppercase text-white"
             style={{ fontSize: 14, letterSpacing: "0.06em", textShadow: "0 0 6px rgba(0,229,255,0.35)" }}
           >
-            KIRA
+            ZEOX
           </div>
           <div className="font-display font-bold uppercase text-white/60" style={{ fontSize: 8, letterSpacing: "0.26em" }}>
             TORNADO

@@ -90,10 +90,10 @@ const WalletPage = () => {
   const inviteFriend = async () => {
     playSound("tick");
     const link = `${window.location.origin}/register?ref=${user?.id ?? ""}`;
-    const text = "Join me on Kira Tornado — Hunt. Play. Dominate.";
+    const text = "Join me on ZEOX — Hunt. Play. Dominate.";
     try {
       if (navigator.share) {
-        await navigator.share({ title: "Kira Tornado", text, url: link });
+        await navigator.share({ title: "ZEOX", text, url: link });
       } else {
         await navigator.clipboard.writeText(link);
         toast.success("Invite link copied");
