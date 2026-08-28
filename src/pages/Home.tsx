@@ -263,96 +263,6 @@ const QuickActions = () => (
   </NeonCard>
 );
 
-/* ---------------- Tournament Card ---------------- */
-const TOURNEY_GLOWS: GlowTone[] = ["red", "purple", "blue"];
-const TOURNEY_COLORS = ["#ff5c5c", "#c084fc", "#00e5ff"];
-
-const TournamentCard = ({
-  tournament,
-  index,
-  onOpen,
-}: {
-  tournament: HomeTournament;
-  index: number;
-  onOpen: () => void;
-}) => {
-  const color = TOURNEY_COLORS[index % TOURNEY_COLORS.length];
-  const glow = TOURNEY_GLOWS[index % TOURNEY_GLOWS.length];
-  const time = new Date(tournament.scheduled_at).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const mode = tournament.subtitle || CATEGORY_META[tournament.category]?.subtitle || "";
-
-  return (
-    <NeonCard glow={glow} radius={16} onClick={onOpen} className="overflow-hidden" style={{ height: 205 }}>
-      <div className="relative" style={{ height: 92 }}>
-        <SmartImage
-          src={tournament.banner_url}
-          alt={tournament.title}
-          placeholderLabel="Match"
-          className="absolute inset-0"
-        />
-        <span
-          className="absolute left-1.5 top-1.5 grid place-items-center rounded font-display font-black uppercase text-white"
-          style={{
-            width: 32,
-            height: 16,
-            fontSize: 8,
-            letterSpacing: "0.1em",
-            background: "linear-gradient(135deg, #ff2d55, #b91c1c)",
-            boxShadow: "0 0 6px rgba(255,45,85,0.4)",
-          }}
-        >
-          HOT
-        </span>
-      </div>
-
-      <div className="flex flex-col gap-1" style={{ padding: PAD, paddingTop: 8, paddingBottom: 0 }}>
-        <h4 className="truncate font-display font-black uppercase text-white" style={{ fontSize: 11 }}>
-          {tournament.title}
-        </h4>
-        <p
-          className="truncate font-display font-semibold uppercase"
-          style={{ fontSize: 8, letterSpacing: "0.1em", color }}
-        >
-          {mode}
-        </p>
-        <div className="mt-0.5 flex items-center justify-between text-white/75">
-          <span className="flex items-center gap-0.5" style={{ fontSize: 8 }}>
-            <Users className="h-2.5 w-2.5" /> {tournament.joined_players_count}/{tournament.total_slots}
-          </span>
-          <span className="flex items-center gap-0.5" style={{ fontSize: 8 }}>
-            <Gem className="h-2.5 w-2.5 text-cyan-300" /> {tournament.entry_fee}
-          </span>
-        </div>
-        <span className="flex items-center gap-0.5 text-white/60" style={{ fontSize: 8 }}>
-          <Clock className="h-2.5 w-2.5" /> {time}
-        </span>
-      </div>
-
-      <div
-        className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-center border-t"
-        style={{
-          height: 38,
-          borderColor: `${color}44`,
-          background: `linear-gradient(180deg, transparent, ${color}0f)`,
-        }}
-      >
-        <span className="font-display text-[7px] font-bold uppercase tracking-[0.24em] text-white/55">
-          Win Prize
-        </span>
-        <span
-          className="font-display font-black"
-          style={{ fontSize: 14, color, textShadow: `0 0 6px ${color}55` }}
-        >
-          ₹{tournament.prize_pool.toLocaleString()}
-        </span>
-      </div>
-    </NeonCard>
-  );
-};
-
 /* ---------------- Categories ---------------- */
 const CATEGORY_STYLE: Record<Category, { glow: GlowTone; color: string }> = {
   free_match: { glow: "blue", color: "#00e5ff" },
@@ -444,34 +354,6 @@ const Home = () => {
 
         <div style={{ height: SECTION_GAP }} />
         <QuickActions />
-
-        <div style={{ height: SECTION_GAP }} />
-        <section>
-          <SectionHeader
-            icon={Trophy}
-            title="Top Tournaments"
-            actionLabel="View All"
-            onAction={() => navigate("/tournaments")}
-          />
-          {tournaments.length ? (
-            <div className="grid" style={{ gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: CARD_GAP }}>
-              {tournaments.slice(0, 3).map((t, i) => (
-                <TournamentCard
-                  key={t.id}
-                  tournament={t}
-                  index={i}
-                  onOpen={() => navigate(`/tournament/${t.id}`)}
-                />
-              ))}
-            </div>
-          ) : (
-            <NeonCard glow="blue" radius={16} className="grid place-items-center" style={{ height: 72 }}>
-              <span className="font-display text-[10px] uppercase tracking-[0.2em] text-white/40">
-                No tournaments yet
-              </span>
-            </NeonCard>
-          )}
-        </section>
 
         <div style={{ height: SECTION_GAP }} />
         <section>
