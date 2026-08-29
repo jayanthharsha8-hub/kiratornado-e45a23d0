@@ -10,6 +10,7 @@ export default {
       fontFamily: {
         display: ['Oxanium', 'system-ui', 'sans-serif'],
         body: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        mono: ['Oxanium', 'ui-monospace', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
