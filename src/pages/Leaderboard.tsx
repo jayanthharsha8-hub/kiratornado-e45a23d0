@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, Crown, Gift, Globe, ChevronDown, Trophy, Medal, Award } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import zeoxLeaderboardLogo from "@/assets/zeox-leaderboard.png.asset.json";
+import zeoxLeaderboardLogo from "@/assets/zeox-leaderboard.png";
 import { cn } from "@/lib/utils";
 
 interface LeaderboardEntry {
