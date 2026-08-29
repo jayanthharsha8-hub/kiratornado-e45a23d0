@@ -1,8 +1,6 @@
-import zeoxLogo from "@/assets/zeox-logo.png";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Menu,
   Wallet,
   Bell,
   Plus,
@@ -19,7 +17,6 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
-import { SideMenu } from "@/components/SideMenu";
 import { BottomNav } from "@/components/BottomNav";
 import { Particles } from "@/components/Particles";
 import { NeonCard, SmartImage, SectionHeader, GlowTone } from "@/components/home/primitives";
