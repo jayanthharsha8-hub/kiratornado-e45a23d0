@@ -11,10 +11,11 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   ArrowLeft, Edit2, Shield, Swords, Target, Trophy, Award, Crosshair, Crown,
-  BadgeCheck, Copy, Coins, ChevronRight, Settings, Calendar, Clock, Star, MessageCircle,
+  BadgeCheck, Copy, Coins, ChevronRight, Settings, Menu, Calendar, Clock, Star, MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { ReportDialog } from "@/components/ReportDialog";
+import { SideMenu } from "@/components/SideMenu";
 import { BottomNav } from "@/components/BottomNav";
 import { AvatarPickerDialog } from "@/components/AvatarPickerDialog";
 
@@ -117,9 +118,19 @@ const ProfilePage = () => {
             <ArrowLeft className="h-4 w-4" /><span className="text-xs uppercase tracking-widest">Back</span>
           </button>
           <Logo size={26} />
-          <button onClick={() => setReportOpen(true)} aria-label="Settings" className="rounded border border-primary/40 bg-primary/10 p-1.5 text-primary hover:bg-primary/20">
-            <Settings className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <SideMenu>
+              <button
+                aria-label="Menu"
+                className="grid h-7 w-7 place-items-center rounded border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20"
+              >
+                <Menu className="h-4 w-4" />
+              </button>
+            </SideMenu>
+            <button onClick={() => setReportOpen(true)} aria-label="Settings" className="rounded border border-primary/40 bg-primary/10 p-1.5 text-primary hover:bg-primary/20">
+              <Settings className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </header>
 
