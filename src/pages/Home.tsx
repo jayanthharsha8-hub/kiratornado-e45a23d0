@@ -1,8 +1,6 @@
-import zeoxLogo from "@/assets/zeox-logo.png";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Menu,
   Wallet,
   Bell,
   Plus,
@@ -19,7 +17,6 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
-import { SideMenu } from "@/components/SideMenu";
 import { BottomNav } from "@/components/BottomNav";
 import { Particles } from "@/components/Particles";
 import { NeonCard, SmartImage, SectionHeader, GlowTone } from "@/components/home/primitives";
@@ -36,38 +33,7 @@ const PAD = 12;
 
 /* ---------------- Header ---------------- */
 const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) => (
-  <header className="flex items-center gap-2" style={{ height: 52 }}>
-    <SideMenu>
-      <button aria-label="Open menu" className="flex items-center gap-2" onClick={() => playSound("tick")}>
-        <div
-          className="grid place-items-center rounded-full border overflow-hidden"
-          style={{
-            width: 38,
-            height: 38,
-            borderColor: "rgba(0,229,255,0.5)",
-            background: "radial-gradient(circle, rgba(0,229,255,0.12), rgba(10,15,28,0.6))",
-            boxShadow: "0 0 7px rgba(0,229,255,0.28)",
-          }}
-        >
-          <img src={zeoxLogo} alt="ZEOX" className="h-[30px] w-[30px] object-contain" />
-        </div>
-        <div className="leading-none">
-          <div
-            className="font-display font-black uppercase text-white"
-            style={{ fontSize: 14, letterSpacing: "0.22em", textShadow: "0 0 6px rgba(0,229,255,0.35)" }}
-          >
-            ZEOX
-          </div>
-          <div className="font-display font-bold uppercase text-white/60" style={{ fontSize: 8, letterSpacing: "0.26em" }}>
-            ESPORTS
-          </div>
-
-        </div>
-      </button>
-    </SideMenu>
-
-    <div className="flex-1" />
-
+  <header className="flex items-center" style={{ height: 52 }}>
     <button
       onClick={onWallet}
       aria-label="Wallet"
@@ -95,20 +61,7 @@ const Header = ({ coins, onWallet }: { coins: number; onWallet: () => void }) =>
       </span>
     </button>
 
-    <SideMenu>
-      <button
-        aria-label="Menu"
-        className="grid place-items-center rounded-[11px] border"
-        style={{
-          width: 38,
-          height: 38,
-          borderColor: "rgba(0,229,255,0.4)",
-          background: "rgba(10,15,28,0.75)",
-        }}
-      >
-        <Menu className="h-4 w-4 text-cyan-300" />
-      </button>
-    </SideMenu>
+    <div className="flex-1" />
 
     <button
       aria-label="Notifications"
