@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, Crown, Gift, Globe, ChevronDown, Trophy, Medal, Award } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
-import { HeroLogo } from "@/components/HeroLogo";
+import zeoxLeaderboardLogo from "@/assets/zeox-leaderboard.png";
 import { cn } from "@/lib/utils";
 
 interface LeaderboardEntry {
@@ -224,7 +224,12 @@ const Leaderboard = () => {
           className="relative mx-auto mt-2 max-w-md px-4 animate-fade-in"
           style={{ filter: "drop-shadow(0 0 24px rgba(56,189,248,0.25))" }}
         >
-          <HeroLogo size={270} className="!mx-auto" />
+          <img
+            src={zeoxLeaderboardLogo}
+            alt="ZEOX — Esports Platform"
+            className="mx-auto w-[243px] h-auto select-none"
+            draggable={false}
+          />
         </div>
       </header>
 
