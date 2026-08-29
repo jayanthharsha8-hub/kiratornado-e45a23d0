@@ -225,7 +225,7 @@ const Leaderboard = () => {
           style={{ filter: "drop-shadow(0 0 24px rgba(56,189,248,0.25))" }}
         >
           <img
-            src={zeoxLeaderboardLogo.url}
+            src={zeoxLeaderboardLogo}
             alt="ZEOX — Esports Platform"
             className="mx-auto w-[243px] h-auto select-none"
             draggable={false}
