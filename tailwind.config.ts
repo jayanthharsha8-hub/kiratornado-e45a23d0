@@ -8,8 +8,8 @@ export default {
     container: { center: true, padding: "1rem", screens: { "2xl": "1400px" } },
     extend: {
       fontFamily: {
-        display: ['Orbitron', 'system-ui', 'sans-serif'],
-        body: ['Rajdhani', 'system-ui', 'sans-serif'],
+        display: ['Oxanium', 'system-ui', 'sans-serif'],
+        body: ['Space Grotesk', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
