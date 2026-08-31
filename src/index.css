@@ -143,6 +143,161 @@
       0 0 48px var(--category-faint);
   }
   .category-card:active { transform: scale(0.97); }
+
+  .leaderboard-theme {
+    --podium-gold: 46 96% 62%;
+    --podium-silver: 210 24% 82%;
+    --podium-bronze: 25 88% 61%;
+    background: hsl(222 76% 3%);
+  }
+  .leaderboard-backdrop {
+    background:
+      radial-gradient(ellipse at 50% -8%, hsl(var(--secondary) / 0.25), transparent 42%),
+      radial-gradient(ellipse at 88% 34%, hsl(274 90% 55% / 0.08), transparent 34%),
+      linear-gradient(180deg, hsl(222 66% 7%), hsl(222 76% 3%) 54%, hsl(0 0% 0%));
+  }
+  .leaderboard-backdrop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.16;
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: linear-gradient(to bottom, hsl(0 0% 0%), transparent 70%);
+  }
+  .leaderboard-logo { filter: drop-shadow(0 0 14px hsl(var(--primary) / 0.2)); }
+  .leaderboard-title {
+    color: transparent;
+    background: linear-gradient(180deg, hsl(var(--foreground)), hsl(var(--primary) / 0.78));
+    background-clip: text;
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.1);
+  }
+  .leaderboard-control,
+  .leaderboard-surface {
+    border: 1px solid hsl(var(--primary) / 0.14);
+    background: linear-gradient(180deg, hsl(218 58% 10% / 0.78), hsl(222 64% 5% / 0.9));
+    box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.035), 0 8px 24px hsl(222 80% 2% / 0.35);
+    backdrop-filter: blur(14px);
+  }
+  .leaderboard-tab-active {
+    border-color: hsl(var(--primary) / 0.42);
+    background: linear-gradient(180deg, hsl(var(--primary) / 0.18), hsl(var(--secondary) / 0.1));
+    box-shadow: inset 0 0 10px hsl(var(--primary) / 0.08), 0 0 10px hsl(var(--primary) / 0.12);
+  }
+  .leaderboard-avatar {
+    border: 1px solid hsl(var(--primary) / 0.24);
+    background: hsl(218 58% 9%);
+    box-shadow: 0 0 10px hsl(var(--primary) / 0.1), inset 0 0 10px hsl(var(--primary) / 0.04);
+  }
+  .leaderboard-podium-card {
+    --podium-tone: var(--primary);
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 126px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid hsl(var(--podium-tone) / 0.25);
+    border-radius: 8px;
+    padding: 18px 5px 7px;
+    color: hsl(var(--podium-tone));
+    background: linear-gradient(180deg, hsl(var(--podium-tone) / 0.1), hsl(222 65% 5% / 0.94) 56%);
+    box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.04), 0 5px 18px hsl(var(--podium-tone) / 0.1);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .leaderboard-podium-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 12% 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--podium-tone) / 0.7), transparent);
+  }
+  .leaderboard-podium-card:active { transform: scale(0.98); }
+  .leaderboard-podium-first {
+    min-height: 137px;
+    border-color: hsl(var(--podium-tone) / 0.42);
+    box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.06), 0 0 20px hsl(var(--podium-tone) / 0.14);
+    animation: leaderboard-crown-pulse 3.6s ease-in-out infinite;
+  }
+  .leaderboard-podium-gold { --podium-tone: var(--podium-gold); }
+  .leaderboard-podium-silver { --podium-tone: var(--podium-silver); }
+  .leaderboard-podium-bronze { --podium-tone: var(--podium-bronze); }
+  .leaderboard-podium-rank {
+    position: absolute;
+    inset: 5px auto auto 50%;
+    display: flex;
+    transform: translateX(-50%);
+    align-items: center;
+    gap: 3px;
+    font-family: 'Oxanium', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+  }
+  .leaderboard-podium-reward {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 999px;
+    border: 1px solid hsl(var(--podium-tone) / 0.18);
+    padding: 2px 6px;
+    font-family: 'Oxanium', system-ui, sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: hsl(var(--podium-tone) / 0.88);
+    background: hsl(var(--podium-tone) / 0.05);
+  }
+  .leaderboard-row {
+    border: 1px solid hsl(var(--primary) / 0.1);
+    background: linear-gradient(100deg, hsl(218 55% 9% / 0.78), hsl(222 66% 5% / 0.88));
+    box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.025);
+    backdrop-filter: blur(10px);
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  }
+  .leaderboard-row:active {
+    transform: scale(0.99);
+    border-color: hsl(var(--primary) / 0.3);
+    background: hsl(var(--primary) / 0.06);
+  }
+  .leaderboard-rank-number {
+    display: flex;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid hsl(var(--primary) / 0.12);
+    font-family: 'Oxanium', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    color: hsl(var(--foreground) / 0.8);
+  }
+  .leaderboard-is-me {
+    border-color: hsl(var(--primary) / 0.42);
+    box-shadow: inset 0 0 14px hsl(var(--primary) / 0.06), 0 0 14px hsl(var(--primary) / 0.1);
+  }
+  .leaderboard-my-rank {
+    border: 1px solid hsl(var(--primary) / 0.35);
+    background: linear-gradient(100deg, hsl(var(--primary) / 0.12), hsl(222 65% 5% / 0.92));
+    box-shadow: inset 0 0 14px hsl(var(--primary) / 0.05), 0 0 16px hsl(var(--primary) / 0.1);
+  }
+  @keyframes leaderboard-crown-pulse {
+    0%, 100% { box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.06), 0 0 14px hsl(var(--podium-tone) / 0.1); }
+    50% { box-shadow: inset 0 1px 0 hsl(var(--foreground) / 0.08), 0 0 22px hsl(var(--podium-tone) / 0.2); }
+  }
+  @media (hover: hover) {
+    .leaderboard-podium-card:hover { transform: translateY(-2px); border-color: hsl(var(--podium-tone) / 0.5); }
+    .leaderboard-row:hover { border-color: hsl(var(--primary) / 0.25); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .leaderboard-theme *, .leaderboard-theme *::before, .leaderboard-theme *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 /* Wallet Theme — Premium Neon Cyan + Black Solo Leveling Hunter System */
