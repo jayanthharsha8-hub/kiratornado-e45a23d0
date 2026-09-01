@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft, Crown, Gift, Globe, ChevronDown, Trophy, Medal, Award, Crosshair } from "lucide-react";
+import { ArrowLeft, Gift, Globe, ChevronDown, Trophy, Medal, Award } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import zeoxLeaderboardLogo from "@/assets/zeox-leaderboard.png";
