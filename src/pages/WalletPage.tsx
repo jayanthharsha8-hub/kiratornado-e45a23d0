@@ -107,24 +107,24 @@ const WalletPage = () => {
     <div className="wallet-theme relative min-h-screen bg-[#020617] pb-20 overflow-hidden">
       <Particles />
 
-      {/* HERO — full-bleed atmospheric artwork behind the header, dark glass overlays */}
+      {/* HERO — compact atmospheric banner, NOT a full-screen hero */}
       <section className="relative w-full">
         <div
           className="relative w-full overflow-hidden"
           style={{
-            height: "clamp(240px, 56vw, 320px)",
+            height: "clamp(124px, 21vh, 156px)",
             backgroundImage: `url(${heroShadow})`,
             backgroundSize: "cover",
-            backgroundPosition: "center 32%",
+            backgroundPosition: "center 28%",
             backgroundRepeat: "no-repeat",
           }}
         >
-          {/* Darken the artwork — subtle, premium, readable */}
+          {/* Darken the artwork — subtle gradient separates content below */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "linear-gradient(180deg, rgba(2,6,23,0.82) 0%, rgba(3,16,42,0.5) 32%, rgba(2,6,23,0.62) 68%, rgba(2,6,23,0.92) 92%, #020617 100%)",
+                "linear-gradient(180deg, rgba(2,6,23,0.72) 0%, rgba(3,16,42,0.35) 34%, rgba(2,6,23,0.7) 70%, rgba(2,6,23,0.94) 94%, #020617 100%)",
             }}
           />
           {/* Soft blue/purple atmospheric glow wash */}
@@ -132,15 +132,7 @@ const WalletPage = () => {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(90% 70% at 50% 38%, rgba(90,24,154,0.18) 0%, rgba(30,76,255,0.1) 42%, transparent 72%)",
-            }}
-          />
-          {/* Soft glow around the artwork edges */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              boxShadow:
-                "inset 0 0 70px 12px rgba(2,6,23,0.75), inset 0 0 120px 30px rgba(30,76,255,0.12), inset 0 0 90px 20px rgba(90,24,154,0.16)",
+                "radial-gradient(90% 80% at 50% 40%, rgba(90,24,154,0.14) 0%, rgba(30,76,255,0.08) 42%, transparent 74%)",
             }}
           />
 
