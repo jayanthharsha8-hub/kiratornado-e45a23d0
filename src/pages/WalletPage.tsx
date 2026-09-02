@@ -8,7 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TransactionList, type WalletTransaction } from "@/components/TransactionList";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
-import heroBanner from "@/assets/wallet-hero-master.jpg.asset.json";
+import heroShadowAsset from "@/assets/wallet-hero-shadow.jpg.asset.json";
 
 /* Cyber frame with neon corner brackets — used for wallet card, buttons, invite & transactions */
 const CyberFrame = ({ children, className = "", padded = true }: { children: React.ReactNode; className?: string; padded?: boolean }) => (
@@ -107,39 +107,62 @@ const WalletPage = () => {
     <div className="wallet-theme relative min-h-screen bg-[#020617] pb-20 overflow-hidden">
       <Particles />
 
-      {/* HERO BANNER — edge-to-edge, header overlays artwork */}
+      {/* HERO — full-bleed atmospheric artwork behind the header, dark glass overlays */}
       <section className="relative w-full">
-        <div className="relative w-full" style={{ background: "linear-gradient(180deg, #03102a 0%, #020617 100%)" }}>
-          <img
-            src={heroBanner.url}
-            alt="Hunt. Play. Dominate. — Every match, every coin counts."
-            className="block w-full h-auto select-none"
-            draggable={false}
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            height: "clamp(240px, 56vw, 320px)",
+            backgroundImage: `url(${heroShadowAsset.url})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 32%",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* Darken the artwork — subtle, premium, readable */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(2,6,23,0.82) 0%, rgba(3,16,42,0.5) 32%, rgba(2,6,23,0.62) 68%, rgba(2,6,23,0.92) 92%, #020617 100%)",
+            }}
           />
-          {/* Top gradient so header is legible without a black strip */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#03102a]/85 via-[#03102a]/30 to-transparent" />
-          {/* Bottom fade into page */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-[#020617]" />
-        </div>
+          {/* Soft blue/purple atmospheric glow wash */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(90% 70% at 50% 38%, rgba(90,24,154,0.18) 0%, rgba(30,76,255,0.1) 42%, transparent 72%)",
+            }}
+          />
+          {/* Soft glow around the artwork edges */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              boxShadow:
+                "inset 0 0 70px 12px rgba(2,6,23,0.75), inset 0 0 120px 30px rgba(30,76,255,0.12), inset 0 0 90px 20px rgba(90,24,154,0.16)",
+            }}
+          />
 
-        {/* Top bar overlay */}
-        <header className="absolute inset-x-0 top-0 z-30">
-          <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
-            <button
-              onClick={() => { playSound("tick"); navigate(-1); }}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </button>
-            <h1
-              className="font-display text-sm font-bold uppercase tracking-[0.5em]"
-              style={{ color: "#00D9FF", textShadow: "0 2px 14px rgba(0,0,0,0.9), 0 0 12px rgba(0,217,255,0.6)" }}
-            >
-              Wallet
-            </h1>
-            <span className="h-9 w-9" aria-hidden />
-          </div>
-        </header>
+          {/* Top bar overlay */}
+          <header className="absolute inset-x-0 top-0 z-30">
+            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+              <button
+                onClick={() => { playSound("tick"); navigate(-1); }}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <h1
+                className="font-display text-sm font-bold uppercase tracking-[0.5em]"
+                style={{ color: "#00D9FF", textShadow: "0 2px 14px rgba(0,0,0,0.9), 0 0 12px rgba(0,217,255,0.6)" }}
+              >
+                Wallet
+              </h1>
+              <span className="h-9 w-9" aria-hidden />
+            </div>
+          </header>
+        </div>
       </section>
 
       <main className="relative z-10 mx-auto max-w-md space-y-2 px-4 pt-2">
