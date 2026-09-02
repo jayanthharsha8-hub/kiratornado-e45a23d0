@@ -138,58 +138,62 @@ const WalletPage = () => {
 
           {/* Top bar overlay */}
           <header className="absolute inset-x-0 top-0 z-30">
-            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+            <div className="mx-auto flex max-w-md items-center justify-between px-4 py-2.5">
               <button
                 onClick={() => { playSound("tick"); navigate(-1); }}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-black/40 text-white backdrop-blur-md transition hover:bg-white/10"
               >
                 <ArrowLeft className="h-4 w-4" />
               </button>
               <h1
-                className="font-display text-sm font-bold uppercase tracking-[0.5em]"
+                className="font-display text-xs font-bold uppercase tracking-[0.5em]"
                 style={{ color: "#00D9FF", textShadow: "0 2px 14px rgba(0,0,0,0.9), 0 0 12px rgba(0,217,255,0.6)" }}
               >
                 Wallet
               </h1>
-              <span className="h-9 w-9" aria-hidden />
+              <span className="h-8 w-8" aria-hidden />
             </div>
           </header>
         </div>
       </section>
 
-      <main className="relative z-10 mx-auto max-w-md space-y-2 px-4 pt-2">
+      <main className="relative z-10 mx-auto max-w-md space-y-2.5 px-4 pt-1.5">
 
 
-        {/* TOTAL COINS — cyber frame */}
-        <CyberFrame>
-          <div className="text-center py-1">
-            <div className="flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-[0.4em]" style={{ color: "#00D9FF" }}>
-              <span style={{ background: "linear-gradient(90deg, transparent, #00D9FF)", height: 1, width: 24 }} />
-              Total Coins
-              <span style={{ background: "linear-gradient(90deg, #00D9FF, transparent)", height: 1, width: 24 }} />
-            </div>
-            <p
-              className="mt-2 font-display text-[38px] font-black leading-none tracking-wider text-white"
-              style={{ textShadow: "0 0 20px rgba(0,217,255,0.9), 0 0 50px rgba(110,91,255,0.5)" }}
-            >
-              {formattedCoins}
-            </p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.45em]" style={{ color: "#00BFFF" }}>Coins</p>
-            <div
-              className="mt-3 inline-flex items-center gap-2 rounded-full px-3.5 py-1"
-              style={{
-                border: "1px solid rgba(0,217,255,0.45)",
-                background: "rgba(0,217,255,0.06)",
-                boxShadow: "0 0 14px -4px rgba(0,217,255,0.55) inset",
-              }}
-            >
-              <Sparkles className="h-3 w-3" style={{ color: "#00D9FF" }} />
-              <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/85">
-                Bonus Coins: <span className="font-bold" style={{ color: "#00D9FF" }}>{bonusCoins}</span>
-              </span>
-            </div>
+        {/* TOTAL COINS — minimal surface, no outer neon frame */}
+        <section
+          className="rounded-2xl px-4 py-3 text-center"
+          style={{
+            background: "linear-gradient(180deg, rgba(10,22,48,0.45), rgba(3,8,20,0.6))",
+            border: "1px solid rgba(0,217,255,0.12)",
+            boxShadow: "0 0 22px -10px rgba(0,217,255,0.35)",
+          }}
+        >
+          <div className="flex items-center justify-center gap-2 text-[9px] font-semibold uppercase tracking-[0.4em]" style={{ color: "#00D9FF" }}>
+            <span style={{ background: "linear-gradient(90deg, transparent, #00D9FF)", height: 1, width: 20 }} />
+            Total Coins
+            <span style={{ background: "linear-gradient(90deg, #00D9FF, transparent)", height: 1, width: 20 }} />
           </div>
-        </CyberFrame>
+          <p
+            className="mt-1.5 font-display text-[36px] font-black leading-none tracking-wider text-white"
+            style={{ textShadow: "0 0 18px rgba(0,217,255,0.85), 0 0 44px rgba(110,91,255,0.4)" }}
+          >
+            {formattedCoins}
+          </p>
+          <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.45em]" style={{ color: "#00BFFF" }}>Coins</p>
+          <div
+            className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-0.5"
+            style={{
+              border: "1px solid rgba(0,217,255,0.4)",
+              background: "rgba(0,217,255,0.06)",
+            }}
+          >
+            <Sparkles className="h-3 w-3" style={{ color: "#00D9FF" }} />
+            <span className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/85">
+              Bonus Coins: <span className="font-bold" style={{ color: "#00D9FF" }}>{bonusCoins}</span>
+            </span>
+          </div>
+        </section>
 
         {/* BR TOKENS & COUPONS */}
         <section className="grid grid-cols-2 gap-2.5">
