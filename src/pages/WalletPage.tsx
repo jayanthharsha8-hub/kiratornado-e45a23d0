@@ -8,7 +8,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { TransactionList, type WalletTransaction } from "@/components/TransactionList";
 import { playSound } from "@/hooks/useSound";
 import { toast } from "sonner";
-import heroShadowAsset from "@/assets/wallet-hero-shadow.jpg.asset.json";
+import heroShadow from "@/assets/wallet-hero-shadow.jpg";
 
 /* Cyber frame with neon corner brackets — used for wallet card, buttons, invite & transactions */
 const CyberFrame = ({ children, className = "", padded = true }: { children: React.ReactNode; className?: string; padded?: boolean }) => (
