@@ -113,7 +113,7 @@ const WalletPage = () => {
           className="relative w-full overflow-hidden"
           style={{
             height: "clamp(240px, 56vw, 320px)",
-            backgroundImage: `url(${heroShadowAsset.url})`,
+            backgroundImage: `url(${heroShadow})`,
             backgroundSize: "cover",
             backgroundPosition: "center 32%",
             backgroundRepeat: "no-repeat",
