@@ -129,8 +129,8 @@ export const StreakHero = ({ day, countdown, nextReward, canClaim }: { day: numb
 };
 
 export const DailyRewardCard = ({ reward, status, selected, onSelect }: { reward: DailyReward; status: RewardStatus; selected: boolean; onSelect: () => void }) => (
-  <button
-    type="button"
+  <Button
+    variant="ghost"
     onClick={onSelect}
     data-reward-day={reward.day}
     aria-label={`Day ${reward.day}, ${reward.title}, ${status}`}
@@ -143,7 +143,7 @@ export const DailyRewardCard = ({ reward, status, selected, onSelect }: { reward
     <span className="streak-card-status">
       {status === "claimed" ? <><Check aria-hidden /> Claimed</> : status === "available" ? "Available" : <><LockKeyhole aria-hidden /> {status}</>}
     </span>
-  </button>
+  </Button>
 );
 
 export const DailyRewardCarousel = ({ rewards, currentDay, nextDay, canClaim, selectedDay, onSelect }: {
