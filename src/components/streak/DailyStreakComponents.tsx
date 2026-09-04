@@ -58,7 +58,7 @@ export const RewardVisual = ({ reward, compact = false }: { reward: DailyReward;
   );
 };
 
-export const StreakHeader = ({ onBack }: { onBack: () => void }) => (
+export const StreakHeader = ({ onBack, onInfo }: { onBack: () => void; onInfo: () => void }) => (
   <header className="streak-header">
     <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back" className="streak-icon-button">
       <ArrowLeft />
@@ -67,7 +67,7 @@ export const StreakHeader = ({ onBack }: { onBack: () => void }) => (
       <h1 className="streak-page-title">Daily Streak</h1>
       <p className="streak-page-subtitle">Play daily. Earn rewards. Keep your streak alive!</p>
     </div>
-    <Button variant="ghost" size="icon" aria-label="Daily streak information" className="streak-icon-button">
+    <Button variant="ghost" size="icon" onClick={onInfo} aria-label="Daily streak information" className="streak-icon-button">
       <Info />
     </Button>
   </header>
@@ -115,12 +115,12 @@ export const StreakHero = ({ day, countdown, nextReward, canClaim }: { day: numb
     <section className="streak-hero">
       <div className="streak-hero-copy">
         <p className="streak-label">Current streak</p>
-        <p className="streak-day">Day {Math.max(day, 1)}</p>
+        <p className="streak-day">Day {day}</p>
         <p className="streak-support">{day === 0 ? "Claim today's reward" : "Keep it up! Play tomorrow"}<br />to continue your streak.</p>
       </div>
-      <div className={cn("streak-emblem", `streak-rarity-${tier}`)} aria-label={`Current streak day ${Math.max(day, 1)}`}>
+      <div className={cn("streak-emblem", `streak-rarity-${tier}`)} aria-label={`Current streak day ${day}`}>
         <span className="streak-emblem-ring" aria-hidden />
-        <span>{Math.max(day, 1)}</span>
+        <span>{day}</span>
       </div>
       <div className="streak-hero-progress"><StreakProgress day={day} /></div>
       <NextRewardTimer countdown={countdown} nextReward={nextReward} canClaim={canClaim} />
