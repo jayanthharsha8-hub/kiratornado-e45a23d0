@@ -48,10 +48,11 @@ const FRAME_PATH =
    Q 113 26 105 26 \
    Z";
 
-export const BottomNav = () => {
+export const BottomNav = ({ activeOverride }: { activeOverride?: string }) => {
   const { pathname } = useLocation();
-  const isActive = (to: string) =>
-    pathname === to || (to === "/wallet" && pathname.startsWith("/wallet"));
+  const isActive = (to: string) => activeOverride
+    ? to === activeOverride
+    : pathname === to || (to === "/wallet" && pathname.startsWith("/wallet"));
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40">
