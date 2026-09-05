@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DailyReward, RewardKind, RewardRarity } from "@/lib/streakRewards";
+import streakHeroAsset from "@/assets/zeox-daily-streak-hero.png.asset.json";
 
 export type RewardStatus = "claimed" | "available" | "locked" | "upcoming";
 
@@ -59,17 +60,20 @@ export const RewardVisual = ({ reward, compact = false }: { reward: DailyReward;
 };
 
 export const StreakHeader = ({ onBack, onInfo }: { onBack: () => void; onInfo: () => void }) => (
-  <header className="streak-header">
-    <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back" className="streak-icon-button">
-      <ArrowLeft />
-    </Button>
-    <div className="min-w-0 text-center">
-      <h1 className="streak-page-title">Daily Streak</h1>
-      <p className="streak-page-subtitle">Play daily. Earn rewards. Keep your streak alive!</p>
+  <header className="streak-header" style={{ backgroundImage: `url(${streakHeroAsset.url})` }}>
+    <div className="streak-header-shade" aria-hidden />
+    <div className="streak-header-actions">
+      <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back" className="streak-icon-button">
+        <ArrowLeft />
+      </Button>
+      <Button variant="ghost" size="icon" onClick={onInfo} aria-label="Daily streak information" className="streak-icon-button">
+        <Info />
+      </Button>
     </div>
-    <Button variant="ghost" size="icon" onClick={onInfo} aria-label="Daily streak information" className="streak-icon-button">
-      <Info />
-    </Button>
+    <div className="streak-header-copy">
+      <h1 className="streak-page-title">Daily <span>Streak</span></h1>
+      <p className="streak-page-subtitle">Log in daily. Earn rewards.<br />Keep your streak alive!</p>
+    </div>
   </header>
 );
 
@@ -113,14 +117,15 @@ export const StreakHero = ({ day, countdown, nextReward, canClaim }: { day: numb
   const tier: RewardRarity = day >= 30 ? "legendary" : day >= 14 ? "epic" : day >= 7 ? "rare" : "standard";
   return (
     <section className="streak-hero">
-      <div className="streak-hero-copy">
-        <p className="streak-label">Current streak</p>
-        <p className="streak-day">Day {day}</p>
-        <p className="streak-support">{day === 0 ? "Claim today's reward" : "Keep it up! Play tomorrow"}<br />to continue your streak.</p>
-      </div>
       <div className={cn("streak-emblem", `streak-rarity-${tier}`)} aria-label={`Current streak day ${day}`}>
         <span className="streak-emblem-ring" aria-hidden />
-        <span>{day}</span>
+        <small>Current streak</small>
+        <strong>{String(day).padStart(2, "0")}</strong>
+        <small>Days</small>
+      </div>
+      <div className="streak-hero-copy">
+        <p className="streak-day">{day === 0 ? "Your streak starts now" : "You're on fire!"} <span aria-hidden>🔥</span></p>
+        <p className="streak-support">{day === 0 ? "Claim today's reward" : "Come back tomorrow"}<br />to keep your streak going.</p>
       </div>
       <div className="streak-hero-progress"><StreakProgress day={day} /></div>
       <NextRewardTimer countdown={countdown} nextReward={nextReward} canClaim={canClaim} />
@@ -165,8 +170,8 @@ export const DailyRewardCarousel = ({ rewards, currentDay, nextDay, canClaim, se
   return (
     <section className="streak-rewards-section">
       <div className="streak-section-heading">
-        <h2>Daily Rewards</h2>
-        <span><CalendarDays aria-hidden /> 30 Day Cycle</span>
+        <h2>Daily Login Rewards</h2>
+        <span className="streak-swipe-label">Swipe <span aria-hidden>→</span></span>
       </div>
       <div ref={trackRef} className="streak-reward-track">
         {rewards.map((reward) => {
