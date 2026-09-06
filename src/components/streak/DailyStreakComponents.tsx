@@ -9,7 +9,6 @@ import {
   Crown,
   Gift,
   Home,
-  Info,
   LockKeyhole,
   Shield,
   Sparkles,
@@ -59,15 +58,12 @@ export const RewardVisual = ({ reward, compact = false }: { reward: DailyReward;
   );
 };
 
-export const StreakHeader = ({ onBack, onInfo }: { onBack: () => void; onInfo: () => void }) => (
+export const StreakHeader = ({ onBack }: { onBack: () => void }) => (
   <header className="streak-header" style={{ backgroundImage: `url(${streakHeroAsset.url})` }}>
     <div className="streak-header-shade" aria-hidden />
     <div className="streak-header-actions">
       <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back" className="streak-icon-button">
         <ArrowLeft />
-      </Button>
-      <Button variant="ghost" size="icon" onClick={onInfo} aria-label="Daily streak information" className="streak-icon-button">
-        <Info />
       </Button>
     </div>
     <div className="streak-header-copy">
