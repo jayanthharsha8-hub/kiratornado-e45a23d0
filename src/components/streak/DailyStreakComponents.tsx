@@ -3,11 +3,14 @@ import { NavLink } from "react-router-dom";
 import {
   ArrowLeft,
   BadgePercent,
+  BadgeCheck,
+  Box,
   CalendarDays,
   Check,
   Coins,
   Crown,
   Gift,
+  Image,
   Home,
   LockKeyhole,
   Shield,
@@ -28,16 +31,14 @@ export type RewardStatus = "claimed" | "available" | "locked" | "upcoming";
 
 const rewardIcons: Record<RewardKind, typeof Gift> = {
   token: Ticket,
-  xp: Sparkles,
   coupon: BadgePercent,
+  badge: BadgeCheck,
+  background: Image,
   frame: Shield,
   coins: Coins,
   username: Crown,
-  banner: Trophy,
-  effect: Sparkles,
-  cosmetic: Shield,
-  crate: Gift,
-  legendary: Crown,
+  crate: Box,
+  legendary: Gift,
 };
 
 export const RewardVisual = ({ reward, compact = false }: { reward: DailyReward; compact?: boolean }) => {
@@ -50,8 +51,10 @@ export const RewardVisual = ({ reward, compact = false }: { reward: DailyReward;
         <>
           <span className="streak-reward-aura" aria-hidden />
           <Icon aria-hidden className="streak-reward-icon" />
-          {reward.kind === "xp" && <span className="streak-reward-monogram">XP</span>}
-          {reward.kind === "token" && <span className="streak-reward-monogram">×</span>}
+          {reward.kind === "token" && <span className="streak-reward-monogram">×{reward.br_tokens}</span>}
+          {reward.kind === "coupon" && <span className="streak-reward-monogram">{reward.discount_percent}%</span>}
+          {reward.kind === "coins" && <span className="streak-reward-monogram">+{reward.bonus_coins}</span>}
+          {reward.kind === "legendary" && <span className="streak-reward-monogram">+1</span>}
         </>
       )}
     </div>
