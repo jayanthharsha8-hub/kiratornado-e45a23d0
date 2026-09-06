@@ -2,14 +2,12 @@ import type { StreakReward } from "@/hooks/useDailyStreak";
 
 export type RewardKind =
   | "token"
-  | "xp"
   | "coupon"
+  | "badge"
+  | "background"
   | "frame"
   | "coins"
   | "username"
-  | "banner"
-  | "effect"
-  | "cosmetic"
   | "crate"
   | "legendary";
 
@@ -30,36 +28,36 @@ type RewardPreset = Pick<DailyReward, "day" | "kind" | "rarity" | "shortTitle"> 
 };
 
 export const REWARD_PRESETS: RewardPreset[] = [
-  { day: 1, kind: "token", rarity: "rare", shortTitle: "Progress Token", title: "Progress Token", br_tokens: 1 },
-  { day: 2, kind: "xp", rarity: "standard", shortTitle: "200 XP", title: "200 XP" },
-  { day: 3, kind: "coupon", rarity: "rare", shortTitle: "20% Coupon", title: "20% Discount Coupon", discount_percent: 20 },
-  { day: 4, kind: "frame", rarity: "rare", shortTitle: "Profile Frame", title: "Profile Frame", unlock_key: "profile_frame_blue" },
-  { day: 5, kind: "xp", rarity: "standard", shortTitle: "300 XP", title: "300 XP" },
-  { day: 6, kind: "coins", rarity: "standard", shortTitle: "+5 Bonus Coins", title: "+5 Bonus Coins", bonus_coins: 5 },
-  { day: 7, kind: "username", rarity: "epic", shortTitle: "Username Color", title: "Premium Username Color", unlock_key: "username_color_blue" },
-  { day: 8, kind: "token", rarity: "rare", shortTitle: "Progress Token", title: "Progress Token", br_tokens: 1 },
-  { day: 9, kind: "banner", rarity: "rare", shortTitle: "Avatar Banner", title: "Avatar Banner", unlock_key: "avatar_banner_blue" },
-  { day: 10, kind: "xp", rarity: "standard", shortTitle: "400 XP", title: "400 XP" },
-  { day: 11, kind: "coupon", rarity: "epic", shortTitle: "50% Coupon", title: "50% Discount Coupon", discount_percent: 50 },
-  { day: 12, kind: "coins", rarity: "rare", shortTitle: "+10 Bonus Coins", title: "+10 Bonus Coins", bonus_coins: 10 },
-  { day: 13, kind: "token", rarity: "rare", shortTitle: "Progress Token", title: "Progress Token", br_tokens: 1 },
-  { day: 14, kind: "frame", rarity: "epic", shortTitle: "Exclusive Frame", title: "Exclusive Profile Frame", unlock_key: "profile_frame_purple" },
-  { day: 15, kind: "xp", rarity: "standard", shortTitle: "500 XP", title: "500 XP" },
-  { day: 16, kind: "username", rarity: "epic", shortTitle: "Username Color", title: "Premium Username Color", unlock_key: "username_color_purple" },
-  { day: 17, kind: "coins", rarity: "rare", shortTitle: "+15 Bonus Coins", title: "+15 Bonus Coins", bonus_coins: 15 },
-  { day: 18, kind: "token", rarity: "epic", shortTitle: "2 Progress Tokens", title: "2 Progress Tokens", br_tokens: 2 },
-  { day: 19, kind: "effect", rarity: "epic", shortTitle: "Profile Effect", title: "Premium Profile Effect", unlock_key: "profile_effect_purple" },
-  { day: 20, kind: "xp", rarity: "standard", shortTitle: "600 XP", title: "600 XP" },
-  { day: 21, kind: "coupon", rarity: "rare", shortTitle: "20% Coupon", title: "20% Discount Coupon", discount_percent: 20 },
-  { day: 22, kind: "coins", rarity: "rare", shortTitle: "+20 Bonus Coins", title: "+20 Bonus Coins", bonus_coins: 20 },
-  { day: 23, kind: "token", rarity: "epic", shortTitle: "2 Progress Tokens", title: "2 Progress Tokens", br_tokens: 2 },
-  { day: 24, kind: "cosmetic", rarity: "epic", shortTitle: "Avatar Cosmetic", title: "Exclusive Avatar Cosmetic", unlock_key: "avatar_cosmetic_purple" },
-  { day: 25, kind: "xp", rarity: "standard", shortTitle: "700 XP", title: "700 XP" },
-  { day: 26, kind: "coins", rarity: "rare", shortTitle: "+25 Bonus Coins", title: "+25 Bonus Coins", bonus_coins: 25 },
-  { day: 27, kind: "token", rarity: "epic", shortTitle: "2 Progress Tokens", title: "2 Progress Tokens", br_tokens: 2 },
-  { day: 28, kind: "banner", rarity: "epic", shortTitle: "Exclusive Banner", title: "Exclusive Banner", unlock_key: "exclusive_banner" },
-  { day: 29, kind: "crate", rarity: "epic", shortTitle: "Reward Crate", title: "Premium Reward Crate", unlock_key: "premium_reward_crate" },
-  { day: 30, kind: "legendary", rarity: "legendary", shortTitle: "Legendary Effect", title: "Legendary Profile Effect", unlock_key: "legendary_profile_effect" },
+  { day: 1, kind: "badge", rarity: "rare", shortTitle: "Profile Badge", title: "Profile Badge", unlock_key: "profile_badge" },
+  { day: 2, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 3, kind: "coupon", rarity: "rare", shortTitle: "20% Discount Coupon", title: "20% Discount Coupon", discount_percent: 20 },
+  { day: 4, kind: "background", rarity: "epic", shortTitle: "Profile Background", title: "Profile Background", unlock_key: "profile_background" },
+  { day: 5, kind: "coupon", rarity: "legendary", shortTitle: "50% Discount Coupon", title: "50% Discount Coupon", discount_percent: 50 },
+  { day: 6, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 7, kind: "username", rarity: "epic", shortTitle: "Premium Username Colour", title: "Premium Username Colour", unlock_key: "premium_username_colour" },
+  { day: 8, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 9, kind: "frame", rarity: "rare", shortTitle: "Avatar Border", title: "Avatar Border", unlock_key: "avatar_border" },
+  { day: 10, kind: "crate", rarity: "epic", shortTitle: "Milestone Cache", title: "Milestone Cache", unlock_key: "milestone_cache" },
+  { day: 11, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 12, kind: "coupon", rarity: "rare", shortTitle: "20% Discount Coupon", title: "20% Discount Coupon", discount_percent: 20 },
+  { day: 13, kind: "coins", rarity: "standard", shortTitle: "+5 Bonus Coins", title: "+5 Bonus Coins", bonus_coins: 5 },
+  { day: 14, kind: "token", rarity: "epic", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 15, kind: "coupon", rarity: "legendary", shortTitle: "50% Discount Coupon", title: "50% Discount Coupon", discount_percent: 50 },
+  { day: 16, kind: "coins", rarity: "standard", shortTitle: "+10 Bonus Coins", title: "+10 Bonus Coins", bonus_coins: 10 },
+  { day: 17, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 18, kind: "coupon", rarity: "epic", shortTitle: "20% Discount Coupon", title: "20% Discount Coupon", discount_percent: 20 },
+  { day: 19, kind: "token", rarity: "legendary", shortTitle: "2 BR Tokens", title: "2 BR Tokens", br_tokens: 2 },
+  { day: 20, kind: "frame", rarity: "epic", shortTitle: "Premium Profile Frame", title: "Premium Profile Frame", unlock_key: "premium_profile_frame" },
+  { day: 21, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 22, kind: "coupon", rarity: "rare", shortTitle: "20% Discount Coupon", title: "20% Discount Coupon", discount_percent: 20 },
+  { day: 23, kind: "coins", rarity: "standard", shortTitle: "+10 Bonus Coins", title: "+10 Bonus Coins", bonus_coins: 10 },
+  { day: 24, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 25, kind: "coupon", rarity: "legendary", shortTitle: "20% Discount Coupon", title: "20% Discount Coupon", discount_percent: 20 },
+  { day: 26, kind: "token", rarity: "epic", shortTitle: "2 BR Tokens", title: "2 BR Tokens", br_tokens: 2 },
+  { day: 27, kind: "coins", rarity: "standard", shortTitle: "+15 Bonus Coins", title: "+15 Bonus Coins", bonus_coins: 15 },
+  { day: 28, kind: "token", rarity: "rare", shortTitle: "1 BR Token", title: "1 BR Token", br_tokens: 1 },
+  { day: 29, kind: "coupon", rarity: "legendary", shortTitle: "50% Discount Coupon", title: "50% Discount Coupon", discount_percent: 50 },
+  { day: 30, kind: "legendary", rarity: "legendary", shortTitle: "Monarch Cache + 1 Spin Wheel Ticket", title: "Monarch Cache + 1 Spin Wheel Ticket", unlock_key: "monarch_cache_spin_ticket" },
 ];
 
 const inferKind = (reward: StreakReward, fallback: RewardKind): RewardKind => {
