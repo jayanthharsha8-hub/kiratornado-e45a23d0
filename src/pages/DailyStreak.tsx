@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LoaderCircle } from "lucide-react";
 import { useDailyStreak } from "@/hooks/useDailyStreak";
-import { BottomNav } from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import {
   DailyRewardCarousel,
@@ -41,7 +40,6 @@ const DailyStreak = () => {
       <div className="streak-shell">
         <StreakHeader
           onBack={() => { playSound("tick"); navigate(-1); }}
-          onInfo={() => toast.info("Claim once every 24 hours. Missing 48 hours resets your streak.")}
         />
         <main className="streak-content">
           <StreakHero day={currentDay} countdown={countdown} nextReward={nextReward} canClaim={canClaim} />
@@ -63,7 +61,6 @@ const DailyStreak = () => {
           <p className="streak-footnote">Progress Tokens and coupons are stored in your wallet. Bonus coins cannot be withdrawn.</p>
         </main>
       </div>
-      <BottomNav activeOverride="/profile" />
     </div>
   );
 };
