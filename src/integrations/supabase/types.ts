@@ -539,9 +539,11 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string
           bonus_coins: number
           br_tokens: number
           coins: number
+          cosmetics: Json
           created_at: string
           ff_uid: string
           id: string
@@ -552,15 +554,18 @@ export type Database = {
           profile_completed: boolean
           referral_code: string | null
           total_kills: number
+          uid_visible: boolean
           updated_at: string
           username: string
           wins: number
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string
           bonus_coins?: number
           br_tokens?: number
           coins?: number
+          cosmetics?: Json
           created_at?: string
           ff_uid: string
           id: string
@@ -571,15 +576,18 @@ export type Database = {
           profile_completed?: boolean
           referral_code?: string | null
           total_kills?: number
+          uid_visible?: boolean
           updated_at?: string
           username: string
           wins?: number
         }
         Update: {
           avatar_url?: string | null
+          bio?: string
           bonus_coins?: number
           br_tokens?: number
           coins?: number
+          cosmetics?: Json
           created_at?: string
           ff_uid?: string
           id?: string
@@ -590,6 +598,7 @@ export type Database = {
           profile_completed?: boolean
           referral_code?: string | null
           total_kills?: number
+          uid_visible?: boolean
           updated_at?: string
           username?: string
           wins?: number
@@ -947,6 +956,36 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          app: Json
+          appearance: Json
+          created_at: string
+          notifications: Json
+          privacy: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          app?: Json
+          appearance?: Json
+          created_at?: string
+          notifications?: Json
+          privacy?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          app?: Json
+          appearance?: Json
+          created_at?: string
+          notifications?: Json
+          privacy?: Json
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
