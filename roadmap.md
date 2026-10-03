@@ -1,4 +1,4 @@
 - [x] Add secure, configurable Spin Wheel rewards and daily spin persistence.
-- [ ] Build mobile Spin Wheel page and connect it to Home.
-- [ ] Build admin configuration and preview.
+- [x] Build mobile Spin Wheel page and connect it to Home.
+- [x] Build admin configuration and preview.
 - [ ] Verify reward flow and mobile layout.
