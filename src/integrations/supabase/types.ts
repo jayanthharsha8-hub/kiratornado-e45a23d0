@@ -1244,7 +1244,6 @@ export type Database = {
         }
         Returns: Json
       }
-      spin_wheel: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
