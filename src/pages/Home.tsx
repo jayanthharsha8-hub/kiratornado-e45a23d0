@@ -179,13 +179,15 @@ const QUICK_ACTIONS = [
   { icon: Headphones, label: "Support", color: "#c084fc" },
 ];
 
-const QuickActions = () => (
+const QuickActions = () => {
+  const navigate = useNavigate();
+  return (
   <NeonCard glow="blue" radius={16} style={{ height: 68 }} className="px-1.5">
     <div className="grid h-full grid-cols-6 items-center">
       {QUICK_ACTIONS.map(({ icon: Icon, label, color }) => (
         <button
           key={label}
-          onClick={() => playSound("tick")}
+          onClick={() => { playSound("tick"); if (label === "Spin") navigate("/spinwheel"); }}
           className="flex h-full flex-col items-center justify-center gap-1 transition hover:-translate-y-0.5"
         >
           <div
@@ -210,7 +212,8 @@ const QuickActions = () => (
       ))}
     </div>
   </NeonCard>
-);
+  );
+};
 
 /* ---------------- Categories ---------------- */
 const CATEGORY_STYLE: Record<Category, { glow: GlowTone; color: string }> = {

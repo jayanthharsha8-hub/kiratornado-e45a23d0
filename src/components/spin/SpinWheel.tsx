@@ -12,9 +12,9 @@ export function SpinWheel({ rewards, rotation = 0, spinning = false }: { rewards
           const reward = rewards.find(r => r.slot === index + 1);
           const Icon = reward ? icon[reward.reward_type] : Zap;
           const label = reward?.name ?? "UNAVAILABLE";
-          return <div key={index} className={`spin-wheel-sector ${reward?.enabled === false ? "spin-wheel-sector-off" : ""}`} style={{ transform: `rotate(${index * 45}deg) translateY(-34%) rotate(${-index * 45}deg)` }}>
-            <Icon className="spin-wheel-icon" strokeWidth={1.9} aria-hidden="true" />
-            <span className="spin-wheel-sector-name">{label}</span>
+          return <div key={index} className={`spin-wheel-sector ${reward?.enabled === false ? "spin-wheel-sector-off" : ""}`} style={{ transform: `rotate(${index * 45}deg)` }}>
+            <div className="spin-wheel-sector-content" style={{ transform: `rotate(${-index * 45}deg)` }}><Icon className="spin-wheel-icon" strokeWidth={1.9} aria-hidden="true" />
+            <span className="spin-wheel-sector-name">{label}</span></div>
           </div>;
         })}
       </div>
