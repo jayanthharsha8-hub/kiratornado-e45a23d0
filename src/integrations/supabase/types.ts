@@ -664,6 +664,99 @@ export type Database = {
         }
         Relationships: []
       }
+      spin_history: {
+        Row: {
+          created_at: string
+          id: string
+          reward_name: string
+          reward_slot: number
+          reward_type: string
+          reward_value: number
+          spin_day: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reward_name: string
+          reward_slot: number
+          reward_type: string
+          reward_value: number
+          spin_day: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reward_name?: string
+          reward_slot?: number
+          reward_type?: string
+          reward_value?: number
+          spin_day?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      spin_rewards: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          name: string
+          reward_type: string
+          slot: number
+          updated_at: string
+          value: number
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          name: string
+          reward_type: string
+          slot: number
+          updated_at?: string
+          value?: number
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          name?: string
+          reward_type?: string
+          slot?: number
+          updated_at?: string
+          value?: number
+          weight?: number
+        }
+        Relationships: []
+      }
+      spin_settings: {
+        Row: {
+          created_at: string
+          daily_limit: number
+          enabled: boolean
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          daily_limit?: number
+          enabled?: boolean
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          daily_limit?: number
+          enabled?: boolean
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           coin_rate: number
@@ -1151,6 +1244,7 @@ export type Database = {
         }
         Returns: Json
       }
+      spin_wheel: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
