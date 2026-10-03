@@ -1,0 +1,2 @@
+- Spin Wheel prizes, limits, and outcomes are stored and awarded in the database through a protected insert trigger; the client only animates the server-selected result, so daily limits and wallet credits remain authoritative.
+- Wheel prize slots are fixed at eight ordered positions; admins edit each slot's attributes rather than changing the wheel geometry.
